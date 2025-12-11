@@ -1,0 +1,65 @@
+<% content_for :title, "Ruby on Records" %>
+
+<p style="color: green"><%= notice %></p>
+
+<h1 class="container">Novedades</h1>
+
+<div id="disks" class="container">
+  <% @disks.each do |disk| %>
+    <div class="grid">
+      <div>
+        <article style="background-color: #f9efdb;">
+          [[ Acá va una foto ]]
+          <div><%= disk.title %></div>
+          <br>
+          <p>
+            <%= link_to "Ver", disk, style: "background-color: #1343a0; font-family: monospace; font-size: 18px;", role: "button" %>
+          </p>
+        </article>
+      </div>
+    </div>
+  <% end %>
+</div>
+
+<h1 class="container">Los más vendidos</h1>
+
+<div id="disks-outlet" class="container">
+  <% @disks_top_sold.each do |disk| %>
+    <div class="grid">
+      <div>
+        <article style="background-color: #f9efdb;">
+          [[ Acá va una foto ]]
+          <div><%= disk.title %></div>
+          <div><%= number_to_currency(disk.price) %></div>
+          <div>Vendidos: <%= disk.total_sold %></div>
+          <br>
+          <p>
+            <%= link_to "Ver", disk, style: "background-color: #1343a0; font-family: monospace; font-size: 18px;", role: "button" %>
+          </p>
+        </article>
+      </div>
+    </div>
+  <% end %>
+</div>
+
+<h1 class="container">¡Última oportunidad!</h1>
+
+<div id="disks-tops" class="container">
+  <% @disks_outlet.each do |disk| %>
+    <div class="grid">
+      <div>
+        <article style="background-color: #f9efdb;">
+          [[ Acá va una foto ]]
+          <div><%= disk.title %></div>
+          <div style="color:#b92621">
+            ¡Últimos <%= disk.stock %> disponibles!
+          </div>
+          <br>
+          <p>
+            <%= link_to "Ver", disk, style: "background-color: #1343a0; font-family: monospace; font-size: 18px;", role: "button" %>
+          </p>
+        </article>
+      </div>
+    </div>
+  <% end %>
+</div>

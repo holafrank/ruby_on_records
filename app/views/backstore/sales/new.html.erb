@@ -1,0 +1,180 @@
+<p style="color: green"><%= notice %></p>
+
+<% content_for :title, "Registrar venta" %>
+
+<% content_for :title, "Nueva venta" %>
+
+<%= content_tag :div, "",
+      data: {
+        controller: "sales",
+        sales_target: "itemsContainer"
+      } %>
+
+<h1 class="container">Registrar venta</h1>
+<br>
+
+<div id="new-sale-form" class="container">
+  <article data-controller="sales" style="background-color: #f9efdb;">
+    <%= form_with model: [:backstore, @sale] do |form| %>
+      <% if @sale.errors.any? %>
+        <div role="alert">
+          <h4>Errores:</h4>
+
+          <ul>
+            <% @sale.errors.each do |error| %>
+              <li><%= error.full_message %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <fieldset>
+        <h4 class="container">Datos del Cliente</h4>
+
+        <p>
+          <span style="color: #b92621;">• </span> Detalle la información del
+          cliente antes de proceder con la compra.
+        </p>
+
+        <div class="grid">
+          <div class="col-8">
+            <div>
+              <%= form.collection_select :client_id, @all_clients, :id, :client_with_details,
+                { include_blank: "Seleccione un cliente..." },
+                required: true,
+                class: "form-select" %>
+            </div>
+          </div>
+
+          <div
+            class="col"
+            style="display: flex; align-items: center; padding-bottom: 18px;"
+          >
+            <%= link_to "Registrar nuevo Cliente", new_backstore_client_path,
+            class: "secondary",
+            style: "color: #1343a0; font-family: monospace; font-size: 18px; text-align: center;",
+            target: "_blank" %>
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <h4 class="container">Items</h4>
+
+        <p>
+          <span style="color: #b92621;">• </span> Seleccione el producto y
+          cantidad vendido:
+        </p>
+
+        <p></p>
+
+        <div data-sales-target="itemsContainer">
+          <%= form.fields_for :items do |item_form| %>
+            <div
+              class="item-fields grid"
+              style="color: #1343a0; font-size: 18px;  padding: 0.2rem;"
+            >
+              <div>
+                <%= item_form.label :disk_id, "Disco" %>
+
+                <%= item_form.collection_select :disk_id, @available_disks, :id, :title_with_details,
+                    { include_blank: "Seleccione un disco..." },
+                class: "form-select" %>
+              </div>
+
+              <div>
+                <%= item_form.label :amount, "Cantidad" %>
+
+                <%= item_form.number_field :amount,
+                    min: 1,
+                    value: 1,
+                    placeholder: "1",
+                    class: "form-input" %>
+              </div>
+
+              <div>
+                <label>&nbsp;</label>
+
+                <button
+                  type="button"
+                  class="secondary"
+                  data-action="click->sales#removeItem"
+                  style="
+                  color: #b92621;
+                  font-family: monospace;
+                  font-size: 18px;
+                  background: transparent;
+                  border: transparent;
+                  cursor: pointer;
+                  text-decoration: underline;
+                "
+                >
+                  Eliminar
+                </button>
+              </div>
+            </div>
+          <% end %>
+        </div>
+
+        <button
+          type="button"
+          class="secondary"
+          data-action="click->sales#addItem"
+          style="
+          color: #1343a0;
+          font-family: monospace;
+          font-size: 18px;
+          background: transparent;
+          border: transparent;
+          cursor: pointer;
+          text-decoration: underline;
+        "
+        >
+          Agregar otro disco
+        </button>
+      </fieldset>
+
+      <div style="display: inline-block;">
+        <%= form.submit "Guardar",
+                style: "
+                  background-color: #1343a0;
+                  color: white;
+                  font-family: monospace;
+                  font-size: 18px;
+                  min-width: auto;
+                  width: auto;
+                  display: inline-block;
+                " %>
+      </div>
+
+      <div style="display: inline-block;"></div>
+      <div style="display: inline-block;"></div>
+      <div style="display: inline-block;"></div>
+      <div style="display: inline-block;"></div>
+      <div style="display: inline-block;"></div>
+
+      <div style="display: inline-block;">
+        <%= link_to "Cancelar", backstore_sales_path,
+                class: "secondary",
+                style: "
+                  color: #b92621;
+                  font-family: monospace;
+                  font-size: 18px;
+                  text-align: center;
+                  padding: 0.5rem;
+                  text-decoration: underline;
+                " %>
+      </div>
+
+      <br>
+    <% end %>
+  </article>
+</div>
+
+<br>
+
+<div>
+  <p class="container">
+    <%= link_to "<< Volver", backstore_sales_path, style: "color: #1343a0; font-family: monospace; font-size: 18px;" %>
+  </p>
+</div>

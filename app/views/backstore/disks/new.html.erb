@@ -1,0 +1,165 @@
+<p style="color: green"><%= notice %></p>
+
+
+<% content_for :title, "New disk" %>
+
+
+<h1 class="container">Registrar nuevo disco</h1>
+<br>
+
+  <% if flash[:error] %>
+    <div style="color: #b92621; padding: 1rem; background: #f9efdb; border: 1px solid #b92621; margin-bottom: 1rem;">
+      <%= flash[:error] %>
+    </div>
+  <% end %>
+
+<div id="new-disk-form" class="container">
+  <article style="background-color: #f9efdb;">
+    <%= form_with model: [:backstore, @disk] do |form| %>
+      <% if @disk.errors.any? %>
+        <div role="alert">
+          <h4>Errores:</h4>
+
+          <ul>
+            <% @disk.errors.each do |error| %>
+              <li><%= error.full_message %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <fieldset>
+        <h4 class="container">Datos del Disco</h4>
+        <p>
+          <span style="color: #b92621;">• </span> Complete toda la información necesaria para registrar el nuevo producto.
+        </p>
+        <br>
+        <div class="grid">
+          <div class="col-8">
+            <div>
+              <div class="grid" label="disk-basic-data">
+                 <div class="col-6">
+                    <div>
+                        <%= form.label "Título" %>
+                        <%= form.text_field :title, required: true, placeholder:"Por Este Rio Acima", autocomplete:"on" %>
+                    </div>
+                 </div>
+                 <div class="col-6">
+                    <div>
+                        <%= form.label "Artista o banda" %>
+                        <%= form.text_field :artist, required: true, placeholder:"Fausto", autocomplete:"on" %>
+                    </div>
+                </div>
+                <div class="col-6">
+                  <div>
+                    <%= form.label "Año de lanzamiento" %>
+                    <%= form.number_field :year, required: true, placeholder:"1982", in: 1870..Date.current.year, autocomplete:"on" %>
+                  </div>
+                </div>
+              </div>
+
+              <div class="grid" label="disk-description">
+                  <div>
+                    <%= form.label "Descripción" %>
+                    <%= form.text_area :description, required: true, placeholder:"Es el primer álbum de una trilogía que también incluye los álbumes 'Crônicas da Terra Ardente' (1994) y 'Em Busca das Montanhas Azuis' (2011).  'Por Este Rio Acima' está basado en los viajes de Fernão Mendes Pinto, relatados en su libro Peregrinação (1614).", autocomplete:"on" %>
+                  </div>
+              </div>
+
+              <div class="grid" label="disk-market-data">
+                <div class="col-6">
+                  <div>
+                    <%= form.label "Precio unitario" %>
+                    <%= form.number_field :price, required: true, step: "0.01", min: 0, placeholder: "20000.00", autocomplete: "on" %>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div>
+                    <%= form.label "Cantidad disponible" %>
+                    <%= form.number_field :stock, required: true, min: 0, placeholder:"50", autocomplete:"on" %>
+                  </div>
+                </div>
+              </div>
+
+
+              <div class="grid" label="disk-state-data">
+                <div class="col-6">
+                  <div>
+                    <%= form.label "Estado" %>
+                    <%= form.select :state, ["Nuevo", "Usado"],
+                          { include_blank: "Seleccione Nuevo o Usado..." },
+                          required: true,
+                          class: "form-select" %>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div>
+                    <%= form.label "Formato (CD o Vinilo)" %>
+                    <%= form.select :format,  ["CD", "Vinilo"],
+                          { include_blank: "Seleccione CD o Vinilo..." },
+                          required: true,
+                          class: "form-select" %>
+                  </div>
+                </div>
+              </div>
+
+              <%= form.label "Géneros" %>
+              <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; margin-top: 1.0rem;">
+                <%= form.collection_check_boxes :genre_ids, @genres.order(:genre_name), :id, :genre_name do |b| %>
+                  <div style="display: flex; align-items: center;">
+                    <%= b.check_box %>
+                    <%= b.label style: "margin-left: 0.25rem; margin-bottom: 0; font-size: 17px" %>
+                  </div>
+                <% end %>
+              </div>
+
+
+            </div>
+          </div>
+        </div>
+      </fieldset>
+
+      <br>
+      <div style="display: inline-block;">
+        <%= form.submit "Guardar",
+                style: "
+                  background-color: #1343a0;
+                  color: white;
+                  font-family: monospace;
+                  font-size: 18px;
+                  min-width: auto;
+                  width: auto;
+                  display: inline-block;
+                " %>
+      </div>
+
+      <div style="display: inline-block;"></div>
+      <div style="display: inline-block;"></div>
+      <div style="display: inline-block;"></div>
+      <div style="display: inline-block;"></div>
+      <div style="display: inline-block;"></div>
+
+      <div style="display: inline-block;">
+        <%= link_to "Cancelar", backstore_disks_path,
+                class: "secondary",
+                style: "
+                  color: #b92621;
+                  font-family: monospace;
+                  font-size: 18px;
+                  text-align: center;
+                  padding: 0.5rem;
+                  text-decoration: underline;
+                " %>
+      </div>
+
+      <br>
+    <% end %>
+  </article>
+</div>
+
+<br>
+
+<div>
+  <p class="container">
+    <%= link_to "<< Volver", backstore_disks_path, style: "color: #1343a0; font-family: monospace; font-size: 18px;" %>
+  </p>
+</div>

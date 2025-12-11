@@ -1,0 +1,78 @@
+/*
+ * This is a manifest file that'll be compiled into application.css.
+ *
+ * With Propshaft, assets are served efficiently without preprocessing steps. You can still include
+ * application-wide styles in this file, but keep in mind that CSS precedence will follow the standard
+ * cascading order, meaning styles declared later in the document or manifest will override earlier ones,
+ * depending on specificity.
+ *
+ * Consider organizing styles into separate files for maintainability.
+ */
+
+h1,
+h2,
+h3,
+h4 {
+    color: #b92621;
+    font-family:
+        "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+        "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+}
+
+label {
+    color: #0e1312;
+    font-family:
+        "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+        "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+}
+
+p {
+    color: #0e1312;
+    font-family: monospace;
+}
+
+button {
+    background-color: #1343a0;
+    font-family: monospace;
+}
+
+th {
+    background-color: #b92621;
+    color: #f9efdb;
+}
+
+tr {
+    background-color: #b92621;
+}
+
+td {
+    background-color: #f9efdb;
+}
+
+/* Tablas con bordes personalizados */
+.table-custom {
+    --pico-table-border-color: #b92621;
+
+    font-family:
+        "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+        "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+    font-size: 18px;
+}
+
+.table-custom tbody tr {
+    border-bottom: none;
+}
+
+/* Tablas con bordes personalizados */
+.table-invisible {
+    --pico-table-border-color: transparent;
+
+    font-family:
+        "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+        "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+    font-size: 18px;
+}
+
+.table-invisible tbody tr {
+    border-bottom: none;
+}

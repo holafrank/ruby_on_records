@@ -1,0 +1,21 @@
+<% content_for :title, "Ruby on Records" %>
+Hola
+<p style="color: green"><%= notice %></p>
+HOLA!!
+<%= form_with url: login_path, method: :post do |form| %>
+  <% if flash[:alert] %>
+    <div data-theme="light"><ins><%= flash[:alert] %></ins></div>
+  <% end %>
+
+  <div>
+    <%= form.label :email, "Email" %>
+    <%= form.email_field :email, required: true, placeholder: "empleado@rubyonrecords.com", autofocus: true %>
+  </div>
+
+  <div>
+    <%= form.label :password, "Contraseña" %>
+    <%= form.password_field :password, required: true %>
+  </div>
+
+  <%= form.submit "Ingresar", class: "contrast" %>
+<% end %>

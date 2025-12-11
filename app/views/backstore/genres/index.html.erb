@@ -1,0 +1,51 @@
+<p style="color: green"><%= notice %></p>
+
+<% content_for :title, "Genres" %>
+
+<h1 class="container">Géneros musicales</h1>
+<br>
+
+<div id="genres-table" class="container">
+
+  <table class="table-custom">
+
+    <thead style="background-color: #b92621">
+      <tr>
+        <th scope="col">
+          Nombre del género
+        </th>
+        <th scope="col">
+          Editar
+        </th>
+        <th scope="col">
+          ...
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @genres.each do |genre| %>
+      <tr>
+        <td>
+            <%= genre.genre_name %>
+        </td>
+
+        <td>
+            <%= link_to "Editar", edit_backstore_genre_path(genre), style: "color: #1343a0; font-family: monospace; font-size: 18px;" %>
+        </td>
+
+        <td>
+            <%= link_to "Detalles", backstore_genre_path(genre), style: "color: #1343a0; font-family: monospace; font-size: 18px;" %>
+        </td>
+      </tr>
+      <% end %>
+    </tbody>
+
+  </table>
+
+</div>
+<br>
+<div>
+  <p class="container">
+    <%= link_to "Nuevo género", new_backstore_genre_path, style: "color: #1343a0; font-family: monospace; font-size: 18px;" %>
+  </p>
+</div>

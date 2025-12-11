@@ -1,0 +1,212 @@
+<p style="color: green"><%= notice %></p>
+
+<h1 class="container">Datos del disco</h1>
+<br>
+
+  <!-- Para poner a posteriori la imagen de la portada, se me ocurre una tabla de dos columnas y una fila -->
+  <!-- En la primera columna va esta tabla que ya está hecha, y en la segunda la tapa del disco -->
+
+  <!-- -------------------------------------------------------------------------------------------------- -->
+  <!-- | Título del disco                            |                                                  | -->
+  <!-- -------------------------------------------------------------------------------------------------- -->
+  <!-- | ------------------------------------------- | ------------------------------------------------ | -->
+  <!-- | |     Artista        |                    | | |//////////////////////////////////////////////| | -->
+  <!-- | |     Año            |                    | | |//////////////////////////////////////////////| | -->
+  <!-- | |     Precio         |                    | | |//////////////////////////////////////////////| | -->
+  <!-- | |     ...            |                    | | |//////////////////// Cover ///////////////////| | -->
+  <!-- | |     ...            |                    | | |//////////////////////////////////////////////| | -->
+  <!-- | |     ...            |                    | | |//////////////////////////////////////////////| | -->
+  <!-- | |     ...            |                    | | |//////////////////////////////////////////////| | -->
+  <!-- | ------------------------------------------- | ------------------------------------------------ | -->
+  <!-- -------------------------------------------------------------------------------------------------- -->
+
+
+<div id="disk-details" class="container">
+  <article style="background-color: #f9efdb;">
+
+
+        <h4 class="container"><%= @disk.title %></h4>
+
+<div id="inner-disk-data-table">
+        <table class="table-invisible">
+
+          <hr style="border-color: #b92621; border-top: 3px solid #b92621;">
+
+          <thead>
+
+          </thead>
+
+        <tbody>
+          <tr>
+            <td class="tg-0lax">
+              <span style="color: #1343a0;">• </span> Artista
+            </td>
+            <td class="tg-0lax"><%= @disk.artist %></td>
+          </tr>
+
+          <tr>
+            <td class="tg-0lax">
+              <span style="color: #1343a0;">• </span> Año
+            </td>
+            <td class="tg-0lax"><%= @disk.year %></td>
+          </tr>
+
+          <tr>
+            <td class="tg-0lax">
+              <span style="color: #1343a0;">• </span> Precio unitario
+            </td>
+
+            <td class="tg-0lax"><%= number_to_currency(@disk.price) %></td>
+          </tr>
+
+          <tr>
+            <td class="tg-0lax">
+              <span style="color: #1343a0;">• </span> Stock
+            </td>
+            <td class="tg-0lax"><%= @disk.stock %></td>
+          </tr>
+
+          <tr>
+            <td class="tg-0lax">
+              <span style="color: #1343a0;">• </span> Estado
+            </td>
+            <td class="tg-0lax"><%= @disk.state %></td>
+          </tr>
+
+          <tr>
+            <td class="tg-0lax">
+              <span style="color: #1343a0;">• </span> Formato
+            </td>
+            <td class="tg-0lax"><%= @disk.format %></td>
+          </tr>
+
+          <tr>
+            <td class="tg-0lax">
+              <span style="color: #1343a0;">• </span> Géneros
+            </td>
+            <td class="tg-0lax">
+                <% @disk.genres.each do |genre| %>
+                  <span style="color: #1343a0;">• </span><%= genre.genre_name %>
+                <% end %></td>
+
+
+          </tr>
+
+        </tbody>
+        </table>
+</div>
+
+        <div class="container">
+        </div>
+        <h4 class="container">Compras realizadas</h4>
+        <div id="sales-table" class="container">
+          <table class="table-custom">
+            <thead style="background-color: #b92621">
+              <tr>
+                <th scope="col">
+                  Vendedor
+                </th>
+
+
+                <th scope="col">
+                  Cantidad
+                </th>
+                <th scope="col">
+                  Total
+                </th>
+
+                <th scope="col">
+                  Cancelada
+                </th>
+
+                <th scope="col">
+                  Fecha
+                </th>
+
+
+                <th scope="col">
+                  ...
+                </th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <% @disk_sales.each do |sale| %>
+                <tr>
+                  <td><%= sale.user.full_name %></td>
+                  <td>
+                    <% sale.sale_contents.each do |s| %>
+                      <%= s.amount if s.disk == @disk %>
+                    <% end %>
+                  </td>
+                  <td><%= number_to_currency(sale.total) %></td>
+
+
+                  <% if !sale.cancelled? %>
+                    <td>
+                      <%= link_to "¿Cancelar?",
+                            backstore_sale_path(sale),
+                            method: :delete,
+                            data: {
+                              turbo_confirm: "¿Estás seguro de cancelar esta venta? No hay vuelta atrás...",
+                              turbo_method: :delete
+                            },
+                            style: "color: #1343a0; font-family: monospace; font-size: 17px;",
+                            class: "btn btn-warning" %>
+                    </td>
+                  <% else %>
+                    <td style="color: #b92621;font-family: monospace; font-size: 17px;">
+                      Cancelada
+                    </td>
+                  <% end %>
+
+                  <td><%= sale.created_at_local_time.strftime("%d-%m-%Y   %H:%M") %></td>
+
+
+                  <td style="font-family: monospace;">
+                    <%= link_to "Detalles", backstore_sale_path(sale), style: "color: #1343a0; font-family: monospace; font-size: 17px;" %>
+                  </td>
+                </tr>
+
+              <% end %>
+            </tbody>
+
+            <tfoot>
+              <tr>
+                <th style="background-color: #f9efdb; color: #b92621" scope="row">
+                  Total
+                </th>
+
+                <td style="background-color: #f9efdb">
+                  <%= @total_amount %>
+                </td>
+
+                <td style="background-color: #f9efdb">
+                  <%= number_to_currency(@total_sold) %>
+                </td>
+
+                <td>
+                </td>
+                <td>
+                </td>
+                <td>
+                </td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+  </article>
+</div>
+
+
+<br>
+<div>
+  <p class="container">
+    <%= link_to "<< Volver", backstore_disks_path, style: "color: #1343a0; font-family: monospace; font-size: 18px;" %> |
+    <%= link_to "Editar disco", edit_backstore_disk_path(@disk), style: "color: #1343a0; font-family: monospace; font-size: 18px;" %>
+  </p>
+</div>
+
+<div>
+  <%# button_to "Destroy this client", @client, method: :delete %>
+</div>

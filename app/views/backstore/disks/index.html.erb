@@ -1,0 +1,76 @@
+<p style="color: green"><%= notice %></p>
+
+<% content_for :title, "Discos" %>
+
+
+<% if current_user.present? %>
+  <%# ========== Para la gestión ========== %>
+  <%# === Odio esto, habrá que hacer otro index para la gestión === %>
+  <% content_for :title, "Gestión de discos" %>
+  <h1 class="container">Gestión de discos</h1>
+  <br>
+  <div id="disk-table" class="container">
+    <table class="table-custom">
+      <thead style="background-color: #b92621">
+        <tr>
+          <th scope="col">
+            Título
+          </th>
+
+          <th scope="col">
+            Artista
+          </th>
+
+          <th scope="col">
+            Stock
+          </th>
+
+          <th scope="col">
+            Precio
+          </th>
+
+          <th scope="col">
+            Fecha
+          </th>
+
+          <th scope="col">
+            Ver detalle
+          </th>
+
+          <th scope="col">
+            Editar
+          </th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <% @disks.each do |disk| %>
+          <tr>
+            <td><%= disk.title %></td>
+            <td><%= disk.artist %></td>
+            <td><%= disk.stock %></td>
+
+            <td><%= number_to_currency(disk.price) %></td>
+
+            <td>
+              <%= disk.created_at_local_time.strftime("%d-%m-%Y   %H:%M") %>
+            </td>
+
+            <td style="font-family: monospace;">
+              <%= link_to "Detalles", backstore_disk_path(disk) , style: "color: #1343a0; font-family: monospace; font-size: 17px;" %>
+            </td>
+
+            <td>
+              <%= link_to " Editar", edit_backstore_disk_path(disk) , style: "color: #1343a0; font-family: monospace; font-size: 18px;" %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+  <div>
+    <p class="container">
+      <%= link_to " Nuevo disco", new_backstore_disk_path, style: "color: #1343a0; font-family: monospace; font-size: 18px;" %>
+    </p>
+  </div>
+<% end %>

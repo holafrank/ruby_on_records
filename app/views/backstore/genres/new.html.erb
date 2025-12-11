@@ -1,0 +1,94 @@
+
+
+
+<p style="color: green"><%= notice %></p>
+
+<% content_for :title, "Registrar nuevo género" %>
+
+<h1 class="container">Registrar nuevo género</h1>
+<br>
+
+  <% if flash[:error] %>
+    <div style="color: #b92621; padding: 1rem; background: #f9efdb; border: 1px solid #b92621; margin-bottom: 1rem;">
+      <%= flash[:error] %>
+    </div>
+  <% end %>
+
+<div id="new-genre-form" class="container">
+  <article style="background-color: #f9efdb;">
+    <%= form_with model: [:backstore, @genre] do |form| %>
+      <% if @genre.errors.any? %>
+        <div role="alert">
+          <h4>Errores:</h4>
+
+          <ul>
+            <% @genre.errors.each do |error| %>
+              <li><%= error.full_message %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <fieldset>
+        <h4 class="container">Datos del género musical</h4>
+        <p>
+          <span style="color: #b92621;">• </span> Detalle el nombre del nuevo género.
+        </p>
+        <div class="grid">
+          <div class="col-8">
+            <div>
+                  <div>
+                    <%= form.label "Nombre del género" %>
+                    <%= form.text_field :genre_name, required: true, placeholder:"Metal Operístico", autocomplete:"on" %>
+                  </div>
+            </div>
+          </div>
+        </div>
+      </fieldset>
+
+      <div style="display: inline-block;">
+        <%= form.submit "Guardar",
+                style: "
+                  background-color: #1343a0;
+                  color: white;
+                  font-family: monospace;
+                  font-size: 18px;
+                  min-width: auto;
+                  width: auto;
+                  display: inline-block;
+                " %>
+      </div>
+
+      <div style="display: inline-block;"></div>
+      <div style="display: inline-block;"></div>
+      <div style="display: inline-block;"></div>
+      <div style="display: inline-block;"></div>
+      <div style="display: inline-block;"></div>
+
+      <div style="display: inline-block;">
+        <%= link_to "Cancelar", backstore_genres_path,
+                class: "secondary",
+                style: "
+                  color: #b92621;
+                  font-family: monospace;
+                  font-size: 18px;
+                  text-align: center;
+                  padding: 0.5rem;
+                  text-decoration: underline;
+                " %>
+      </div>
+
+      <br>
+    <% end %>
+  </article>
+</div>
+
+<br>
+
+<div>
+  <p class="container">
+    <%= link_to "<< Volver", backstore_genres_path, style: "color: #1343a0; font-family: monospace; font-size: 18px;" %>
+  </p>
+
+
+</div>

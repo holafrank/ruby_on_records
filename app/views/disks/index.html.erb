@@ -1,0 +1,21 @@
+<p style="color: green"><%= notice %></p>
+
+<% content_for :title, "Discos" %>
+
+<%# ========== Para el público ========== %>
+
+  <h1 class="container">Discos</h1>
+  <div id="disks" class="container">
+    <% @disks.each do |disk| %>
+      <div class="grid">
+        <div>
+          <article style="background-color: #f9efdb;">
+            [[ Acá va una foto ]]
+            <div><%= disk.title %></div>
+            <br>
+            <p><%= link_to "Ver", disk, role: "button" %></p>
+          </article>
+        </div>
+      </div>
+    <% end %>
+  </div>
