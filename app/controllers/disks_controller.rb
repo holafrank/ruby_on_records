@@ -8,9 +8,9 @@ class DisksController < ApplicationController
   def index
     case params[:filter]
     when "new"
-      @disks = Disk.where(state: "Nuevo")
+      @disks = Disk.new_disks
     when "used"
-      @disks = Disk.where(state: "Usado")
+      @disks = Disk.used_disks
     else
       @disks = Disk.all
 

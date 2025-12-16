@@ -51,14 +51,24 @@ class Disk < ApplicationRecord
   validates :state, presence: true, inclusion: { in: %w[Nuevo Usado],
     message: "No trabajamos discos en estado '%{value}'" }
 
+
+  # === Scopes === #
+
+  scope :new_disks, -> { where(state: "Nuevo") }
+
+  scope :used_disks, -> { where(state: "Usado") }
+
   scope :top_sold, ->(limit = 10) {
     joins(items: :sale)
       .where(sales: { cancelled: false })
-      .group(:id) #Agrupar por disk.id
+      .group(:id)
       .select('disks.*, SUM(items.amount) as total_sold')
       .order('total_sold DESC')
       .limit(limit)
   }
+
+
+  # === Métodos === #
 
   def created_at_local_time
     self.created_at - Time.parse("03:00:00").seconds_since_midnight.seconds
