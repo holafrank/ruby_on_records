@@ -9,22 +9,18 @@ class Backstore::DisksController < ApplicationController
   def index
     case params[:filter]
     when "new"
-      @disks = Disk.where(state: "Nuevo")
+      @disks = :new_disks
     when "used"
-      @disks = Disk.where(state: "Usado")
+      @disks = :used_disks
     else
       @disks = Disk.all
-
     end
   end
 
   # GET /disks/1 or /disks/1.json
   def show
-    @disk_sales = @disk.sales_containing_disk
-    @total_amount = @disk_sales.where(cancelled: false)
-                             .joins(:items)
-                             .where(items: { disk_id: @disk.id })
-                             .sum('items.amount')
+    @disk_sales = @disk.sales_containing_disk()
+    @total_amount = @disk.total_amount_sold()
     @total_sold = @total_amount * @disk.price
   end
 

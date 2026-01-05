@@ -19,3 +19,31 @@
       </div>
     <% end %>
   </div>
+
+
+  Responsive?
+  <div id="disks-responsive" class="container">
+    <div class="disks-grid">
+      <% @disks.each do |disk| %>
+        <article class="disk-tile" style="background-color: #f9efdb;">
+<!--          <div class="disk-image">
+            <# if disk.cover_image.attached? %>
+              <#= image_tag disk.cover_image, alt: disk.title %>
+            <# else %>
+              <div class="image-placeholder">
+                🎵
+                <span><#= disk.artist.first(2).upcase %></span>
+              </div>
+            <# end %>
+          </div>
+-->
+          <div class="disk-content">
+            <p><%= disk.title %></p>
+            <div class="disk-actions">
+              <p><%= link_to "Ver", disk, role: "button" %></p>
+            </div>
+          </div>
+        </article>
+      <% end %>
+    </div>
+  </div>

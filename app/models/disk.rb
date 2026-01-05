@@ -67,8 +67,7 @@ class Disk < ApplicationRecord
       .limit(limit)
   }
 
-
-  # === Métodos === #
+  # === Métodos de instancia === #
 
   def created_at_local_time
     self.created_at - Time.parse("03:00:00").seconds_since_midnight.seconds
@@ -78,6 +77,10 @@ class Disk < ApplicationRecord
     Sale.joins(:items)
             .where(items: { disk_id: id })
             .distinct
+  end
+
+  def total_amount_sold
+    valid_sales_containing_disk().sum('items.amount')
   end
 
   def valid_sales_containing_disk
