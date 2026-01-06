@@ -1,7 +1,7 @@
 # app/controllers/backstore/base_controller.rb
 class Backstore::BaseController < ApplicationController
-  #before_action :authenticate_user!
-  #before_action :require_backstore_access!
+  # before_action :authenticate_user!
+  # before_action :require_backstore_access!
   #
   # Aún ni se si realmente necesito un "Dashboard"
   #

@@ -45,8 +45,8 @@ class Ability
       can [ :create, :new, :read, :update, :edit, :destroy ], Disk
       can [ :create, :new, :read, :update, :edit, :destroy ], Sale
       can [ :create, :new, :read, :update, :edit, :destroy ], Genre
-      can [:read, :update, :edit], User, id: user.id#, [:full_name, :email, :password_digest]
-      cannot :update, User, [:role]
+      can [ :read, :update, :edit ], User, id: user.id# , [:full_name, :email, :password_digest]
+      cannot :update, User, [ :role ]
     end
 
     # Un gerente puede administrar productos y ventas, y gestionar usuarios,

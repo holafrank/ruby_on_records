@@ -26,7 +26,7 @@ class Sale < ApplicationRecord
   # === Validadores === #
 
   # :cancelled ::= Venta cancelada (True) o no (False)
-  validates :cancelled, inclusion: { in: [true, false] }
+  validates :cancelled, inclusion: { in: [ true, false ] }
 
   # :total ::= Total a pagar de una Venta
   validates :total, presence: true, numericality: { greater_than_or_equal_to: 0 }
@@ -36,7 +36,7 @@ class Sale < ApplicationRecord
   before_save :calculate_total
   after_save :calculate_total_reload
 
-  def sale_contents()
+  def sale_contents
     items.includes(:disk)
   end
 
@@ -63,11 +63,4 @@ class Sale < ApplicationRecord
   def calculate_total_reload
     update_column(:total, items.reload.sum(&:price))
   end
-
-
-
-
-
-
-
 end

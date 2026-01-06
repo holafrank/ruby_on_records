@@ -4,39 +4,37 @@
 
 <%# ========== Para el público ========== %>
 
+
   <h1 class="container">Discos</h1>
-  <div id="disks" class="container">
-    <% @disks.each do |disk| %>
-      <div class="grid">
-        <div>
-          <article style="background-color: #f9efdb;">
-            [[ Acá va una foto ]]
-            <div><%= disk.title %></div>
-            <br>
-            <p><%= link_to "Ver", disk, role: "button" %></p>
-          </article>
-        </div>
-      </div>
-    <% end %>
-  </div>
 
 
-  Responsive?
+  [ Filter / Search bar ]
+
+  Géneros (all) V      ||      Artista (all) V      ||      Formato (all) V      ||      Año (all) V      ||      Precio (all) V
+
+
+  O más simple...
+
+
+  [ Filter / Search bar ]
+
+  Título (searchbar)
+  Géneros (all) V      ||      Artista (all) V       ||      Década (all) V
+
   <div id="disks-responsive" class="container">
     <div class="disks-grid">
       <% @disks.each do |disk| %>
         <article class="disk-tile" style="background-color: #f9efdb;">
-<!--          <div class="disk-image">
-            <# if disk.cover_image.attached? %>
-              <#= image_tag disk.cover_image, alt: disk.title %>
-            <# else %>
-              <div class="image-placeholder">
-                🎵
-                <span><#= disk.artist.first(2).upcase %></span>
+          <div style="display: flex; justify-content: center; align-items: center;">
+            <% if disk.cover.attached? %>
+              <%= image_tag disk.cover,
+                    style: "width: 300px; height: 300px; border-radius: 8px; box-shadow: 0 8px 16px rgba(0,0,0,0.1);" %>
+            <% else %>
+              <div class="pico-background-red-100" style="width: 400px; height: 400px; display: flex; align-items: center; justify-content: center; border-radius: 8px;">
+                <span style="color: #b92621;">Sin portada</span>
               </div>
-            <# end %>
+            <% end %>
           </div>
--->
           <div class="disk-content">
             <p><%= disk.title %></p>
             <div class="disk-actions">

@@ -105,6 +105,11 @@
                 </div>
               </div>
 
+
+              <%= form.label "Portada" %>
+              <%= form.file_field :cover, value: @disk.cover %>
+
+
               <%= form.label "Géneros" %>
               <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; margin-top: 1.0rem;">
                 <%= form.collection_check_boxes :genre_ids, @genres.order(:genre_name), :id, :genre_name do |b| %>

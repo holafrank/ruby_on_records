@@ -22,17 +22,15 @@ class Backstore::ClientsController < ApplicationController
 
   # POST /clients or /clients.json
   def create
-
     @client = Client.new(client_params)
 
     if @client.save
-      redirect_to backstore_clients_path, notice: 'Cliente registrado exitosamente.'
+      redirect_to backstore_clients_path, notice: "Cliente registrado exitosamente."
     else
       render :new, status: :unprocessable_entity
       flash[:error] = "No se pudo registar al cliente: #{@client.errors.full_messages.join(', ')}"
       redirect_to backstore_new_client_path
     end
-
   end
 
   # PATCH/PUT /clients/1 or /clients/1.json

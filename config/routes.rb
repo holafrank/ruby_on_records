@@ -1,6 +1,4 @@
 Rails.application.routes.draw do
-
-
   get "login", to: "sessions#new"
   post "login", to: "sessions#create"
   get "logout", to: "sessions#destroy"
@@ -9,14 +7,14 @@ Rails.application.routes.draw do
   # pero sí da controllers organizados por módulo, como por ejemplo, Backstore::SalesController
   # Agrego las rutas con prefijo manualmente para obtener lo que haría un namespace
   # pero sin compromenter los nombres de los helpers que ya utilizo, volviendo más difícil la refactorización.
- # scope module: :backstore do
- #   resources :sales, path: 'backstore/sales'
- #   resources :disks, path: 'backstore/disks'
- #   resources :items, path: 'backstore/items'
- #   resources :users, path: 'backstore/users'
- #   resources :clients, path: 'backstore/clients'
- #   resources :genres, path: 'backstore/genres'
- # end
+  # scope module: :backstore do
+  #   resources :sales, path: 'backstore/sales'
+  #   resources :disks, path: 'backstore/disks'
+  #   resources :items, path: 'backstore/items'
+  #   resources :users, path: 'backstore/users'
+  #   resources :clients, path: 'backstore/clients'
+  #   resources :genres, path: 'backstore/genres'
+  # end
 
   namespace :backstore do
     resources :sales
@@ -38,8 +36,8 @@ Rails.application.routes.draw do
   # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
   root "storefront#index"
 
-  resources :disks, only: [:index, :show]
-  resources :genres, only: [:index, :show]
+  resources :disks, only: [ :index, :show ]
+  resources :genres, only: [ :index, :show ]
   # Defines the root path route ("/")
   # root "posts#index"
 end

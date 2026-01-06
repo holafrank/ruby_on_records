@@ -1,5 +1,4 @@
 class Backstore::DisksController < ApplicationController
-
   # skip_before_action :require_login, only: [:index, :show]
   before_action :set_disk, only: %i[ show edit update destroy ]
 
@@ -83,7 +82,7 @@ class Backstore::DisksController < ApplicationController
     # Only allow a list of trusted parameters through.
     def disk_params
       params.require(:disk).permit(
-        :title, :artist, :year, :description, :price, :stock, :format, :state,
+        :title, :artist, :year, :description, :price, :stock, :format, :state, :cover,
         genre_ids: []
       )
     end

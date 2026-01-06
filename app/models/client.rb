@@ -16,5 +16,4 @@ class Client < ApplicationRecord
   def client_with_details
     "#{name} | Contacto: #{contact}"
   end
-
 end

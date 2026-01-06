@@ -1,5 +1,4 @@
 class Backstore::UsersController < ApplicationController
-
   before_action :set_user, only: %i[ show edit update destroy ]
 
   # load_and_authorize_resource

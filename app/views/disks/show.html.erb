@@ -1,8 +1,111 @@
 <p style="color: green"><%= notice %></p>
 
-<%= render @disk %>
+<h1 class="container">Datos del disco</h1>
+<br>
 
+<div id="disk-details-" class="container">
+  <article style="background-color: #f9efdb; padding: 2rem;">
+
+    <h4 class="container"><%= @disk.title %></h4>
+
+    <!-- Grid de 2 columnas: datos a la izquierda, imagen a la derecha -->
+    <div class="grid">
+
+      <!-- Columna 1: Datos del disco -->
+      <div>
+        <table class="table-invisible">
+
+        <hr style="border-color: #b92621; border-top: 3px solid #b92621;">
+
+        <thead>
+        </thead>
+
+        <tbody>
+            <tr>
+                    <td class="tg-0lax">
+                    <span style="color: #1343a0;">• </span> Artista
+                    </td>
+                    <td class="tg-0lax"><%= @disk.artist %></td>
+            </tr>
+
+            <tr>
+                    <td class="tg-0lax">
+                    <span style="color: #1343a0;">• </span> Año
+                    </td>
+                    <td class="tg-0lax"><%= @disk.year %></td>
+            </tr>
+
+            <tr>
+                    <td class="tg-0lax">
+                    <span style="color: #1343a0;">• </span> Precio unitario
+                    </td>
+
+                    <td class="tg-0lax"><%= number_to_currency(@disk.price) %></td>
+            </tr>
+
+            <tr>
+                    <td class="tg-0lax">
+                    <span style="color: #1343a0;">• </span> Stock
+                    </td>
+                    <td class="tg-0lax"><%= @disk.stock %></td>
+            </tr>
+
+            <tr>
+                    <td class="tg-0lax">
+                    <span style="color: #1343a0;">• </span> Estado
+                    </td>
+                    <td class="tg-0lax"><%= @disk.state %></td>
+            </tr>
+
+            <tr>
+                    <td class="tg-0lax">
+                    <span style="color: #1343a0;">• </span> Formato
+                    </td>
+                    <td class="tg-0lax"><%= @disk.format %></td>
+            </tr>
+
+            <tr>
+                    <td class="tg-0lax">
+                    <span style="color: #1343a0;">• </span> Géneros
+                    </td>
+                    <td class="tg-0lax">
+                        <% @disk.genres.each do |genre| %>
+                          <span style="color: #1343a0;">• </span><%= genre.genre_name %><br>
+                        <% end %>
+                    </td>
+            </tr>
+
+        </tbody>
+        </table>
+      </div>
+
+      <!-- Columna 2: Portada del disco -->
+       <div style="display: flex; justify-content: center; align-items: center;">
+         <% if @disk.cover.attached? %>
+           <%= image_tag @disk.cover,
+                 style: "width: 400px; height: 400px; border-radius: 8px; box-shadow: 0 8px 16px rgba(0,0,0,0.1);" %>
+         <% else %>
+           <div class="pico-background-red-100" style="width: 400px; height: 400px; display: flex; align-items: center; justify-content: center; border-radius: 8px;">
+             <span style="color: #b92621;">Sin portada</span>
+           </div>
+         <% end %>
+
+       </div>
+
+
+    </div>
+
+    <!-- Descripción del disco -->
+    <div style="margin-top: 1rem; padding: 1rem; background-color: #fff; border-radius: 8px;">
+      <h5 style="color: #1343a0;">Descripción</h5>
+      <p><%= @disk.description %></p>
+    </div>
+  </article>
+</div>
+
+<br>
 <div>
-  <%= link_to "Back to disks", disks_path %>
-
+  <p class="container">
+    <%= link_to "<< Volver", disks_path, style: "color: #1343a0; font-family: monospace; font-size: 18px;" %>
+  </p>
 </div>

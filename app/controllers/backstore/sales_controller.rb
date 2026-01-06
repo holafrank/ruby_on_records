@@ -1,5 +1,4 @@
 class Backstore::SalesController < ApplicationController
-
   before_action :set_sale, only: %i[ show edit update destroy ]
 
   load_and_authorize_resource
@@ -19,27 +18,26 @@ class Backstore::SalesController < ApplicationController
     @sale = Sale.new
     @sale.items.build
     @all_clients = Client.all
-    @available_disks = Disk.where('stock > 0').order(:title)
+    @available_disks = Disk.where("stock > 0").order(:title)
   end
 
   # GET /sales/1/edit
   def edit
     @all_clients = Client.all
-    @available_disks = Disk.where('stock > 0').order(:title)
+    @available_disks = Disk.where("stock > 0").order(:title)
   end
 
   # POST /sales or /sales.json
   def create
-
     @sale = Sale.new(sale_params)
     @sale.user = current_user
 
     if @sale.save
-      @sale.items.each { |item| item.decrease_stock()}
-      redirect_to backstore_sale_path(@sale), notice: 'Venta creada exitosamente.'
+      @sale.items.each { |item| item.decrease_stock() }
+      redirect_to backstore_sale_path(@sale), notice: "Venta creada exitosamente."
     else
       @all_clients = Client.all
-      @available_disks = Disk.where('stock > 0').order(:title)
+      @available_disks = Disk.where("stock > 0").order(:title)
       render :new, status: :unprocessable_entity
       render json: @sale.errors, status: :unprocessable_entity
     end
@@ -50,7 +48,6 @@ class Backstore::SalesController < ApplicationController
     authorize! :update, @sale
 
     ActiveRecord::Base.transaction do
-
       @sale.items.each(&:revert_stock)
 
       if @sale.update(sale_params)
@@ -59,7 +56,7 @@ class Backstore::SalesController < ApplicationController
         redirect_to backstore_sale_path(@sale)
       else
         @all_clients = Client.all
-        @available_disks = Disk.where('stock > 0').order(:title)
+        @available_disks = Disk.where("stock > 0").order(:title)
         flash[:error] = "No se pudo cancelar la venta: #{@sale.errors.full_messages.join(', ')}"
         redirect_to backstore_sale_path(@sale)
         raise ActiveRecord::Rollback  # Revertir la transacción
@@ -97,7 +94,7 @@ class Backstore::SalesController < ApplicationController
   end
 
   def set_available_disks
-    @available_disks = Disk.where('stock > 0').order(:title)
+    @available_disks = Disk.where("stock > 0").order(:title)
   end
 
   private
@@ -110,7 +107,7 @@ class Backstore::SalesController < ApplicationController
     def sale_params
       params.require(:sale).permit(
         :client_id,
-        items_attributes: [:id, :disk_id, :amount, :_destroy]
+        items_attributes: [ :id, :disk_id, :amount, :_destroy ]
       )
     end
 end

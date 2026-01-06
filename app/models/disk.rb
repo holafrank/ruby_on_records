@@ -16,6 +16,26 @@ class Disk < ApplicationRecord
   # * You do not need validations, callbacks, or extra methods on the join table.
   # https://guides.rubyonrails.org/association_basics.html#has-and-belongs-to-many
 
+  # === Active Storage === #
+
+  has_one_attached :cover, dependent: :destroy
+  has_one_attached :audio_sample, dependent: :destroy
+
+  # === Active Storage Validations === #
+  # https://github.com/igorkasyanchuk/active_storage_validations
+
+  validates :cover, attached: true,
+  content_type: { in: [ "image/png", "image/jpeg" ], message: "must be a JPEG or PNG" },
+  size: { less_than: 2.megabytes, message: "size cannot be larger than 2 megabytes" }#,
+  #dimension: { width: { min: 300, max: 1000 }, height: { min: 300, max: 1000 }, message: "height or width is out of bounds" },
+  #aspect_ratio: :square
+  # Quiero lograr esto ^ pero no lo estoy pudiendo hacer...
+  # No se por qué no anda
+
+  validates :audio_sample, content_type: [ "audio/mpeg", "audio/ogg", "audio/flac" ]
+  validates :audio_sample, size: { less_than_or_equal_to: 30.megabytes }
+  validates :audio_sample, duration: { less_than_or_equal_to: 30.seconds }
+
   # === Validadores === #
 
   # :title ::= Titulo del disco
@@ -62,8 +82,8 @@ class Disk < ApplicationRecord
     joins(items: :sale)
       .where(sales: { cancelled: false })
       .group(:id)
-      .select('disks.*, SUM(items.amount) as total_sold')
-      .order('total_sold DESC')
+      .select("disks.*, SUM(items.amount) as total_sold")
+      .order("total_sold DESC")
       .limit(limit)
   }
 
@@ -80,7 +100,7 @@ class Disk < ApplicationRecord
   end
 
   def total_amount_sold
-    valid_sales_containing_disk().sum('items.amount')
+    valid_sales_containing_disk().sum("items.amount")
   end
 
   def valid_sales_containing_disk
