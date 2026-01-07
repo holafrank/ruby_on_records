@@ -51,7 +51,7 @@ class Backstore::SalesController < ApplicationController
       @sale.items.each(&:revert_stock)
 
       if @sale.update(sale_params)
-        @sale.items.reload.each(&:decrease_stock)
+        @sale.items.each(&:decrease_stock)
         flash[:notice] = "¡Venta editada exitosamente! ^-^"
         redirect_to backstore_sale_path(@sale)
       else
@@ -71,7 +71,7 @@ class Backstore::SalesController < ApplicationController
     # Verificar que no esté ya cancelada
     if @sale.cancelled?
       flash[:warning] = "Esta venta ya está cancelada"
-      backstore_sale_path(@sale)
+      redirect_to backstore_sale_path(@sale)
       return
     end
 
@@ -84,10 +84,10 @@ class Backstore::SalesController < ApplicationController
 
       if @sale.save
         flash[:notice] = "¡Venta cancelada exitosamente! ^-^"
-        backstore_sale_path(@sale)
+        redirect_to backstore_sale_path(@sale)
       else
         flash[:error] = "No se pudo cancelar la venta: #{@sale.errors.full_messages.join(', ')}"
-        backstore_sale_path(@sale)
+        redirect_to backstore_sale_path(@sale)
         raise ActiveRecord::Rollback  # Revertir la transacción
       end
     end

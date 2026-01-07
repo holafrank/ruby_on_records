@@ -26,9 +26,9 @@ class Disk < ApplicationRecord
 
   validates :cover, attached: true,
   content_type: { in: [ "image/png", "image/jpeg" ], message: "must be a JPEG or PNG" },
-  size: { less_than: 2.megabytes, message: "size cannot be larger than 2 megabytes" }#,
-  #dimension: { width: { min: 300, max: 1000 }, height: { min: 300, max: 1000 }, message: "height or width is out of bounds" },
-  #aspect_ratio: :square
+  size: { less_than: 2.megabytes, message: "size cannot be larger than 2 megabytes" }# ,
+  # dimension: { width: { min: 300, max: 1000 }, height: { min: 300, max: 1000 }, message: "height or width is out of bounds" },
+  # aspect_ratio: :square
   # Quiero lograr esto ^ pero no lo estoy pudiendo hacer...
   # No se por qué no anda
 
@@ -74,18 +74,29 @@ class Disk < ApplicationRecord
 
   # === Scopes === #
 
-  scope :new_disks, -> { where(state: "Nuevo") }
+  # Agregar en todos que ADEMAS el stock sea mayor a cero
+  # Porque sino implicaría usar la variable de instancia has_stock? miles de veces
 
-  scope :used_disks, -> { where(state: "Usado") }
+
+  scope :has_stock, -> { where("stock > ?", 0) }
+
+  scope :new_disks, -> { where(state: "Nuevo").has_stock }
+
+  scope :used_disks, -> { where(state: "Usado").has_stock }
 
   scope :top_sold, ->(limit = 10) {
     joins(items: :sale)
       .where(sales: { cancelled: false })
+      .has_stock
       .group(:id)
       .select("disks.*, SUM(items.amount) as total_sold")
       .order("total_sold DESC")
       .limit(limit)
   }
+
+  scope :outlet, ->(limit = 10, stock_limit = 10) { where(stock: 1..stock_limit).order(stock: :desc).limit(limit) }
+
+  scope :new_arrivals, ->(limit = 10) { where("stock > ?", 0).order(created_at: :desc).limit(limit) }
 
   # === Métodos de instancia === #
 

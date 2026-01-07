@@ -4,62 +4,102 @@
 
 <h1 class="container">Novedades</h1>
 
-<div id="disks" class="container">
-  <% @disks.each do |disk| %>
-    <div class="grid">
-      <div>
-        <article style="background-color: #f9efdb;">
-          [[ Acá va una foto ]]
-          <div><%= disk.title %></div>
-          <br>
-          <p>
-            <%= link_to "Ver", disk, style: "background-color: #1343a0; font-family: monospace; font-size: 18px;", role: "button" %>
-          </p>
+
+<% if @disks.any? %>
+
+    <div id="disks-responsive-novedades" class="container">
+    <div class="disks-grid">
+        <% @disks.each do |disk| %>
+        <article class="disk-tile" style="background-color: #f9efdb;">
+            <div style="display: flex; justify-content: center; align-items: center;">
+            <% if disk.cover.attached? %>
+                <%= image_tag disk.cover,
+                    style: "width: 300px; height: 300px; border-radius: 8px; box-shadow: 0 8px 16px rgba(0,0,0,0.1);" %>
+            <% else %>
+                <div class="pico-background-red-100" style="width: 400px; height: 400px; display: flex; align-items: center; justify-content: center; border-radius: 8px;">
+                <span style="color: #b92621;">Sin portada</span>
+                </div>
+            <% end %>
+            </div>
+            <div class="disk-content">
+            <p><%= disk.title %></p>
+            <div class="disk-actions">
+                <p>
+                <%= link_to "Ver", disk, style: "background-color: #1343a0; font-family: monospace; font-size: 18px;", role: "button" %>
+                </p>
+            </div>
+            </div>
         </article>
-      </div>
+        <% end %>
     </div>
-  <% end %>
-</div>
+    </div>
+<% end %>
 
-<h1 class="container">Los más vendidos</h1>
 
-<div id="disks-outlet" class="container">
-  <% @disks_top_sold.each do |disk| %>
-    <div class="grid">
-      <div>
-        <article style="background-color: #f9efdb;">
-          [[ Acá va una foto ]]
-          <div><%= disk.title %></div>
-          <div><%= number_to_currency(disk.price) %></div>
-          <div>Vendidos: <%= disk.total_sold %></div>
-          <br>
-          <p>
-            <%= link_to "Ver", disk, style: "background-color: #1343a0; font-family: monospace; font-size: 18px;", role: "button" %>
-          </p>
+<% if @disks_top_sold.any? %>
+
+    <h1 class="container">Los más vendidos</h1>
+
+    <div id="disks-responsive-top-sold" class="container">
+    <div class="disks-grid">
+        <% @disks_top_sold.each do |disk| %>
+        <article class="disk-tile" style="background-color: #f9efdb;">
+            <div style="display: flex; justify-content: center; align-items: center;">
+            <% if disk.cover.attached? %>
+                <%= image_tag disk.cover,
+                    style: "width: 300px; height: 300px; border-radius: 8px; box-shadow: 0 8px 16px rgba(0,0,0,0.1);" %>
+            <% else %>
+                <div class="pico-background-red-100" style="width: 400px; height: 400px; display: flex; align-items: center; justify-content: center; border-radius: 8px;">
+                <span style="color: #b92621;">Sin portada</span>
+                </div>
+            <% end %>
+            </div>
+            <div class="disk-content">
+            <p><%= disk.title %></p>
+            <div class="disk-actions">
+                <p>
+                <%= link_to "Ver", disk, style: "background-color: #1343a0; font-family: monospace; font-size: 18px;", role: "button" %>
+                </p>
+            </div>
+            </div>
         </article>
-      </div>
+        <% end %>
     </div>
-  <% end %>
-</div>
+    </div>
 
-<h1 class="container">¡Última oportunidad!</h1>
+<% end %>
 
-<div id="disks-tops" class="container">
-  <% @disks_outlet.each do |disk| %>
-    <div class="grid">
-      <div>
-        <article style="background-color: #f9efdb;">
-          [[ Acá va una foto ]]
-          <div><%= disk.title %></div>
-          <div style="color:#b92621">
-            ¡Últimos <%= disk.stock %> disponibles!
+
+<% if @disks_outlet.any? %>
+
+  <h1 class="container">¡Última oportunidad!</h1>
+
+  <div id="disks-responsive-outlet" class="container">
+    <div class="disks-grid">
+      <% @disks_outlet.each do |disk| %>
+        <article class="disk-tile" style="background-color: #f9efdb;">
+          <div style="display: flex; justify-content: center; align-items: center;">
+            <% if disk.cover.attached? %>
+              <%= image_tag disk.cover,
+                    style: "width: 300px; height: 300px; border-radius: 8px; box-shadow: 0 8px 16px rgba(0,0,0,0.1);" %>
+            <% else %>
+              <div class="pico-background-red-100" style="width: 400px; height: 400px; display: flex; align-items: center; justify-content: center; border-radius: 8px;">
+                <span style="color: #b92621;">Sin portada</span>
+              </div>
+            <% end %>
           </div>
-          <br>
-          <p>
-            <%= link_to "Ver", disk, style: "background-color: #1343a0; font-family: monospace; font-size: 18px;", role: "button" %>
-          </p>
+          <div class="disk-content">
+            <p><%= disk.title %></p>
+            <p>-ˋˏ Últimos <%= disk.stock %> disponibles ˎˊ</p>
+            <div class="disk-actions">
+              <p>
+                <%= link_to "Ver", disk, style: "background-color: #1343a0; font-family: monospace; font-size: 18px;", role: "button" %>
+              </p>
+            </div>
+          </div>
         </article>
-      </div>
+      <% end %>
     </div>
-  <% end %>
-</div>
+  </div>
+
+<% end %>

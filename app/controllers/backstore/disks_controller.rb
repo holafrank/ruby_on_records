@@ -6,6 +6,7 @@ class Backstore::DisksController < ApplicationController
 
   # GET /disks or /disks.json
   def index
+    # Acá también haría falta filtrador y buscador para facilitar tareas de administración
     case params[:filter]
     when "new"
       @disks = :new_disks
