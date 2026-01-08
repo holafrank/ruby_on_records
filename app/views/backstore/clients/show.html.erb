@@ -48,9 +48,7 @@
                   Cantidad
                 </th>
 
-                <th scope="col">
-                  ...
-                </th>
+
               </tr>
             </thead>
 
@@ -94,14 +92,14 @@
                   Total
                 </th>
 
-                <td></td>
-                <td></td>
-                <td></td>
 
                 <td style="background-color: #f9efdb">
                   <%= total = @client_sales.filter { |sale| !sale.cancelled? }.sum(&:total)
                     number_to_currency(total) %>
                 </td>
+                <td></td>
+                <td></td>
+                <td></td>
               </tr>
             </tfoot>
           </table>

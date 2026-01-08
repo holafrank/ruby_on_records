@@ -94,6 +94,9 @@
           </li>
         <% else %>
           <li>
+            <%= link_to "Mi perfil", backstore_user_path(current_user.id), style: "color: #f9efdb; font-family: monospace;" %>
+          </li>
+          <li>
             <%= link_to "Log-out", logout_path, style: "color: #f9efdb; font-family: monospace;" %>
           </li>
         <% end %>

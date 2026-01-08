@@ -2,15 +2,60 @@
 
 <% content_for :title, "Users" %>
 
-<h1>Users</h1>
+<h1 class="container">Plantel</h1>
 
-<div id="users">
-  <% @users.each do |user| %>
-    <%= render user %>
-    <p>
-      <%= link_to "Show this user", backstore_user %>
-    </p>
-  <% end %>
+<div id="users-table" class="container">
+  <table class="table-custom">
+    <thead style="background-color: #b92621">
+      <tr>
+        <th scope="col">
+          Nombre
+        </th>
+
+        <th scope="col">
+          Correo electrónico
+        </th>
+
+        <th scope="col">
+          Editar
+        </th>
+
+        <th scope="col">
+          ...
+        </th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% @users.each do |user| %>
+        <tr>
+          <td><%= user.full_name %></td>
+          <td><%= user.email %></td>
+
+          <% if can? :edit, user %>
+            <td style="font-family: monospace;">
+              <%= link_to "Editar", edit_backstore_user_path(user), style: "color: #1343a0; font-family: monospace; font-size: 18px;" %>
+            </td>
+          <% else %>
+            <td style="color: #b92621;font-family: monospace; font-size: 17px;">
+              Editar
+            </td>
+          <% end %>
+
+          <td style="font-family: monospace;">
+            <%= link_to "Detalles", backstore_user_path(user), style: "color: #1343a0; font-family: monospace; font-size: 18px;" %>
+          </td>
+        </tr>
+
+      <% end %>
+    </tbody>
+  </table>
 </div>
 
-<%= link_to "New user", new_backstore_user_path %>
+
+<div>
+  <p class="container">
+    <%= link_to "<< Volver", backstore_users_path, style: "color: #1343a0; font-family: monospace; font-size: 18px;" %> |
+    <%= link_to "Nuevo usuario", new_backstore_user_path, style: "color: #1343a0; font-family: monospace; font-size: 18px;" %>
+  </p>
+</div>

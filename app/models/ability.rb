@@ -45,8 +45,11 @@ class Ability
       can [ :create, :new, :read, :update, :edit, :destroy ], Disk
       can [ :create, :new, :read, :update, :edit, :destroy ], Sale
       can [ :create, :new, :read, :update, :edit, :destroy ], Genre
-      can [ :read, :update, :edit ], User, id: user.id# , [:full_name, :email, :password_digest]
-      cannot :update, User, [ :role ]
+
+      can [ :show, :update, :edit ], User, [ :full_name, :email, :password_digest ], id: user.id
+      cannot [ :update ], User, [ :role ], id: user.id
+      cannot :index, User
+
     end
 
     # Un gerente puede administrar productos y ventas, y gestionar usuarios,
@@ -55,16 +58,19 @@ class Ability
       can [ :create, :new, :read, :update, :edit, :destroy ], Disk
       can [ :create, :new, :read, :update, :edit, :destroy ], Sale
       can [ :create, :new, :read, :update, :edit, :destroy ], Genre
-      # can [:create, :new, :read, :update, :edit, :destroy], User, role: ['empleado' || 'gerente']
-      # cannot :update, User, id: user.id, [:role]  # No puede cambiar su propio rol!
-      # can :view_reports, :all
+
+      can :read, User
+
+      can [ :create, :new, :update, :edit, :destroy ], User, role: [:employee, :manager]
+      cannot [ :update ], User, [ :role ], id: user.id
+
     end
 
     # El administrador tiene todos los permisos. Tiene acceso a todas las funcionalidades de la aplicación.
     # Puede incluso crear/editar/eliminar otros usuarios administradores.
     if user.admin?
       can :manage, :all
-      # cannot :update, User, id: user.id, [:role]  # No puede cambiar su propio rol!
+      cannot [ :update ], User, [ :role ], id: user.id
     end
   end
 end

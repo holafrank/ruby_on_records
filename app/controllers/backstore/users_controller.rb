@@ -6,32 +6,31 @@ class Backstore::UsersController < ApplicationController
   # load_and_authorize_resource except: [:index] es otra forma, para exceptuar
   #
 
+
+  load_and_authorize_resource
+
   # GET /users or /users.json
   def index
-    authorize! :index, User # , :message => "No autorizo."
     @users = User.all
   end
 
   # GET /users/1 or /users/1.json
   def show
-    authorize! :show, @user
+    @user_sales = @user.sales
   end
 
   # GET /users/new
   def new
-    authorize! :new, @user
     @user = User.new
   end
 
   # GET /users/1/edit
   def edit
-    authorize! :update, @user
   end
 
   # POST /users or /users.json
   def create
     @user = User.new(user_params)
-    authorize! :create, @user
 
     if user.save
       flash[:notice] = "Usuario creado exitosamente"
@@ -55,7 +54,6 @@ class Backstore::UsersController < ApplicationController
 
   # PATCH/PUT /users/1 or /users/1.json
   def update
-    authorize! :update, @user
     respond_to do |format|
       if @user.update(user_params)
         format.html { redirect_to @user, notice: "User was successfully updated.", status: :see_other }
@@ -69,7 +67,6 @@ class Backstore::UsersController < ApplicationController
 
   # DELETE /users/1 or /users/1.json
   def destroy
-    authorize! :destroy, @user
     @user.destroy!
 
     respond_to do |format|

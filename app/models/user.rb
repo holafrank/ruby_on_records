@@ -21,6 +21,11 @@ class User < ApplicationRecord
   validates :email, presence: true, uniqueness: true, format: { with: /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i,
       message: "Formato de correo electrónico incorrecto" }
 
+
+  # === Métodos de instancia === #
+
+
+
   # === Métodos de Autorización === #
 
   def admin?

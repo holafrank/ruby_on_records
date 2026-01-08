@@ -8,30 +8,30 @@
 <% if @disks.any? %>
 
     <div id="disks-responsive-novedades" class="container">
-    <div class="disks-grid">
-        <% @disks.each do |disk| %>
-        <article class="disk-tile" style="background-color: #f9efdb;">
-            <div style="display: flex; justify-content: center; align-items: center;">
-            <% if disk.cover.attached? %>
-                <%= image_tag disk.cover,
-                    style: "width: 300px; height: 300px; border-radius: 8px; box-shadow: 0 8px 16px rgba(0,0,0,0.1);" %>
-            <% else %>
-                <div class="pico-background-red-100" style="width: 400px; height: 400px; display: flex; align-items: center; justify-content: center; border-radius: 8px;">
-                <span style="color: #b92621;">Sin portada</span>
+        <div class="disks-grid">
+            <% @disks.each do |disk| %>
+            <article class="disk-tile" style="background-color: #f9efdb;">
+                <div style="display: flex; justify-content: center; align-items: center;">
+                <% if disk.cover.attached? %>
+                    <%= image_tag disk.cover,
+                        style: "width: 300px; height: 300px; border-radius: 8px; box-shadow: 0 8px 16px rgba(0,0,0,0.1);" %>
+                <% else %>
+                    <div class="pico-background-red-100" style="width: 400px; height: 400px; display: flex; align-items: center; justify-content: center; border-radius: 8px;">
+                    <span style="color: #b92621;">Sin portada</span>
+                    </div>
+                <% end %>
                 </div>
+                <div class="disk-content">
+                    <p><%= disk.title %></p>
+                    <div class="disk-actions">
+                        <p>
+                        <%= link_to "Ver", disk, style: "background-color: #1343a0; font-family: monospace; font-size: 18px;", role: "button" %>
+                        </p>
+                    </div>
+                </div>
+            </article>
             <% end %>
-            </div>
-            <div class="disk-content">
-            <p><%= disk.title %></p>
-            <div class="disk-actions">
-                <p>
-                <%= link_to "Ver", disk, style: "background-color: #1343a0; font-family: monospace; font-size: 18px;", role: "button" %>
-                </p>
-            </div>
-            </div>
-        </article>
-        <% end %>
-    </div>
+        </div>
     </div>
 <% end %>
 

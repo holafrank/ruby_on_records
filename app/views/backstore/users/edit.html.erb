@@ -1,12 +1,115 @@
 <% content_for :title, "Editing user" %>
 
-<h1>Editing user</h1>
 
-<%= render "form", user: @user %>
+<p style="color: green"><%= notice %></p>
+
+<% content_for :title, "Editar usuario" %>
+
+<h1 class="container">Editar usuario</h1>
+<br>
+
+  <% if flash[:error] %>
+    <div style="color: #b92621; padding: 1rem; background: #f9efdb; border: 1px solid #b92621; margin-bottom: 1rem;">
+      <%= flash[:error] %>
+    </div>
+  <% end %>
+
+<div id="edit-user-form" class="container">
+  <article style="background-color: #f9efdb;">
+    <%= form_with model: [:backstore, @user]  do |form| %>
+      <% if @user.errors.any? %>
+        <div role="alert">
+          <h4>Errores:</h4>
+
+          <ul>
+            <% @user.errors.each do |error| %>
+              <li><%= error.full_message %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <fieldset>
+        <h4 class="container">Datos personales</h4>
+        <div class="grid">
+          <div class="col-8">
+            <div>
+                  <div>
+                    <%= form.label "Nombre completo" %>
+                    <%= form.text_field :full_name,
+                      required: true,
+                      placeholder: @user.full_name,
+                      value: @user.full_name,
+                      autocomplete: "off" %>
+                  </div>
+                  <div>
+                    <%= form.label "Correo electrónico" %>
+                    <%= form.text_field :email,
+                      required: true,
+                      value: @user.email,
+                      placeholder:@user.email,
+                      autocomplete:"off" %>
+                  </div>
+
+                  # Cambiar contraseña sólo si coincide con la actual
+
+                  <% if @user.manager? || @user.admin? %>
+                    checkbox o selct para cambiar rol
+                  <% end %>
+            </div>
+          </div>
+        </div>
+      </fieldset>
+
+      <div style="display: inline-block;">
+        <%= form.submit "Guardar",
+                style: "
+                  background-color: #1343a0;
+                  color: white;
+                  font-family: monospace;
+                  font-size: 18px;
+                  min-width: auto;
+                  width: auto;
+                  display: inline-block;
+                " %>
+      </div>
+
+      <div style="display: inline-block;"></div>
+      <div style="display: inline-block;"></div>
+      <div style="display: inline-block;"></div>
+      <div style="display: inline-block;"></div>
+      <div style="display: inline-block;"></div>
+
+      <div style="display: inline-block;">
+        <%= link_to "Cancelar", backstore_users_path,
+                class: "secondary",
+                style: "
+                  color: #b92621;
+                  font-family: monospace;
+                  font-size: 18px;
+                  text-align: center;
+                  padding: 0.5rem;
+                  text-decoration: underline;
+                " %>
+      </div>
+
+      <br>
+    <% end %>
+  </article>
+</div>
 
 <br>
 
 <div>
-  <%= link_to "Show this user", @user %> |
+  <p class="container">
+    <%= link_to "<< Volver", backstore_users_path, style: "color: #1343a0; font-family: monospace; font-size: 18px;" %>
+  </p>
+</div>
+
+
+<br>
+
+<div>
+  <%= link_to "Show this user", backstore_user_path(@user) %> |
   <%= link_to "Back to users", backstore_users_path %>
 </div>

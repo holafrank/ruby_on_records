@@ -1,10 +1,95 @@
 <p style="color: green"><%= notice %></p>
 
-<%= render @user %>
+<br>
 
+<div id="user-details" class="container">
+  <article style="background-color: #f9efdb;">
+    <h4 class="container">Datos personales</h4>
+    <div class="container">
+      <ul style="font-size: 18px;">
+        <li style="color: #1343a0;">
+          <p style="font-family: Lucida Sans, Lucida Sans Regular, Lucida Grande, Lucida Sans Unicode, Geneva, Verdana, sans-serif;">
+            <%= @user.full_name %>
+          </p>
+        </li>
+        <li style="color: #1343a0;">
+          <p style="font-family: Lucida Sans, Lucida Sans Regular, Lucida Grande, Lucida Sans Unicode, Geneva, Verdana, sans-serif;">
+            <%= @user.email %>
+          </p>
+        </li>
+      </ul>
+    </div>
+  </article>
+</div>
+
+
+<h4 class="container">Ventas realizadas</h4>
+    <div id="sales-table" class="container">
+      <table class="table-custom">
+        <thead style="background-color: #b92621">
+          <tr>
+            <th scope="col"> Vendedor </th>
+             <th scope="col"> Total </th>
+             <th scope="col"> Cancelada </th>
+             <th scope="col"> Fecha </th>
+             <th scope="col"> Cantidad </th>
+          </tr>
+        </thead>
+        <tbody>
+           <% @user_sales.each do |sale| %>
+             <tr>
+               <td><%= sale.user.full_name %></td>
+               <td><%= number_to_currency(sale.total) %></td>
+               <% if !sale.cancelled? %>
+                <td>
+                   <%= link_to "¿Cancelar?",
+                     backstore_sale_path(sale),
+                     method: :delete,
+                     data: {
+                       turbo_confirm: "¿Estás seguro de cancelar esta venta? No hay vuelta atrás...",
+                       turbo_method: :delete
+                     },
+                     style: "color: #1343a0; font-family: monospace; font-size: 17px;",
+                     class: "btn btn-warning" %>
+                </td>
+                <% else %>
+                    <td style="color: #b92621;font-family: monospace; font-size: 17px;">
+                        Cancelada
+                    </td>
+                <% end %>
+                    <td><%= sale.created_at_local_time.strftime("%d-%m-%Y   %H:%M") %></td>
+                    <td style="font-family: monospace;">
+                        <%= link_to "Detalles", backstore_sale_path(sale), style: "color: #1343a0; font-family: monospace; font-size: 17px;" %>
+                    </td>
+                </tr>
+          <% end %>
+        </tbody>
+            <tfoot>
+              <tr>
+                <th style="background-color: #f9efdb; color: #b92621" scope="row">
+                  Total
+                </th>
+
+                <td style="background-color: #f9efdb">
+                  <%= total = @user_sales.filter { |sale| !sale.cancelled? }.sum(&:total)
+                    number_to_currency(total) %>
+                </td>
+                <td></td>
+                <td></td>
+                <td></td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+<br>
 <div>
-  <%= link_to "Edit this user", edit_user_path(@user) %> |
-  <%= link_to "Back to users", backstore_users_path %>
-
-  <%= button_to "Destroy this user", @user, method: :delete %>
+  <p class="container">
+    <%= link_to "<< Volver", backstore_users_path, style: "color: #1343a0; font-family: monospace; font-size: 18px;" %>
+    <% if can? :edit, @user %>
+      | <%= link_to "Editar usuario", edit_backstore_user_path(@user), style: "color: #1343a0; font-family: monospace; font-size: 18px;" %>
+    <% end %>
+    <% if can? :delete, @user %>
+      | <%= link_to "Eliminar usuario", backstore_user_path(@user), method: :delete, style: "color: #1343a0; font-family: monospace; font-size: 18px;" %>
+    <% end %>
+  </p>
 </div>
