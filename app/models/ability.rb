@@ -61,7 +61,7 @@ class Ability
 
       can :read, User
 
-      can [ :create, :new, :update, :edit, :destroy ], User, role: [:employee, :manager]
+      can [ :create, :new, :update, :edit, :destroy ], User, role: [ :employee, :manager ]
       cannot [ :update ], User, [ :role ], id: user.id
 
     end

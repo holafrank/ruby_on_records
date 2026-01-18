@@ -14,17 +14,29 @@ class User < ApplicationRecord
   # === Validadores === #
 
   # :full_name ::= Nombre completo de un usuario
-  validates :full_name, presence: true, format: { with: /\A[a-zA-Z\s]+\z/,
+  validates :full_name, presence: true, format: { with:  /\A[\p{L}\s]+\z/u,
       message: "Sólo se permiten ingresar letras para el nombre" }
 
   # :email ::= Correo electrónico de un usuario
   validates :email, presence: true, uniqueness: true, format: { with: /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i,
       message: "Formato de correo electrónico incorrecto" }
 
+  validates :password, length: { minimum: 8 }, if: -> { password.present? || password_confirmation.present? }
 
   # === Métodos de instancia === #
 
-
+  def get_role
+    case role
+    when "admin"
+      "Administrador"
+    when "manager"
+      "Gerente"
+    when "employee"
+      "Empleado"
+    else
+      "Sin rol establecido"
+    end
+  end
 
   # === Métodos de Autorización === #
 
@@ -36,7 +48,7 @@ class User < ApplicationRecord
     role == "manager"
   end
 
-  def employee
+  def employee?
     role == "employee"
   end
 end
