@@ -1,6 +1,6 @@
 <p style="color: green"><%= notice %></p>
 
-<% content_for :title, "Users" %>
+<% content_for :title, "Usuarios" %>
 
 <h1 class="container">Plantel</h1>
 
@@ -14,6 +14,10 @@
 
         <th scope="col">
           Correo electrónico
+        </th>
+
+        <th scope="col">
+          Rol
         </th>
 
         <th scope="col">
@@ -31,6 +35,7 @@
         <tr>
           <td><%= user.full_name %></td>
           <td><%= user.email %></td>
+          <td><%= user.get_role %></td>
 
           <% if can? :edit, user %>
             <td style="font-family: monospace;">

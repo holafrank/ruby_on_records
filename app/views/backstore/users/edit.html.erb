@@ -8,11 +8,6 @@
 <h1 class="container">Editar usuario</h1>
 <br>
 
-  <% if flash[:error] %>
-    <div style="color: #b92621; padding: 1rem; background: #f9efdb; border: 1px solid #b92621; margin-bottom: 1rem;">
-      <%= flash[:error] %>
-    </div>
-  <% end %>
 
 <div id="edit-user-form" class="container">
   <article style="background-color: #f9efdb;">
@@ -51,10 +46,35 @@
                       autocomplete:"off" %>
                   </div>
 
-                  # Cambiar contraseña sólo si coincide con la actual
+                  <div>
+                    <%= form.label :password, "Cambiar contraseña" %>
+
+                    <div class="field">
+                       <%= form.label :password, "Nueva contraseña" %>
+                       <p>
+                         <span style="color: #b92621;">• </span> La contraseña debe tener mínimo 8 caracteres
+                       </p>
+                       <%= form.password_field :password, value: "" %>
+                    </div>
+                    <div class="field">
+                       <%= form.label :password_confirmation, "Confirmar contraseña" %>
+                       <%= form.password_field :password_confirmation, value: "" %>
+                     </div>
+
+                  </div>
 
                   <% if @user.manager? || @user.admin? %>
-                    checkbox o selct para cambiar rol
+                    <div>
+                      <legend>Cambiar rol</legend>
+                      <%= form.radio_button :role, "employee" %>
+                      <%= form.label :role_employee, "Empleado" %>
+
+                      <%= form.radio_button :role, "manager" %>
+                      <%= form.label :role_manager, "Gerente" %>
+
+                      <%= form.radio_button :role, "admin" %>
+                      <%= form.label :role_admin, "Administrador" %>
+                    </div>
                   <% end %>
             </div>
           </div>
