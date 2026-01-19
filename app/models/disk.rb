@@ -77,12 +77,97 @@ class Disk < ApplicationRecord
   # Agregar en todos que ADEMAS el stock sea mayor a cero
   # Porque sino implicaría usar la variable de instancia has_stock? miles de veces
 
-
   scope :has_stock, -> { where("stock > ?", 0) }
 
-  scope :new_disks, -> { where(state: "Nuevo").has_stock }
+  scope :state_filter, ->(state) { where(state: state) if state.present? && %w[Nuevo Usado].include?(state) }
 
-  scope :used_disks, -> { where(state: "Usado").has_stock }
+  scope :like_search, -> (collumn, word) {
+    if collumn.present? && %w[artist title].include?(collumn) && word.present? && !word.blank?
+      word = sanitize_sql_like(word.downcase)
+      query.where("LOWER(#{collumn}) LIKE ?", "%#{word}%")
+    end
+  }
+
+  scope :recommended, -> (disk, limit = 10) {
+    return none if disk.genre_ids.empty?
+    joins(:genres)
+      .where(genres: { id: disk.genre_ids })
+      .where.not(id: disk.id)
+      .has_stock
+      .distinct
+      .order("RANDOM()")
+      .limit(limit)
+  }
+
+  scope :disk_filtering, -> (filters = {} ) {
+    query = all.has_stock # ¿ O self.has_stock ?
+
+    # Filtro por "estado" del disco, puede ser "Nuevo" o "Usado".
+    if filters[:state].present? && %w[Nuevo Usado].include?(filters[:state])
+      query = query.where(state: filters[:state])
+    end
+
+    # Filtro por "formato" del disco, puede ser "CD" o "Vinilo".
+    if filters[:format].present? && %w[CD Vinilo].include?(filters[:format])
+      query.where(format: filters[:format])
+    end
+
+    # Filtro por "género" del disco.
+    if filters[:genre].present? && !filters[:genre].blank?
+      query.joins(:genres).where(genres: { genre_name: filters[:genre] })
+    end
+
+    # Filtro por "artista" del disco. Con "LIKE" puedo hacer búsquedas más flexibles y generalizadas que con igualdades exactas.
+    if filters[:artist].present? && !filters[:artist].blank?
+      artist = sanitize_sql_like(filters[:artist].downcase)
+      query.where("LOWER(artist) LIKE ?", "%#{artist}%")
+    end
+
+    # Filtro por "título" del disco. Con "LIKE" puedo hacer búsquedas más flexibles y generalizadas que con igualdades exactas.
+    if filters[:title].present? && !filters[:title].blank?
+      title = sanitize_sql_like(filters[:title].downcase)
+      query.where("LOWER(title) LIKE ?", "%#{title}%")
+    end
+
+    # Si se ingresa tanto year_from como year_to, quiere decir que el cliente busca un disco cuyo año de lanzamiento se encuentre
+    # entre el year_from y el year_to
+    # Quiero los discos que hayan sido estrenados en algún momento entre el año 1998 y 2002.
+    # Entonces, 1998 <= x <= 2002
+    if filters[:year_from].present? && filters[:year_to].present?
+      query.where(year: Time.new(filters[:year_from])..Time.new(filters[:year_to])) unless filters[:year_to] > filters[:year_from]
+    end
+
+    # Si no se ingresa un year_to, quiere decir que el cliente busca un disco cuyo año de lanzamiento sea
+    # year_from <= x
+    # Quiero los discos que hayan sido estrenados en el año 1998 en adelante.
+    # Entonces, 1998 <= x
+    if filters[:year_from].present? && !filters[:year_to].present?
+      query.where(year: Time.new(filters[:year_from])..)
+    end
+
+    # Tenemos price_min <= x <= price_max.
+    if filters[:price_min].present? && filters[:price_max].present?
+      query.where(price: filters[:price_min]..filters[:price_max]) unless filters[:price_min] > filters[:price_max]
+    end
+
+    # Si se ingresa un price_min, pero NO se ingresa un price_max, quiere decir que el cliente busca un disco cuyo precio sea
+    # price_min <= x
+    # Quiero los discos que cuesten como *mínimo* $10.000.
+    # Entonces, 10.000 <= x
+    if filters[:price_min].present? && !filters[:price_max].present?
+      query.where(price: filters[:price_min]..)
+    end
+
+    # En cambio, si no se ingresa un price_min, quiere decir que el cliente busca un disco cuyo precio sea
+    # price_max >= x
+    # Quiero los discos que cuesten como *máximo* $10.000.
+    # Entonces, 10.000 >= x
+    if filters[:price_max].present? && !filters[:price_min].present?
+      query.where("price < ?", filters[:price_max])
+    end
+
+    return query
+  }
 
   scope :top_sold, ->(limit = 10) {
     joins(items: :sale)

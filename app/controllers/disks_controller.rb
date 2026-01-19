@@ -8,9 +8,9 @@ class DisksController < ApplicationController
   def index
     case params[:filter]
     when "new"
-      @disks = Disk.new_disks
+      @disks = Disk.disk_state_filter("Nuevo")
     when "used"
-      @disks = Disk.used_disks
+      @disks = Disk.disk_state_filter("Usado")
     else
       @disks = Disk.all
     end
@@ -18,6 +18,7 @@ class DisksController < ApplicationController
 
   # GET /disks/1 or /disks/1.json
   def show
+    @recommended_disks = Disk.recommended(@disk, 10)
   end
 
   # GET /disks/new

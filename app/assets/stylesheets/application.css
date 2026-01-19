@@ -161,3 +161,16 @@ td {
         grid-template-columns: 1fr;
     }
 }
+
+[data-tooltip]::before {
+    background-color: #1343a0;
+    color: white;
+    font-family: monospace;
+    font-size: 14px;
+}
+
+[data-tooltip]::after {
+    border-top-color: transparent;
+    top: 100%;
+    border-bottom-color: #1343a0;
+}

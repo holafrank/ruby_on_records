@@ -20,69 +20,68 @@
         <thead>
         </thead>
 
-        <tbody>
-            <tr>
-                    <td class="tg-0lax">
-                    <span style="color: #1343a0;">• </span> Artista
-                    </td>
-                    <td class="tg-0lax"><%= @disk.artist %></td>
-            </tr>
+            <tbody>
+                <tr>
+                        <td class="tg-0lax">
+                        <span style="color: #1343a0;">• </span> Artista
+                        </td>
+                        <td class="tg-0lax"><%= @disk.artist %></td>
+                </tr>
 
-            <tr>
-                    <td class="tg-0lax">
-                    <span style="color: #1343a0;">• </span> Año
-                    </td>
-                    <td class="tg-0lax"><%= @disk.year %></td>
-            </tr>
+                <tr>
+                        <td class="tg-0lax">
+                        <span style="color: #1343a0;">• </span> Año
+                        </td>
+                        <td class="tg-0lax"><%= @disk.year %></td>
+                </tr>
 
-            <tr>
-                    <td class="tg-0lax">
-                    <span style="color: #1343a0;">• </span> Precio unitario
-                    </td>
+                <tr>
+                        <td class="tg-0lax">
+                        <span style="color: #1343a0;">• </span> Géneros
+                        </td>
+                        <td class="tg-0lax">
+                            <% @disk.genres.each do |genre| %>
+                            <span style="color: #1343a0;">• </span><%= genre.genre_name %><br>
+                            <% end %>
+                        </td>
+                </tr>
 
-                    <td class="tg-0lax"><%= number_to_currency(@disk.price) %></td>
-            </tr>
+                <tr>
+                        <td class="tg-0lax">
+                        <span style="color: #1343a0;">• </span> Estado
+                        </td>
+                        <td class="tg-0lax"><%= @disk.state %></td>
+                </tr>
 
-            <tr>
-                    <td class="tg-0lax">
-                    <span style="color: #1343a0;">• </span> Stock
-                    </td>
-                    <td class="tg-0lax"><%= @disk.stock %></td>
-            </tr>
+                <tr>
+                        <td class="tg-0lax">
+                        <span style="color: #1343a0;">• </span> Formato
+                        </td>
+                        <td class="tg-0lax"><%= @disk.format %></td>
+                </tr>
 
-            <tr>
+                <tr>
+                  <td class="tg-0lax">
+                  <span style="color: #1343a0;">• </span> Stock
+                  </td>
+                  <td class="tg-0lax">  <%= @disk.stock %> disponibles</td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
                     <td class="tg-0lax">
-                    <span style="color: #1343a0;">• </span> Estado
+                      <br>
+                    <span style="color: #1343a0;">• </span> <%= number_to_currency(@disk.price) %>
                     </td>
-                    <td class="tg-0lax"><%= @disk.state %></td>
-            </tr>
-
-            <tr>
-                    <td class="tg-0lax">
-                    <span style="color: #1343a0;">• </span> Formato
-                    </td>
-                    <td class="tg-0lax"><%= @disk.format %></td>
-            </tr>
-
-            <tr>
-                    <td class="tg-0lax">
-                    <span style="color: #1343a0;">• </span> Géneros
-                    </td>
-                    <td class="tg-0lax">
-                        <% @disk.genres.each do |genre| %>
-                          <span style="color: #1343a0;">• </span><%= genre.genre_name %><br>
-                        <% end %>
-                    </td>
-            </tr>
-
-        </tbody>
+                </tr>
+            </tfoot>
         </table>
       </div>
 
       <!-- Columna 2: Portada del disco -->
        <div style="display: flex; justify-content: center; align-items: center;">
          <% if @disk.cover.attached? %>
-           <%= image_tag @disk.cover,
+          <%= image_tag @disk.cover,
                  style: "width: 400px; height: 400px; border-radius: 8px; box-shadow: 0 8px 16px rgba(0,0,0,0.1);" %>
          <% else %>
            <div class="pico-background-red-100" style="width: 400px; height: 400px; display: flex; align-items: center; justify-content: center; border-radius: 8px;">
@@ -95,12 +94,51 @@
 
     </div>
 
+* muestra de audio si tiene
+
     <!-- Descripción del disco -->
     <div style="margin-top: 1rem; padding: 1rem; background-color: #fff; border-radius: 8px;">
       <h5 style="color: #1343a0;">Descripción</h5>
       <p><%= @disk.description %></p>
     </div>
-  </article>
+
+    <br>
+    <details name="recomendaciones" closed>
+      <summary style="color: #1343a0; font-size: 24px;"><strong>▿ Recomendaciones</strong></summary>
+          <div id="disks-responsive" class="container">
+            <div class="disks-grid" style="display: flex;flex-wrap: nowrap;justify-content: flex-start; gap: 2rem;">
+              <% @recommended_disks.each do |disk| %>
+                  <div style="display: flex; justify-content: center; align-items: left;">
+                    <% if disk.cover.attached? %>
+                        <%= link_to image_tag(disk.cover,
+                                class: "disk-tile",
+                                style: "width: 200px; height: 200px; border-radius: 5px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);"),
+                            disk_path(disk),
+                            class: "disk-link",
+                            data: { tooltip: "#{disk.title} - #{disk.artist}", placement: "bottom" }
+                             %>
+                    <% else %>
+                      <div class="pico-background-red-100" style="width: 200px; height: 200px; display: flex; align-items: center; justify-content: center; border-radius: 8px;">
+                        <span style="color: #b92621;">Sin portada</span>
+                      </div>
+                    <% end %>
+                    <!--
+                    <div class="disk-content">
+                      <% disk.genres.each do |genre| %>
+                          <span style="color: #1343a0;">• </span><%# genre.genre_name %><br>
+                      <% end %>
+                    </div>
+                    -->
+                  </div>
+              <% end %>
+            </div>
+          </div>
+        <br>
+    </details>
+
+    <hr>
+
+ </article>
 </div>
 
 <br>
