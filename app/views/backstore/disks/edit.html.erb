@@ -86,29 +86,84 @@
 
               <div class="grid" label="disk-state-data">
                 <div class="col-6">
-                  <div>
-                    <%= form.label "Estado" %>
-                    <%= form.select :state, ["Nuevo", "Usado"],
-                          { include_blank: "Seleccione Nuevo o Usado..." },
-                          required: true, autocomplete: "off", value: @disk.state,
-                          class: "form-select" %>
+                  <div class="field">
+                    <%= form.label :state, "Estado del disco" %>
+                    <div>
+                      <%= form.radio_button :state, "Nuevo",
+                            onclick: "toggleAudioField(false)" %>
+                      <%= form.label :state_nuevo, "Nuevo" %>
+
+                      <%= form.radio_button :state, "Usado",
+                            onclick: "toggleAudioField(true)" %>
+                      <%= form.label :state_usado, "Usado" %>
+                    </div>
                   </div>
+
                 </div>
                 <div class="col-6">
-                  <div>
-                    <%= form.label "Formato (CD o Vinilo)" %>
-                    <%= form.select :format,  ["CD", "Vinilo"],
-                          { include_blank: "Seleccione CD o Vinilo..." },
-                          required: true, autocomplete: "off", value: @disk.format,
-                          class: "form-select" %>
+                  <div class="field">
+                    <%= form.label :format, "Formato del disco" %>
+                    <div>
+                      <%= form.radio_button :format, "CD" %>
+                      <%= form.label :format_cd, "CD" %>
+
+                      <%= form.radio_button :format, "Vinilo" %>
+                      <%= form.label :format_vinilo, "Vinilo" %>
+                    </div>
                   </div>
                 </div>
               </div>
 
 
+               <div id="audio-field" style="<%= @disk.state == 'Usado' ? '' : 'display: none;' %>">
+                 <div class="field">
+                   <%= form.label :audio_sample, "Audio de muestra (opcional)" %>
+                   <p>
+                     <span style="color: #b92621;">• </span> Audios de 30 segundos máximo.<br>
+                     <span style="color: #b92621;">• </span> Formatos permitidos: MP3, OGG, FLAC
+                   </p>
+
+                   <% if @disk.audio_sample.attached? %>
+                     <div style="
+                       background-color: #f9efdb;
+                       padding: 1rem;
+                       border-radius: 8px;
+                       margin-bottom: 1rem;
+                       border: 1px solid #1343a0;
+                     ">
+                       <p>
+                         <strong>Audio actual:</strong> <%= @disk.audio_sample.filename %>
+                         (<%= number_to_human_size(@disk.audio_sample.byte_size) %>)
+                       </p>
+
+                       <!-- Reproductor de audio -->
+                       <audio controls style="width: 100%; margin: 0.5rem 0;">
+                         <source src="<%= rails_blob_url(@disk.audio_sample) %>"
+                                 type="<%= @disk.audio_sample.content_type %>">
+                         Tu navegador no soporta el elemento de audio.
+                       </audio>
+
+                       <!-- Opción para eliminar -->
+                       <div style="margin-top: 0.5rem;">
+                         <%= form.label :remove_audio_sample do %>
+                           <%= form.check_box :remove_audio_sample %>
+                           Eliminar audio actual
+                         <% end %>
+                       </div>
+                     </div>
+                   <% end %>
+
+                   <%= form.file_field :audio_sample,
+                         accept: "audio/mpeg,audio/ogg,audio/flac,audio/wav" %>
+                 </div>
+               </div>
+
               <%= form.label "Portada" %>
               <%= form.file_field :cover, value: @disk.cover %>
 
+              <%= form.label "Imágenes" %>
+              <%= form.file_field :images %>
+              Esto cómo debería hacerlo...?
 
               <%= form.label "Géneros" %>
               <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; margin-top: 1.0rem;">
@@ -160,6 +215,20 @@
       </div>
 
       <br>
+
+
+      <script>
+        function toggleAudioField(show) {
+          const audioField = document.getElementById('audio-field');
+          if (show) {
+            audioField.style.display = 'block';
+          } else {
+            audioField.style.display = 'none';
+            const audioInput = document.querySelector('#disk_audio_sample');
+            if (audioInput) audioInput.value = '';
+          }
+        }
+      </script>
     <% end %>
   </article>
 </div>

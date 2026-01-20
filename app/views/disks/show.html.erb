@@ -95,6 +95,70 @@
     </div>
 
 * muestra de audio si tiene
+<!-- app/views/disks/show.html.erb -->
+<% if @disk.state == "Usado" && @disk.audio_sample.attached? %>
+  <div class="audio-section" style=" background-color: #f9efdb; padding: 1.5rem; border-radius: 12px; margin: 2rem 0; border: 2px solid #1343a0;">
+    <h3 style="color: #1343a0; margin-bottom: 1rem;">
+      🎵 Escuchar muestra de audio
+    </h3>
+    <div style=" background-color: white; padding: 1.5rem; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+      <!-- Información del audio -->
+      <div style=" display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid #e6e6e6;">
+        <div>
+          <strong style="color: #1343a0;">
+            <%= @disk.audio_sample.filename %>
+          </strong><br>
+          <small style="color: #666;">
+            <%= number_to_human_size(@disk.audio_sample.byte_size) %> •
+            <%= @disk.audio_sample.content_type.split('/').last.upcase %>
+          </small>
+        </div>
+        <div style="text-align: right;">
+          <small style=" background-color: #1343a0; color: white; padding: 0.25rem 0.75rem; border-radius: 12px; font-weight: bold;">
+            USADO
+          </small>
+        </div>
+      </div>
+      <!-- Reproductor de audio -->
+      <audio controls style=" width: 100%; height: 50px; margin: 1rem 0;">
+        <source src="<%= rails_blob_url(@disk.audio_sample) %>"
+                type="<%= @disk.audio_sample.content_type %>">
+        Tu navegador no soporta el elemento de audio.
+      </audio>
+      <!-- Controles adicionales -->
+      <div style=" display: flex; gap: 1rem; margin-top: 1rem; justify-content: center;">
+        <button type="button"
+                onclick="document.querySelector('audio').play()"
+                style=" background-color: #1343a0; color: white; border: none; padding: 0.5rem 1.5rem; border-radius: 6px; cursor: pointer; font-family: monospace;">
+          ▶ Reproducir
+        </button>
+        <button type="button"
+                onclick="document.querySelector('audio').pause()"
+                style=" background-color: #b92621; color: white; border: none; padding: 0.5rem 1.5rem; border-radius: 6px; cursor: pointer; font-family: monospace;">
+          ⏸ Pausar
+        </button>
+
+        <%= link_to "Descargar audio",
+              rails_blob_path(@disk.audio_sample, disposition: "attachment"),
+              style: " background-color: #f9efdb; color: #1343a0; border: 2px solid #1343a0; padding: 0.5rem 1.5rem; border-radius: 6px; text-decoration: none; font-family: monospace; display: inline-flex; align-items: center; gap: 0.5rem;"
+        %>
+      </div>
+    </div>
+  </div>
+<% elsif @disk.state == "Usado" %>
+  <div class="no-audio-message" style="
+    background-color: #f9efdb;
+    padding: 1rem;
+    border-radius: 8px;
+    margin: 1rem 0;
+    border: 2px dashed #b92621;
+    text-align: center;
+  ">
+    <p style="color: #b92621; margin: 0;">
+      Este disco no tiene muestra de audio disponible.
+    </p>
+  </div>
+<% end %>
 
     <!-- Descripción del disco -->
     <div style="margin-top: 1rem; padding: 1rem; background-color: #fff; border-radius: 8px;">
@@ -102,9 +166,40 @@
       <p><%= @disk.description %></p>
     </div>
 
+<br>
+    <details name="imagenes" closed>
+      <summary style="color: #1343a0; font-size: 24px;"><strong>▿ Imágenes</strong></summary>
+          <div id="disks-responsive-images" class="container">
+            <div class="disks-grid" style="display: flex;flex-wrap: nowrap;justify-content: flex-start; gap: 2rem;">
+                  <div style="display: flex; justify-content: center; align-items: left;">
+                    <% if @disk.cover.attached? %>
+                        <%= link_to image_tag(@disk.cover,
+                                class: "disk-tile",
+                                style: "width: 200px; height: 200px; border-radius: 5px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);"),
+                            disk_path(@disk),
+                            class: "disk-link",
+                            data: { tooltip: "#{@disk.title} - #{@disk.artist}", placement: "bottom" }
+                             %>
+                    <% else %>
+                      <div class="pico-background-red-100" style="width: 200px; height: 200px; display: flex; align-items: center; justify-content: center; border-radius: 8px;">
+                        <span style="color: #b92621;">Sin portada</span>
+                      </div>
+                    <% end %>
+                    <% if @disk.images.attached? %>
+                      <% @disk.images.each do |image| %>
+                        <%= image_tag image,
+                               style: "width: 400px; height: 400px; border-radius: 8px; box-shadow: 0 8px 16px rgba(0,0,0,0.1);" %>
+                      <% end %>
+                    <% end %>
+                  </div>
+            </div>
+          </div>
+        <br>
+    </details>
+
     <br>
     <details name="recomendaciones" closed>
-      <summary style="color: #1343a0; font-size: 24px;"><strong>▿ Recomendaciones</strong></summary>
+      <summary style="color: #1343a0; font-size: 24px;"><strong>▿ Discos relacionados</strong></summary>
           <div id="disks-responsive" class="container">
             <div class="disks-grid" style="display: flex;flex-wrap: nowrap;justify-content: flex-start; gap: 2rem;">
               <% @recommended_disks.each do |disk| %>

@@ -19,6 +19,7 @@ class Disk < ApplicationRecord
   # === Active Storage === #
 
   has_one_attached :cover, dependent: :destroy
+  has_many_attached :images, dependent: :destroy
   has_one_attached :audio_sample, dependent: :destroy
 
   # === Active Storage Validations === #
@@ -32,9 +33,16 @@ class Disk < ApplicationRecord
   # Quiero lograr esto ^ pero no lo estoy pudiendo hacer...
   # No se por qué no anda
 
-  validates :audio_sample, content_type: [ "audio/mpeg", "audio/ogg", "audio/flac" ]
-  validates :audio_sample, size: { less_than_or_equal_to: 30.megabytes }
-  validates :audio_sample, duration: { less_than_or_equal_to: 30.seconds }
+  #validates :audio_sample,
+  #validates :audio_sample,
+  #validates :audio_sample,
+  validates :audio_sample,
+    content_type: [ "audio/mpeg", "audio/ogg", "audio/flac" ],
+    size: { less_than_or_equal_to: 30.megabytes },
+    duration: { less_than_or_equal_to: 30.seconds },
+    if: -> { state == "Usado" && audio_sample.attached? }
+
+  validate :audio_only_for_used_disks
 
   # === Validadores === #
 
@@ -215,6 +223,12 @@ class Disk < ApplicationRecord
   end
 
   private
+
+  def audio_only_for_used_disks
+    if audio_sample.attached? && state != "Usado"
+      errors.add(:audio_sample, "Sólo los discos usados tienen permitido tener un audio adjuntado.")
+    end
+  end
 
   def at_least_one_genre
     if genres.empty?

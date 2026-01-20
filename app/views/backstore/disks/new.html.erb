@@ -83,28 +83,59 @@
 
               <div class="grid" label="disk-state-data">
                 <div class="col-6">
-                  <div>
-                    <%= form.label "Estado" %>
-                    <%= form.select :state, ["Nuevo", "Usado"],
-                          { include_blank: "Seleccione Nuevo o Usado..." },
-                          required: true,
-                          class: "form-select" %>
+                  <div class="field">
+                    <%= form.label :state, "Estado del disco" %>
+                    <div>
+                      <%= form.radio_button :state, "Nuevo", checked: true,
+                            onclick: "toggleAudioField(false)" %>
+                      <%= form.label :state_nuevo, "Nuevo" %>
+
+                      <%= form.radio_button :state, "Usado",
+                            onclick: "toggleAudioField(true)" %>
+                      <%= form.label :state_usado, "Usado" %>
+                    </div>
                   </div>
                 </div>
                 <div class="col-6">
-                  <div>
-                    <%= form.label "Formato (CD o Vinilo)" %>
-                    <%= form.select :format,  ["CD", "Vinilo"],
-                          { include_blank: "Seleccione CD o Vinilo..." },
-                          required: true,
-                          class: "form-select" %>
+                  <div class="field">
+                    <%= form.label :format, "Formato" %>
+                    <div>
+                      <%= form.radio_button :format, "CD", checked: true %>
+                      <%= form.label :format_cd, "CD" %>
+
+                      <%= form.radio_button :format, "Vinilo" %>
+                      <%= form.label :format_vinilo, "Vinilo" %>
+                    </div>
                   </div>
                 </div>
               </div>
+<br>
+
+              <div id="audio-field" style="display: none;">
+                <div class="field">
+                  <%= form.label :audio_sample, "Audio de muestra (opcional)" %>
+                    <p>
+                      <span style="color: #b92621;">• </span> Audios de 30 segundos máximo.<br>
+                      <span style="color: #b92621;">• </span> Formatos permitidos: MP3, OGG, FLAC
+                    </p>
+                  <%= form.file_field :audio_sample,
+                        accept: "audio/mpeg,audio/ogg,audio/flac,audio/wav" %>
+                  <% if @disk.audio_sample.attached? %>
+                    <p>
+                      Actual: <%= @disk.audio_sample.filename %>
+                      (<%= number_to_human_size(@disk.audio_sample.byte_size) %>)
+                    </p>
+                  <% end %>
+                </div>
+              </div>
+              <br>
 
 
               <%= form.label "Portada" %>
               <%= form.file_field :cover %>
+
+              <%= form.label "Imágenes" %>
+              <%= form.file_field :images %>
 
               <%= form.label "Géneros" %>
               <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; margin-top: 1.0rem;">
@@ -156,6 +187,27 @@
       </div>
 
       <br>
+
+      <script>
+        function toggleAudioField(show) {
+          const audioField = document.getElementById('audio-field');
+          const audioInput = document.querySelector('input[type="file"]');
+
+          if (show) {
+            audioField.style.display = 'block';
+          } else {
+            audioField.style.display = 'none';
+            // Limpiar el campo de archivo si se cambia a "Nuevo"
+            if (audioInput) audioInput.value = '';
+          }
+        }
+
+        // Inicializar según el estado actual
+        document.addEventListener('DOMContentLoaded', function() {
+          const isUsed = document.querySelector('input[name="disk[state]"][value="Usado"]').checked;
+          toggleAudioField(isUsed);
+        });
+      </script>
     <% end %>
   </article>
 </div>
