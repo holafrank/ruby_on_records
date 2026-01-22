@@ -59,7 +59,7 @@
                     <span style="color: #1343a0;">• </span> Precio unitario
                     </td>
 
-                    <td class="tg-0lax"><%= number_to_currency(@disk.price) %></td>
+                    <td class="tg-0lax"><%= number_to_currency(@disk.price, :locale => :es) %></td>
             </tr>
 
             <tr>
@@ -167,7 +167,7 @@
                   <%= s.amount if s.disk == @disk %>
                 <% end %>
               </td>
-              <td><%= number_to_currency(sale.total) %></td>
+              <td><%= number_to_currency(sale.total, :locale => :es) %></td>
 
 
               <% if !sale.cancelled? %>
@@ -210,7 +210,7 @@
             </td>
 
             <td style="background-color: #f9efdb">
-              <%= number_to_currency(@total_amount * @disk.price) %>
+              <%= number_to_currency(@total_amount * @disk.price, :locale => :es) %>
             </td>
 
             <td>

@@ -40,7 +40,7 @@
       <% @sale_content.each do |sale_content| %>
         <tr>
           <td><%= sale_content.disk.title %></td>
-          <td><%= number_to_currency(sale_content.disk.price) %></td>
+          <td><%= number_to_currency(sale_content.disk.price, :locale => :es) %></td>
           <td><%= sale_content.amount %></td>
         </tr>
       <% end %>
@@ -55,7 +55,7 @@
         <td></td>
 
         <td style="background-color: #f9efdb">
-          <%= number_to_currency(@sale.total) %>
+          <%= number_to_currency(@sale.total, :locale => :es) %>
         </td>
       </tr>
     </tfoot>
@@ -97,7 +97,7 @@
         <td><%= @sale.user.full_name %></td>
         <td><%= @sale.client.name %></td>
         <td><%= @sale.client.contact %></td>
-        <td><%= number_to_currency(@sale.total) %></td>
+        <td><%= number_to_currency(@sale.total, :locale => :es) %></td>
 
         <% if !@sale.cancelled? %>
           <td>
@@ -130,5 +130,15 @@
     <%= link_to "<< Volver", backstore_sales_path, style: "color: #1343a0; font-family: monospace; font-size: 18px;" %>
     |
     <%= link_to " Editar venta", edit_backstore_sale_path(@sale) , style: "color: #1343a0; font-family: monospace; font-size: 18px;" %>
+    <% if !@sale.cancelled? %>
+    | <%= link_to "Descargar factura",
+           backstore_invoice_path(@sale, format: :pdf),
+           style: "color: #1343a0; font-family: monospace; font-size: 18px;",
+           target: "_blank" %>
+    | <%= link_to "Ver factura",
+           backstore_invoice_preview_path(@sale, format: :pdf),
+           style: "color: #1343a0; font-family: monospace; font-size: 18px;",
+           target: "_blank" %>
+    <% end %>
   </p>
 </div>

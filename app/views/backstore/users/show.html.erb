@@ -56,7 +56,7 @@
            <% @user_sales.each do |sale| %>
              <tr>
                <td><%= sale.user.full_name %></td>
-               <td><%= number_to_currency(sale.total) %></td>
+               <td><%= number_to_currency(sale.total, :locale => :es) %></td>
                <% if !sale.cancelled? %>
                 <td>
                    <%= link_to "¿Cancelar?",
@@ -89,7 +89,7 @@
 
                 <td style="background-color: #f9efdb">
                   <%= total = @user_sales.filter { |sale| !sale.cancelled? }.sum(&:total)
-                    number_to_currency(total) %>
+                    number_to_currency(total, :locale => :es) %>
                 </td>
                 <td></td>
                 <td></td>

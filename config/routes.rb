@@ -23,6 +23,8 @@ Rails.application.routes.draw do
     resources :users
     resources :clients
     resources :genres
+    get "invoice/:id", to: "invoices#download", as: :invoice
+    get "invoice/:id/preview", to: "invoices#preview", as: :invoice_preview
   end
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html

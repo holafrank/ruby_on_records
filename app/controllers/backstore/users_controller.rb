@@ -45,14 +45,13 @@ class Backstore::UsersController < ApplicationController
   # PATCH/PUT /users/1 or /users/1.json
   def update
     respond_to do |format|
-
       update_params = prepare_update_params()
       alert = ""
       notice = "Usuario actualizado."
 
       if password_has_changed(update_params)
         notice += " Contraseña modificada."
-      elsif @user.errors.any? #quizás? de esta forma se si falló o simplemente no había intención
+      elsif @user.errors.any? # quizás? de esta forma se si falló o simplemente no había intención
         # Cuando no hay intención de cambiar contraseña, aparece esto igual... Necesito otra forma.
         alert += " No se pudo cambiar contraseña: #{@user.errors.full_messages.join(', ')}"
       end

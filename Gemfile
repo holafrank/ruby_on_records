@@ -54,6 +54,11 @@ gem "active_storage_validations", "~> 3.0", ">= 3.0.3"
 # To use the image metadata validators (dimension, aspect_ratio and processable_file) in Active Storage Validations you will have to add this gem:
 gem "mini_magick", ">= 4.9.5"
 
+# PDF writer
+gem "prawn"
+gem "prawn-table"
+gem "prawn-svg"
+
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"

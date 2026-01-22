@@ -33,9 +33,9 @@ class Disk < ApplicationRecord
   # Quiero lograr esto ^ pero no lo estoy pudiendo hacer...
   # No se por qué no anda
 
-  #validates :audio_sample,
-  #validates :audio_sample,
-  #validates :audio_sample,
+  # validates :audio_sample,
+  # validates :audio_sample,
+  # validates :audio_sample,
   validates :audio_sample,
     content_type: [ "audio/mpeg", "audio/ogg", "audio/flac" ],
     size: { less_than_or_equal_to: 30.megabytes },
@@ -89,14 +89,14 @@ class Disk < ApplicationRecord
 
   scope :state_filter, ->(state) { where(state: state) if state.present? && %w[Nuevo Usado].include?(state) }
 
-  scope :like_search, -> (collumn, word) {
+  scope :like_search, ->(collumn, word) {
     if collumn.present? && %w[artist title].include?(collumn) && word.present? && !word.blank?
       word = sanitize_sql_like(word.downcase)
       query.where("LOWER(#{collumn}) LIKE ?", "%#{word}%")
     end
   }
 
-  scope :recommended, -> (disk, limit = 10) {
+  scope :recommended, ->(disk, limit = 10) {
     return none if disk.genre_ids.empty?
     joins(:genres)
       .where(genres: { id: disk.genre_ids })
@@ -107,7 +107,7 @@ class Disk < ApplicationRecord
       .limit(limit)
   }
 
-  scope :disk_filtering, -> (filters = {} ) {
+  scope :disk_filtering, ->(filters = {}) {
     query = all.has_stock # ¿ O self.has_stock ?
 
     # Filtro por "estado" del disco, puede ser "Nuevo" o "Usado".
@@ -174,7 +174,7 @@ class Disk < ApplicationRecord
       query.where("price < ?", filters[:price_max])
     end
 
-    return query
+    query
   }
 
   scope :top_sold, ->(limit = 10) {

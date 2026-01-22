@@ -50,7 +50,7 @@
             <td><%= disk.artist %></td>
             <td><%= disk.stock %></td>
 
-            <td><%= number_to_currency(disk.price) %></td>
+            <td><%= number_to_currency(disk.price, :locale => :es) %></td>
 
             <td>
               <%= disk.created_at_local_time.strftime("%d-%m-%Y   %H:%M") %>

@@ -48,8 +48,6 @@ class Sale < ApplicationRecord
     self.cancelled
   end
 
-
-
   private
   def set_defaults
     self.total ||= 0

@@ -65,6 +65,11 @@
            <li>
                <%= link_to "Clientes", backstore_clients_path, method: :get, style: "color: #f9efdb; font-family: monospace; font-size: 20px;" %>
            </li>
+            <% if can? :index, User %>
+            <li>
+                <%= link_to "Plantel", backstore_users_path, method: :get, style: "color: #f9efdb; font-family: monospace; font-size: 20px;" %>
+            </li>
+           <% end %>
 
 
         <% end %>
