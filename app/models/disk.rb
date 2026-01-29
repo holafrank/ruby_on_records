@@ -85,14 +85,57 @@ class Disk < ApplicationRecord
   # Agregar en todos que ADEMAS el stock sea mayor a cero
   # Porque sino implicaría usar la variable de instancia has_stock? miles de veces
 
-  scope :has_stock, -> { where("stock > ?", 0) }
+  scope :available, -> { where("stock > ?", 0).where(logic_delete: false).order(:title) }
 
   scope :state_filter, ->(state) { where(state: state) if state.present? && %w[Nuevo Usado].include?(state) }
 
-  scope :like_search, ->(collumn, word) {
-    if collumn.present? && %w[artist title].include?(collumn) && word.present? && !word.blank?
-      word = sanitize_sql_like(word.downcase)
-      query.where("LOWER(#{collumn}) LIKE ?", "%#{word}%")
+  scope :format_filter, ->(format) { where(format: format) if format.present? && %w[CD Vinilo].include?(format) }
+
+  scope :artist_filter, ->(artist) { where("LOWER(artist) LIKE ?", "%#{sanitize_sql_like(artist.downcase)}%") if artist.present? && !artist.blank? }
+
+  scope :title_filter, ->(title) { where("LOWER(title) LIKE ?", "%#{sanitize_sql_like(title.downcase)}%") if title.present? && !title.blank? }
+
+  scope :genre_filter, ->(genre_id) { joins(:genres).where(genres: { id: genre_id }) if genre_id.present? }
+
+  scope :date_filter, ->(year_from, year_to) {
+
+    y_from = year_from.to_i if year_from.present?
+    y_to = year_to.to_i if year_to.present?
+
+    puts "#=#=#=#=#=#=#=#=#=#="
+    puts "#=#=#=#=#=#=#=#=#=#="
+    puts "EN EL SCOPE: year_from=#{year_from}, y_from=#{y_from}"
+    puts "EN EL SCOPE: year_to=#{year_to}, y_to=#{y_to}"
+
+    puts "EN EL SCOPE: y_from_blank?=#{y_from.blank?}, y_from_present?=#{y_from.present?}"
+    puts "EN EL SCOPE: y_to_blank?=#{y_to.blank?}, y_to_present?=#{y_to.present?}"
+    puts "#=#=#=#=#=#=#=#=#=#="
+    puts "#=#=#=#=#=#=#=#=#=#="
+
+    if y_from.present? && y_to.present?
+
+      puts "#=#=#=#=# Primer IF =#=#=#=#=#="
+      puts " y_from > y_to == #{y_from > y_to}"
+      puts "#=#=#=#=# FROM: #{y_from} =#=#=#=#=#="
+      puts "#=#=#=#=# TO: #{y_to} =#=#=#=#=#="
+      puts "#=#=#=#=# FROM: #{Time.new(y_from)} =#=#=#=#=#="
+      puts "#=#=#=#=# TO: #{Time.new(y_to)} =#=#=#=#=#="
+      if y_to > y_from
+        where(year: y_from..y_to)
+      end
+      # Si se ingresa tanto year_from como year_to, quiere decir que el cliente busca un disco cuyo año de lanzamiento se encuentre
+      # entre el year_from y el year_to
+      # Quiero los discos que hayan sido estrenados en algún momento entre el año 1998 y 2002.
+      # Entonces, 1998 <= x <= 2002
+    elsif y_from.present? && !y_to.present?
+      # Si no se ingresa un year_to, quiere decir que el cliente busca un disco cuyo año de lanzamiento sea
+      # year_from <= x
+      # Quiero los discos que hayan sido estrenados en el año 1998 en adelante.
+      # Entonces, 1998 <= x
+      #
+      puts "#=#=#=#=# Segundo IF =#=#=#=#=#="
+      puts "#=#=#=#=# #{Time.new(y_from)} =#=#=#=#=#="
+      where(year: y_from..)
     end
   }
 
@@ -101,41 +144,14 @@ class Disk < ApplicationRecord
     joins(:genres)
       .where(genres: { id: disk.genre_ids })
       .where.not(id: disk.id)
-      .has_stock
+      .available
       .distinct
       .order("RANDOM()")
       .limit(limit)
   }
 
   scope :disk_filtering, ->(filters = {}) {
-    query = all.has_stock # ¿ O self.has_stock ?
-
-    # Filtro por "estado" del disco, puede ser "Nuevo" o "Usado".
-    if filters[:state].present? && %w[Nuevo Usado].include?(filters[:state])
-      query = query.where(state: filters[:state])
-    end
-
-    # Filtro por "formato" del disco, puede ser "CD" o "Vinilo".
-    if filters[:format].present? && %w[CD Vinilo].include?(filters[:format])
-      query.where(format: filters[:format])
-    end
-
-    # Filtro por "género" del disco.
-    if filters[:genre].present? && !filters[:genre].blank?
-      query.joins(:genres).where(genres: { genre_name: filters[:genre] })
-    end
-
-    # Filtro por "artista" del disco. Con "LIKE" puedo hacer búsquedas más flexibles y generalizadas que con igualdades exactas.
-    if filters[:artist].present? && !filters[:artist].blank?
-      artist = sanitize_sql_like(filters[:artist].downcase)
-      query.where("LOWER(artist) LIKE ?", "%#{artist}%")
-    end
-
-    # Filtro por "título" del disco. Con "LIKE" puedo hacer búsquedas más flexibles y generalizadas que con igualdades exactas.
-    if filters[:title].present? && !filters[:title].blank?
-      title = sanitize_sql_like(filters[:title].downcase)
-      query.where("LOWER(title) LIKE ?", "%#{title}%")
-    end
+    query = all.available
 
     # Si se ingresa tanto year_from como year_to, quiere decir que el cliente busca un disco cuyo año de lanzamiento se encuentre
     # entre el year_from y el year_to
@@ -180,7 +196,7 @@ class Disk < ApplicationRecord
   scope :top_sold, ->(limit = 10) {
     joins(items: :sale)
       .where(sales: { cancelled: false })
-      .has_stock
+      .available
       .group(:id)
       .select("disks.*, SUM(items.amount) as total_sold")
       .order("total_sold DESC")
@@ -193,8 +209,16 @@ class Disk < ApplicationRecord
 
   # === Métodos de instancia === #
 
+  def available?
+    has_stock? && !deleted?
+  end
+
   def created_at_local_time
     self.created_at - Time.parse("03:00:00").seconds_since_midnight.seconds
+  end
+
+  def deleted_at_local_time
+    self.deleted_at - Time.parse("03:00:00").seconds_since_midnight.seconds
   end
 
   def sales_containing_disk
@@ -220,6 +244,18 @@ class Disk < ApplicationRecord
 
   def has_stock?
     self.stock > 0
+  end
+
+  def delete_disk!
+    update!(logic_delete: true, deleted_at: Time.now(), stock: 0)
+  end
+
+  def restore_deleted_disk!
+    update!(logic_delete: false, deleted_at: nil, stock: 1)
+  end
+
+  def deleted?
+    self.logic_delete
   end
 
   private

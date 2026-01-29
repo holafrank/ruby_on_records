@@ -8,4 +8,7 @@ class Genre < ApplicationRecord
 
   # :genre_name ::= nombre del género musical
   validates :genre_name, presence: true
+
+  scope :ordered, -> { order(:genre_name) }
+
 end

@@ -41,7 +41,7 @@ class Backstore::DisksController < ApplicationController
     @genres = Genre.all
 
     respond_to do |format|
-      if @disk.save
+      if valid_stock? && @disk.save
         format.html { redirect_to @disk, notice: "Disk was successfully created." }
         format.json { render :show, status: :created, location: @disk }
       else
@@ -54,7 +54,7 @@ class Backstore::DisksController < ApplicationController
   # PATCH/PUT /disks/1 or /disks/1.json
   def update
     respond_to do |format|
-      if @disk.update(disk_params)
+      if valid_stock? && @disk.update(disk_params)
         format.html { redirect_to @disk, notice: "Disk was successfully updated.", status: :see_other }
         format.json { render :show, status: :ok, location: @disk }
       else
@@ -66,11 +66,24 @@ class Backstore::DisksController < ApplicationController
 
   # DELETE /disks/1 or /disks/1.json
   def destroy
-    @disk.destroy!
-
-    respond_to do |format|
-      format.html { redirect_to disks_path, notice: "Disk was successfully destroyed.", status: :see_other }
-      format.json { head :no_content }
+    ActiveRecord::Base.transaction do
+      if @disk.deleted?
+        @disk.restore_deleted_disk!
+        message = "alta"
+      else
+        @disk.delete_disk!
+        message = "baja"
+      end
+      if @disk.save
+        respond_to do |format|
+          format.html { redirect_to backstore_disks_path, notice: "Disco dado de #{message}.", status: :see_other }
+          format.json { head :no_content }
+        end
+      else
+        flash[:error] = "No se pudo dar de #{message} al disco: #{@disk.errors.full_messages.join(', ')}"
+        redirect_to backstore_disks_path
+        raise ActiveRecord::Rollback
+      end
     end
   end
 
@@ -86,5 +99,14 @@ class Backstore::DisksController < ApplicationController
         :title, :artist, :year, :description, :price, :stock, :format, :state, :cover,
         genre_ids: []
       )
+    end
+
+    # Si el disco está usado, entonces ese ejemplar es único.
+    def valid_stock?
+      if @disk.state == "Usado"
+        @disk.stock == 1
+      else
+        @disk.has_stock?
+      end
     end
 end

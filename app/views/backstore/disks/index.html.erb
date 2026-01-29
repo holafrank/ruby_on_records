@@ -1,14 +1,22 @@
 <p style="color: green"><%= notice %></p>
 
-<% content_for :title, "Discos" %>
-
-
-<% if current_user.present? %>
-  <%# ========== Para la gestión ========== %>
-  <%# === Odio esto, habrá que hacer otro index para la gestión === %>
-  <% content_for :title, "Gestión de discos" %>
+<% content_for :title, "Gestión de discos" %>
   <h1 class="container">Gestión de discos</h1>
   <br>
+
+    [ Filter / Search bar ]
+
+    Géneros (all) V      ||      Artista (all) V      ||      Formato (all) V      ||      Año (all) V      ||      Precio (all) V
+
+
+    O más simple...
+
+
+    [ Filter / Search bar ]
+
+    Título (searchbar)
+    Géneros (all) V      ||      Artista (all) V       ||      Década (all) V
+
   <div id="disk-table" class="container">
     <table class="table-custom">
       <thead style="background-color: #b92621">
@@ -40,11 +48,17 @@
           <th scope="col">
             Editar
           </th>
+
+          <th scope="col">
+            Borrar
+          </th>
+
         </tr>
       </thead>
 
       <tbody>
         <% @disks.each do |disk| %>
+          <% if !disk.deleted? %>
           <tr>
             <td><%= disk.title %></td>
             <td><%= disk.artist %></td>
@@ -53,24 +67,107 @@
             <td><%= number_to_currency(disk.price, :locale => :es) %></td>
 
             <td>
-              <%= disk.created_at_local_time.strftime("%d-%m-%Y   %H:%M") %>
+              <%= disk.created_at_local_time.strftime("%d/%m/%Y - %H:%M") %>
             </td>
 
             <td style="font-family: monospace;">
-              <%= link_to "Detalles", backstore_disk_path(disk) , style: "color: #1343a0; font-family: monospace; font-size: 17px;" %>
+                <%= link_to "Detalles", backstore_disk_path(disk) , style: "color: #1343a0; font-family: monospace; font-size: 17px;" %>
+
             </td>
 
             <td>
-              <%= link_to " Editar", edit_backstore_disk_path(disk) , style: "color: #1343a0; font-family: monospace; font-size: 18px;" %>
+                <%= link_to " Editar", edit_backstore_disk_path(disk) , style: "color: #1343a0; font-family: monospace; font-size: 18px;" %>
+            </td>
+
+            <td>
+              <%= link_to "¿Borrar?",
+                    backstore_disk_path(disk),
+                    method: :delete,
+                    data: {
+                      turbo_confirm: "¿Está seguro de desea dar de baja a este disco?",
+                      turbo_method: :delete
+                    },
+                    style: "color: #b92621; font-family: monospace; font-size: 17px;",
+                    class: "btn btn-warning" %>
             </td>
           </tr>
+          <% end %>
         <% end %>
       </tbody>
     </table>
   </div>
+
   <div>
     <p class="container">
       <%= link_to " Nuevo disco", new_backstore_disk_path, style: "color: #1343a0; font-family: monospace; font-size: 18px;" %>
     </p>
   </div>
-<% end %>
+
+  <br>
+
+<% if @disks.filter { |disk| disk.deleted? }.count() > 0 %>
+
+  <h2 class="container">Gestión de discos dados de baja</h2>
+  <div id="deleted-disks-table" class="container">
+    <table class="table-custom">
+      <thead style="background-color: #b92621">
+        <tr>
+          <th scope="col">
+            Título
+          </th>
+
+          <th scope="col">
+            Artista
+          </th>
+
+          <th scope="col">
+            Stock
+          </th>
+
+          <th scope="col">
+            Precio
+          </th>
+
+          <th scope="col">
+            Fecha de borrado
+          </th>
+
+          <th scope="col">
+            Recuperar
+          </th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <% @disks.each do |disk| %>
+          <% if disk.deleted? %>
+          <tr>
+            <td><%= disk.title %></td>
+            <td><%= disk.artist %></td>
+            <td> - </td>
+
+            <td> - </td>
+
+            <td>
+              <%= disk.deleted_at_local_time.strftime("%d/%m/%Y - %H:%M") %>
+            </td>
+
+              <td style="font-family: monospace;">
+                <%= link_to "¿Recuperar?",
+                      backstore_disk_path(disk),
+                      method: :delete,
+                      data: {
+                        turbo_confirm: "Al recuperar un disco dado de baja, el stock se establece automáticamente en 1. Recuerde editarlo una vez recuperado el disco.",
+                        turbo_method: :delete
+                      },
+                      style: "color: #1343a0; font-family: monospace; font-size: 17px;",
+                      class: "btn btn-warning" %>
+              </td>
+          </tr>
+          <% end %>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+
+         <% end %>

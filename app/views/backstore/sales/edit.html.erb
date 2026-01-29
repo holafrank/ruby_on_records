@@ -38,7 +38,6 @@
         <div class="grid">
           <!-- Columna más grande para el select -->
           <div class="col-8">
-            <%# O col-9, col-10 según lo que necesites %>
             <%= form.collection_select :client_id, @all_clients, :id, :client_with_details,
               { include_blank: "Seleccione un cliente...",
                 selected: @sale.client.id },

@@ -6,13 +6,91 @@ class DisksController < ApplicationController
 
   # GET /disks or /disks.json
   def index
+    @disks = Disk.available
+    @genres = Genre.ordered
+
+    puts "#=#=#=#=#=#=#=#=#=#="
+    puts "#=#=#=#=#=#=#=#=#=#="
+    puts "#=#=#=#=#=#=#=#=#=#="
+    puts "#=#=#=#=#=#=#=#=#=#="
+    puts "#{params.inspect}"
+    puts "#=#=#=#=#=#=#=#=#=#="
+    puts "#=#=#=#=#=#=#=#=#=#="
+    puts "#=#=#=#=#=#=#=#=#=#="
+    puts "#=#=#=#=#=#=#=#=#=#="
+
     case params[:filter]
     when "new"
-      @disks = Disk.disk_state_filter("Nuevo")
+      @disks = @disks.state_filter("Nuevo")
     when "used"
-      @disks = Disk.disk_state_filter("Usado")
+      @disks = @disks.state_filter("Usado")
     else
-      @disks = Disk.all
+      @disks = @disks.artist_filter(params[:artist])
+      puts "#=#=#=#=#=#=#=#=#=#="
+      puts "#=#=#=#=#=#=#=#=#=#="
+      puts "#=#=#=#=#=#=#=#=#=#="
+      puts "#=#=#=#=#=#=#=#=#=#="
+      puts "#{@disks}"
+      puts "#{@disks.count}"
+      puts "#=#=#=#=#=#=#=#=#=#="
+      puts "#=#=#=#=#=#=#=#=#=#="
+      puts "#=#=#=#=#=#=#=#=#=#="
+      puts "#=#=#=#=#=#=#=#=#=#="
+      @disks = @disks.title_filter(params[:title])
+      puts "#=#=#=#=#=#=#=#=#=#="
+      puts "#=#=#=#=#=#=#=#=#=#="
+      puts "#=#=#=#=#=#=#=#=#=#="
+      puts "#=#=#=#=#=#=#=#=#=#="
+      puts "#{@disks}"
+      puts "#{@disks.count}"
+      puts "#=#=#=#=#=#=#=#=#=#="
+      puts "#=#=#=#=#=#=#=#=#=#="
+      puts "#=#=#=#=#=#=#=#=#=#="
+      puts "#=#=#=#=#=#=#=#=#=#="
+      @disks = @disks.format_filter(params[:format])
+      puts "#=#=#=#=#=#=#=#=#=#="
+      puts "#=#=#=#=#=#=#=#=#=#="
+      puts "#=#=#=#=#=#=#=#=#=#="
+      puts "#=#=#=#=#=#=#=#=#=#="
+      puts "#{@disks}"
+      puts "#{@disks.count}"
+      puts "#=#=#=#=#=#=#=#=#=#="
+      puts "#=#=#=#=#=#=#=#=#=#="
+      puts "#=#=#=#=#=#=#=#=#=#="
+      puts "#=#=#=#=#=#=#=#=#=#="
+      @disks = @disks.state_filter(params[:state])
+      puts "#=#=#=#=#=#=#=#=#=#="
+      puts "#=#=#=#=#=#=#=#=#=#="
+      puts "#=#=#=#=#=#=#=#=#=#="
+      puts "#=#=#=#=#=#=#=#=#=#="
+      puts "#{@disks}"
+      puts "#{@disks.count}"
+      puts "#=#=#=#=#=#=#=#=#=#="
+      puts "#=#=#=#=#=#=#=#=#=#="
+      puts "#=#=#=#=#=#=#=#=#=#="
+      puts "#=#=#=#=#=#=#=#=#=#="
+      @disks = @disks.genre_filter(params[:genre])
+      puts "#=#=#=#=#=#=#=#=#=#="
+      puts "#=#=#=#=#=#=#=#=#=#="
+      puts "#=#=#=#=#=#=#=#=#=#="
+      puts "#=#=#=#=#=#=#=#=#=#="
+      puts "#{@disks}"
+      puts "#{@disks.count}"
+      puts "#=#=#=#=#=#=#=#=#=#="
+      puts "#=#=#=#=#=#=#=#=#=#="
+      puts "#=#=#=#=#=#=#=#=#=#="
+      puts "#=#=#=#=#=#=#=#=#=#="
+      @disks = @disks.date_filter(params[:year_from], params[:year_to])
+      puts "#=#=#=#=#=#=#=#=#=#="
+      puts "#=#=#=#=#=#=#=#=#=#="
+      puts "#=#=#=#=#=#=#=#=#=#="
+      puts "#=#=#=#=#=#=#=#=#=#="
+      puts "#{@disks}"
+      puts "#{@disks.count}"
+      puts "#=#=#=#=#=#=#=#=#=#="
+      puts "#=#=#=#=#=#=#=#=#=#="
+      puts "#=#=#=#=#=#=#=#=#=#="
+      puts "#=#=#=#=#=#=#=#=#=#="
     end
   end
 
@@ -77,5 +155,9 @@ class DisksController < ApplicationController
     # Only allow a list of trusted parameters through.
     def disk_params
       params.require(:disk).permit(:title, :artist, :year, :description, :price, :stock, :format, :state, genre_ids: [])
+    end
+
+    def filter_params
+      params.permit(:commit, :filter, :title, :artist, :format, :state, :year_from, :year_to, :price_min, :price_max, :genre)
     end
 end
