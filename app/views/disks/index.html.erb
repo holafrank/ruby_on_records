@@ -42,7 +42,7 @@
                     class: "form-select" %>
             </li>
             <li>
-                <%= form.label "Fecha de lanzamiento" %>
+                <%= form.label "Año de lanzamiento" %>
                 <%= decades =  2026.step(1870, -10).map { |y|
                                decade = y - (y % 10)
                                [decade, decade] }
@@ -61,6 +61,11 @@
                       class: "form-select",
                       include_blank: "Hasta..."
                 %>
+            </li>
+            <li>
+                <%= form.label "Rango de precios" %>
+                <%= form.number_field :min_price, step: "0.01", placeholder:"Desde..." %>
+                <%= form.number_field :max_price, step: "0.01", placeholder:"Hasta..." %>
             </li>
             <li>
                 <div class="col-md-2">

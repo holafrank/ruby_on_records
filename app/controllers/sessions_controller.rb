@@ -5,10 +5,10 @@ class SessionsController < ApplicationController
 
     if user && user.authenticate(params[:password]) # bcrypt hace lo suyo
       session[:user_id] = user.id
-      flash[:notice] = "¡Bienvenidx! ^-^"
+      notice = "¡Bienvenidx! ^-^"
       redirect_to root_path
     else
-      flash[:alert] = "Credenciales incorrectas. Intente de nuevo."
+      alert = "Credenciales incorrectas. Intente de nuevo."
       render :new
     end
   end

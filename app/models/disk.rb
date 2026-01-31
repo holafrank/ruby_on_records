@@ -97,6 +97,25 @@ class Disk < ApplicationRecord
 
   scope :genre_filter, ->(genre_id) { joins(:genres).where(genres: { id: genre_id }) if genre_id.present? }
 
+  scope :price_filter, ->(min_price, max_price) {
+
+    if min_price.present? && max_price.present?
+      # Si se ingresa un price_min, pero NO se ingresa un price_max, quiere decir que el cliente busca un disco cuyo precio sea
+      # price_min <= x
+      # Quiero los discos que cuesten como *mínimo* $10.000.
+      # Entonces, 10.000 <= x
+      where(price: min_price..max_price) unless min_price > max_price
+    elsif min_price.present? && !max_price.present?
+      # En cambio, si no se ingresa un price_min, quiere decir que el cliente busca un disco cuyo precio sea
+      # price_max >= x
+      # Quiero los discos que cuesten como *máximo* $10.000.
+      # Entonces, 10.000 >= x
+      where(price: min_price..)
+    elsif max_price.present? && !min_price.present?
+      where("price < ?", max_price)
+    end
+  }
+
   scope :date_filter, ->(year_from, year_to) {
 
     y_from = year_from.to_i if year_from.present?
@@ -148,49 +167,6 @@ class Disk < ApplicationRecord
       .distinct
       .order("RANDOM()")
       .limit(limit)
-  }
-
-  scope :disk_filtering, ->(filters = {}) {
-    query = all.available
-
-    # Si se ingresa tanto year_from como year_to, quiere decir que el cliente busca un disco cuyo año de lanzamiento se encuentre
-    # entre el year_from y el year_to
-    # Quiero los discos que hayan sido estrenados en algún momento entre el año 1998 y 2002.
-    # Entonces, 1998 <= x <= 2002
-    if filters[:year_from].present? && filters[:year_to].present?
-      query.where(year: Time.new(filters[:year_from])..Time.new(filters[:year_to])) unless filters[:year_to] > filters[:year_from]
-    end
-
-    # Si no se ingresa un year_to, quiere decir que el cliente busca un disco cuyo año de lanzamiento sea
-    # year_from <= x
-    # Quiero los discos que hayan sido estrenados en el año 1998 en adelante.
-    # Entonces, 1998 <= x
-    if filters[:year_from].present? && !filters[:year_to].present?
-      query.where(year: Time.new(filters[:year_from])..)
-    end
-
-    # Tenemos price_min <= x <= price_max.
-    if filters[:price_min].present? && filters[:price_max].present?
-      query.where(price: filters[:price_min]..filters[:price_max]) unless filters[:price_min] > filters[:price_max]
-    end
-
-    # Si se ingresa un price_min, pero NO se ingresa un price_max, quiere decir que el cliente busca un disco cuyo precio sea
-    # price_min <= x
-    # Quiero los discos que cuesten como *mínimo* $10.000.
-    # Entonces, 10.000 <= x
-    if filters[:price_min].present? && !filters[:price_max].present?
-      query.where(price: filters[:price_min]..)
-    end
-
-    # En cambio, si no se ingresa un price_min, quiere decir que el cliente busca un disco cuyo precio sea
-    # price_max >= x
-    # Quiero los discos que cuesten como *máximo* $10.000.
-    # Entonces, 10.000 >= x
-    if filters[:price_max].present? && !filters[:price_min].present?
-      query.where("price < ?", filters[:price_max])
-    end
-
-    query
   }
 
   scope :top_sold, ->(limit = 10) {

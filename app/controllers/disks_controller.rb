@@ -91,6 +91,17 @@ class DisksController < ApplicationController
       puts "#=#=#=#=#=#=#=#=#=#="
       puts "#=#=#=#=#=#=#=#=#=#="
       puts "#=#=#=#=#=#=#=#=#=#="
+      @disks = @disks.price_filter(params[:min_price], params[:max_price])
+      puts "#=#=#=#=#=#=#=#=#=#="
+      puts "#=#=#=#=#=#=#=#=#=#="
+      puts "#=#=#=#=#=#=#=#=#=#="
+      puts "#=#=#=#=#=#=#=#=#=#="
+      puts "#{@disks}"
+      puts "#{@disks.count}"
+      puts "#=#=#=#=#=#=#=#=#=#="
+      puts "#=#=#=#=#=#=#=#=#=#="
+      puts "#=#=#=#=#=#=#=#=#=#="
+      puts "#=#=#=#=#=#=#=#=#=#="
     end
   end
 
