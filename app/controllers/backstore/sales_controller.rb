@@ -18,7 +18,7 @@ class Backstore::SalesController < ApplicationController
     @sale = Sale.new
     @sale.items.build
     @all_clients = Client.all
-    @available_disks = Disk.available
+    @available_disks = Disk.available_ordered
   end
 
   # GET /sales/1/edit

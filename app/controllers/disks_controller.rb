@@ -6,18 +6,10 @@ class DisksController < ApplicationController
 
   # GET /disks or /disks.json
   def index
-    @disks = Disk.available
+    @disks = Disk.available_ordered
     @genres = Genre.ordered
 
-    puts "#=#=#=#=#=#=#=#=#=#="
-    puts "#=#=#=#=#=#=#=#=#=#="
-    puts "#=#=#=#=#=#=#=#=#=#="
-    puts "#=#=#=#=#=#=#=#=#=#="
-    puts "#{params.inspect}"
-    puts "#=#=#=#=#=#=#=#=#=#="
-    puts "#=#=#=#=#=#=#=#=#=#="
-    puts "#=#=#=#=#=#=#=#=#=#="
-    puts "#=#=#=#=#=#=#=#=#=#="
+    flash[:alert] ||= []
 
     case params[:filter]
     when "new"
@@ -26,88 +18,26 @@ class DisksController < ApplicationController
       @disks = @disks.state_filter("Usado")
     else
       @disks = @disks.artist_filter(params[:artist])
-      puts "#=#=#=#=#=#=#=#=#=#="
-      puts "#=#=#=#=#=#=#=#=#=#="
-      puts "#=#=#=#=#=#=#=#=#=#="
-      puts "#=#=#=#=#=#=#=#=#=#="
-      puts "#{@disks}"
-      puts "#{@disks.count}"
-      puts "#=#=#=#=#=#=#=#=#=#="
-      puts "#=#=#=#=#=#=#=#=#=#="
-      puts "#=#=#=#=#=#=#=#=#=#="
-      puts "#=#=#=#=#=#=#=#=#=#="
       @disks = @disks.title_filter(params[:title])
-      puts "#=#=#=#=#=#=#=#=#=#="
-      puts "#=#=#=#=#=#=#=#=#=#="
-      puts "#=#=#=#=#=#=#=#=#=#="
-      puts "#=#=#=#=#=#=#=#=#=#="
-      puts "#{@disks}"
-      puts "#{@disks.count}"
-      puts "#=#=#=#=#=#=#=#=#=#="
-      puts "#=#=#=#=#=#=#=#=#=#="
-      puts "#=#=#=#=#=#=#=#=#=#="
-      puts "#=#=#=#=#=#=#=#=#=#="
       @disks = @disks.format_filter(params[:format])
-      puts "#=#=#=#=#=#=#=#=#=#="
-      puts "#=#=#=#=#=#=#=#=#=#="
-      puts "#=#=#=#=#=#=#=#=#=#="
-      puts "#=#=#=#=#=#=#=#=#=#="
-      puts "#{@disks}"
-      puts "#{@disks.count}"
-      puts "#=#=#=#=#=#=#=#=#=#="
-      puts "#=#=#=#=#=#=#=#=#=#="
-      puts "#=#=#=#=#=#=#=#=#=#="
-      puts "#=#=#=#=#=#=#=#=#=#="
       @disks = @disks.state_filter(params[:state])
-      puts "#=#=#=#=#=#=#=#=#=#="
-      puts "#=#=#=#=#=#=#=#=#=#="
-      puts "#=#=#=#=#=#=#=#=#=#="
-      puts "#=#=#=#=#=#=#=#=#=#="
-      puts "#{@disks}"
-      puts "#{@disks.count}"
-      puts "#=#=#=#=#=#=#=#=#=#="
-      puts "#=#=#=#=#=#=#=#=#=#="
-      puts "#=#=#=#=#=#=#=#=#=#="
-      puts "#=#=#=#=#=#=#=#=#=#="
       @disks = @disks.genre_filter(params[:genre])
-      puts "#=#=#=#=#=#=#=#=#=#="
-      puts "#=#=#=#=#=#=#=#=#=#="
-      puts "#=#=#=#=#=#=#=#=#=#="
-      puts "#=#=#=#=#=#=#=#=#=#="
-      puts "#{@disks}"
-      puts "#{@disks.count}"
-      puts "#=#=#=#=#=#=#=#=#=#="
-      puts "#=#=#=#=#=#=#=#=#=#="
-      puts "#=#=#=#=#=#=#=#=#=#="
-      puts "#=#=#=#=#=#=#=#=#=#="
-      @disks = @disks.date_filter(params[:year_from], params[:year_to])
-      puts "#=#=#=#=#=#=#=#=#=#="
-      puts "#=#=#=#=#=#=#=#=#=#="
-      puts "#=#=#=#=#=#=#=#=#=#="
-      puts "#=#=#=#=#=#=#=#=#=#="
-      puts "#{@disks}"
-      puts "#{@disks.count}"
-      puts "#=#=#=#=#=#=#=#=#=#="
-      puts "#=#=#=#=#=#=#=#=#=#="
-      puts "#=#=#=#=#=#=#=#=#=#="
-      puts "#=#=#=#=#=#=#=#=#=#="
-      @disks = @disks.price_filter(params[:min_price], params[:max_price])
-      puts "#=#=#=#=#=#=#=#=#=#="
-      puts "#=#=#=#=#=#=#=#=#=#="
-      puts "#=#=#=#=#=#=#=#=#=#="
-      puts "#=#=#=#=#=#=#=#=#=#="
-      puts "#{@disks}"
-      puts "#{@disks.count}"
-      puts "#=#=#=#=#=#=#=#=#=#="
-      puts "#=#=#=#=#=#=#=#=#=#="
-      puts "#=#=#=#=#=#=#=#=#=#="
-      puts "#=#=#=#=#=#=#=#=#=#="
+      if invalid_date_params?
+        flash[:alert] << "Rango de fechas inválido. El año de incio del rango no puede ser mayor al año final."
+      else
+        @disks = @disks.date_filter(params[:year_from], params[:year_to])
+      end
+      if invalid_price_params?
+        flash[:alert] << "Rango de precios inválido. El precio mínimo no puede ser mayor al precio máximo."
+      else
+        @disks = @disks.price_filter(params[:min_price], params[:max_price])
+      end
     end
   end
 
   # GET /disks/1 or /disks/1.json
   def show
-    @recommended_disks = Disk.recommended(@disk, 10)
+    @recommended_disks = Disk.recommended(@disk, 5)
   end
 
   # GET /disks/new
@@ -170,5 +100,13 @@ class DisksController < ApplicationController
 
     def filter_params
       params.permit(:commit, :filter, :title, :artist, :format, :state, :year_from, :year_to, :price_min, :price_max, :genre)
+    end
+
+    def invalid_price_params?
+      params[:min_price].present? && params[:max_price].present? && params[:min_price] >= params[:max_price]
+    end
+
+    def invalid_date_params?
+      params[:year_from].present? && params[:year_to].present? && params[:year_to] <= params[:year_from]
     end
 end

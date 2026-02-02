@@ -1,14 +1,16 @@
 <p style="color: green"><%= notice %></p>
 
-<% content_for :title, "Genres" %>
+<% content_for :title, "Géneros musicales" %>
 
-<h1>Genres</h1>
-
-<div id="genres">
+<h1 class="container">Géneros</h1>
+<br>
+<div class="container" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem; margin-top: 1.0rem;">
   <% @genres.each do |genre| %>
-    <%= render genre %>
-    <p>
-      <%= link_to "Show this genre", genre %>
-    </p>
+    <div>
+        <span style="color: #b92621;">• </span> <%= genre.genre_name %>
+        <p>
+        <%= link_to " >> Ver discos", disks_path(genre: genre.id), style: "color: #1343a0; font-size: 18px;" %>
+        </p>
+    </div>
   <% end %>
 </div>

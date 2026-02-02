@@ -64,7 +64,11 @@
                   <td class="tg-0lax">
                   <span style="color: #1343a0;">• </span> Stock
                   </td>
-                  <td class="tg-0lax">  <%= @disk.stock %> disponibles</td>
+                  <% if @disk.stock == 1 %>
+                    <td class="tg-0lax" style="color: #b92621;">  Último disponible</td>
+                  <% else %>
+                    <td class="tg-0lax">  <%= @disk.stock %> disponibles</td>
+                  <% end %>
                 </tr>
             </tbody>
             <tfoot>
@@ -88,83 +92,35 @@
              <span style="color: #b92621;">Sin portada</span>
            </div>
          <% end %>
-
        </div>
-
-
     </div>
 
-* muestra de audio si tiene
-<!-- app/views/disks/show.html.erb -->
+  <!-- Descripción del disco -->
+  <div style="margin-top: 1rem; padding: 1rem; background-color: #fff; border-radius: 8px;">
+    <h5 style="color: #1343a0;">Descripción</h5>
+    <p><%= @disk.description %></p>
+  </div>
+
+  <br>
+
 <% if @disk.state == "Usado" && @disk.audio_sample.attached? %>
-  <div class="audio-section" style=" background-color: #f9efdb; padding: 1.5rem; border-radius: 12px; margin: 2rem 0; border: 2px solid #1343a0;">
-    <h3 style="color: #1343a0; margin-bottom: 1rem;">
-      🎵 Escuchar muestra de audio
-    </h3>
-    <div style=" background-color: white; padding: 1.5rem; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
-      <!-- Información del audio -->
-      <div style=" display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid #e6e6e6;">
-        <div>
-          <strong style="color: #1343a0;">
-            <%= @disk.audio_sample.filename %>
-          </strong><br>
-          <small style="color: #666;">
-            <%= number_to_human_size(@disk.audio_sample.byte_size) %> •
-            <%= @disk.audio_sample.content_type.split('/').last.upcase %>
-          </small>
-        </div>
-        <div style="text-align: right;">
-          <small style=" background-color: #1343a0; color: white; padding: 0.25rem 0.75rem; border-radius: 12px; font-weight: bold;">
-            USADO
-          </small>
-        </div>
-      </div>
+  <div class="container">
+    <h5 style="color: #b92621;">Muestra de audio </h5>
       <!-- Reproductor de audio -->
-      <audio controls style=" width: 100%; height: 50px; margin: 1rem 0;">
+      <audio controls style="width: 100%; height: 50px;">
         <source src="<%= rails_blob_url(@disk.audio_sample) %>"
                 type="<%= @disk.audio_sample.content_type %>">
         Tu navegador no soporta el elemento de audio.
       </audio>
-      <!-- Controles adicionales -->
-      <div style=" display: flex; gap: 1rem; margin-top: 1rem; justify-content: center;">
-        <button type="button"
-                onclick="document.querySelector('audio').play()"
-                style=" background-color: #1343a0; color: white; border: none; padding: 0.5rem 1.5rem; border-radius: 6px; cursor: pointer; font-family: monospace;">
-          ▶ Reproducir
-        </button>
-        <button type="button"
-                onclick="document.querySelector('audio').pause()"
-                style=" background-color: #b92621; color: white; border: none; padding: 0.5rem 1.5rem; border-radius: 6px; cursor: pointer; font-family: monospace;">
-          ⏸ Pausar
-        </button>
-
-        <%= link_to "Descargar audio",
-              rails_blob_path(@disk.audio_sample, disposition: "attachment"),
-              style: " background-color: #f9efdb; color: #1343a0; border: 2px solid #1343a0; padding: 0.5rem 1.5rem; border-radius: 6px; text-decoration: none; font-family: monospace; display: inline-flex; align-items: center; gap: 0.5rem;"
-        %>
-      </div>
-    </div>
   </div>
+  <br>
 <% elsif @disk.state == "Usado" %>
-  <div class="no-audio-message" style="
-    background-color: #f9efdb;
-    padding: 1rem;
-    border-radius: 8px;
-    margin: 1rem 0;
-    border: 2px dashed #b92621;
-    text-align: center;
-  ">
-    <p style="color: #b92621; margin: 0;">
-      Este disco no tiene muestra de audio disponible.
+  <div class="no-audio-message">
+    <p style="color: #b92621;">
+      • Este disco no tiene muestra de audio disponible.
     </p>
   </div>
 <% end %>
-
-    <!-- Descripción del disco -->
-    <div style="margin-top: 1rem; padding: 1rem; background-color: #fff; border-radius: 8px;">
-      <h5 style="color: #1343a0;">Descripción</h5>
-      <p><%= @disk.description %></p>
-    </div>
 
 <br>
     <details name="imagenes" closed>
@@ -217,13 +173,6 @@
                         <span style="color: #b92621;">Sin portada</span>
                       </div>
                     <% end %>
-                    <!--
-                    <div class="disk-content">
-                      <% disk.genres.each do |genre| %>
-                          <span style="color: #1343a0;">• </span><%# genre.genre_name %><br>
-                      <% end %>
-                    </div>
-                    -->
                   </div>
               <% end %>
             </div>

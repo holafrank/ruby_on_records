@@ -43,7 +43,7 @@
             </li>
             <li>
                 <%= form.label "Año de lanzamiento" %>
-                <%= decades =  2026.step(1870, -10).map { |y|
+                <%= decades =  Time.new.year.step(1870, -10).map { |y|
                                decade = y - (y % 10)
                                [decade, decade] }
                     form.select :year_from,
@@ -52,7 +52,7 @@
                       class: "form-select",
                       include_blank: "Desde..."
                 %>
-                <%= decades =  2026.step(1870, -10).map { |y|
+                <%= decades =  Time.new.year.step(1870, -10).map { |y|
                                decade = y - (y % 10)
                                [decade, decade] }
                     form.select :year_to,
@@ -79,8 +79,23 @@
 </div>
 
 <% if @disks.count == 0 %>
-  no hay discos que cumplan con esos filtros
+<br>
+  <div class="container">
+    <p style="color: #b92621;">
+      • No hay discos que cumplan con los filtros...
+    </p>
+  </div>
 <% end %>
+
+
+<div class="container">
+<% flash.each do |type, messages| %>
+    <% messages.each do |message| %>
+      <p style="color: #b92621;">• <%= message %></p>
+    <% end %>
+<% end %>
+</div>
+
 
   <div id="disks-responsive" class="container">
     <div class="disks-grid">
@@ -97,7 +112,7 @@
             <% end %>
           </div>
           <div class="disk-content">
-            <p><%= disk.title %></p>
+            <p><span style="color: #b92621;">• </span><%= disk.title %></p>
             <div class="disk-actions">
               <p><%= link_to "Ver", disk, role: "button", style:"background-color: #1343a0; font-family: monospace;" %></p>
             </div>

@@ -3,10 +3,7 @@
 <p style="color: green"><%= notice %></p>
 
 <h1 class="container">Novedades</h1>
-
-
 <% if @disks.any? %>
-
     <div id="disks-responsive-novedades" class="container">
         <div class="disks-grid">
             <% @disks.each do |disk| %>
@@ -22,7 +19,7 @@
                 <% end %>
                 </div>
                 <div class="disk-content">
-                    <p><%= disk.title %></p>
+                    <p><span style="color: #b92621;">• </span><%= disk.title %></p>
                     <div class="disk-actions">
                         <p>
                         <%= link_to "Ver", disk, style: "background-color: #1343a0; font-family: monospace; font-size: 18px;", role: "button" %>
@@ -37,9 +34,7 @@
 
 
 <% if @disks_top_sold.any? %>
-
     <h1 class="container">Los más vendidos</h1>
-
     <div id="disks-responsive-top-sold" class="container">
     <div class="disks-grid">
         <% @disks_top_sold.each do |disk| %>
@@ -55,7 +50,7 @@
             <% end %>
             </div>
             <div class="disk-content">
-            <p><%= disk.title %></p>
+            <p><span style="color: #b92621;">• </span><%= disk.title %></p>
             <div class="disk-actions">
                 <p>
                 <%= link_to "Ver", disk, style: "background-color: #1343a0; font-family: monospace; font-size: 18px;", role: "button" %>
@@ -89,8 +84,12 @@
             <% end %>
           </div>
           <div class="disk-content">
-            <p><%= disk.title %></p>
-            <p>-ˋˏ Últimos <%= disk.stock %> disponibles ˎˊ</p>
+            <p><span style="color: #b92621;">• </span><%= disk.title %></p>
+            <% if disk.stock == 1 %>
+                <p style="color: #b92621;">-ˋˏ Último disponible ˎˊ</p>
+            <% else %>
+                <p>-ˋˏ Últimos <%= disk.stock %> disponibles ˎˊ</p>
+            <% end %>
             <div class="disk-actions">
               <p>
                 <%= link_to "Ver", disk, style: "background-color: #1343a0; font-family: monospace; font-size: 18px;", role: "button" %>
