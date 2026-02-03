@@ -21,7 +21,7 @@ class User < ApplicationRecord
   validates :email, presence: true, uniqueness: true, format: { with: /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i,
       message: "Formato de correo electrónico incorrecto" }
 
-  validates :password, length: { minimum: 8 }, if: -> { password.present? || password_confirmation.present? }
+  validates :password, length: { minimum: 8, message: "La contraseña debe tener como mínimo 8 coaracteres" }, if: -> { password.present? || password_confirmation.present? }
 
   # === Métodos de instancia === #
 
@@ -38,6 +38,14 @@ class User < ApplicationRecord
     end
   end
 
+  def toggle_suspension
+    if suspended?
+      update!(suspended: false)
+    else
+      update!(suspended: true)
+    end
+  end
+
   # === Métodos de Autorización === #
 
   def admin?
@@ -50,5 +58,9 @@ class User < ApplicationRecord
 
   def employee?
     role == "employee"
+  end
+
+  def suspended?
+    suspended
   end
 end

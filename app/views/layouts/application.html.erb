@@ -110,6 +110,22 @@
       </il>
     </nav>
 
+    <div class="container">
+      <br>
+        <% if flash[:alert] %>
+          <div class="alert alert-danger">
+            <p style="color: #b92621;">• <%= flash[:alert] %></p>
+          </div>
+        <% end %>
+
+        <% if flash[:notice] %>
+          <div class="alert alert-success">
+            <p style="color: #1343a0;">• <%= flash[:notice] %></p>
+          </div>
+        <% end %>
+    </div>
+
+    <br>
     <script>
     /*
      * Modal

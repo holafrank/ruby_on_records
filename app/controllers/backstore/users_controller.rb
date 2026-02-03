@@ -25,18 +25,14 @@ class Backstore::UsersController < ApplicationController
   # POST /users or /users.json
   def create
       @user = User.new(user_params)
-
       respond_to do |format|
         if @user.save
-          format.html {
-            redirect_to backstore_user_path(@user), notice: "Usuario creado exitosamente ^-^"
-          }
+          flash[:notice] = "Usuario creado exitosamente"
+          format.html { redirect_to backstore_user_path(@user) }
           format.json { render :show, status: :created, location: @user }
         else
-          format.html {
-            flash.now[:alert] = "Algo salió mal..."
-            render :new, status: :unprocessable_entity
-          }
+          flash[:alert] = "No se pudo crear usuario: #{@user.errors.full_messages.join(', ')}"
+          format.html { render :new, status: :unprocessable_entity }
           format.json { render json: @user.errors, status: :unprocessable_entity }
         end
       end
@@ -46,32 +42,34 @@ class Backstore::UsersController < ApplicationController
   def update
     respond_to do |format|
       update_params = prepare_update_params()
-      alert = ""
-      notice = "Usuario actualizado."
+      password_has_changed(update_params)
 
-      if password_has_changed(update_params)
-        notice += " Contraseña modificada."
-      elsif @user.errors.any? # quizás? de esta forma se si falló o simplemente no había intención
-        # Cuando no hay intención de cambiar contraseña, aparece esto igual... Necesito otra forma.
-        alert += " No se pudo cambiar contraseña: #{@user.errors.full_messages.join(', ')}"
-      end
-      if @user.errors.empty? && @user.update(update_params) # if @user.errors.empty && @user.update(update_params) ... else mostrar errores, puede incluir fallo en el cambio de la contraseña o no
-        format.html { redirect_to backstore_user_path(@user), notice: notice, status: :see_other }
-        format.json { render :show, status: :ok, location: @user }
-      else
-        format.html { render :edit, alert: alert, status: :unprocessable_entity }
-        format.json { render json: @user.errors, status: :unprocessable_entity }
+      ActiveRecord::Base.transaction do
+        if @user.errors.empty? && @user.update(update_params) # if @user.errors.empty && @user.update(update_params) ... else mostrar errores, puede incluir fallo en el cambio de la contraseña o no
+          flash[:notice] = "Usuario actualizado"
+          format.html { redirect_to backstore_user_path(@user), status: :see_other }
+          format.json { render :show, status: :ok, location: @user }
+        else
+          format.html { render :edit, status: :unprocessable_entity }
+          format.json { render json: @user.errors, status: :unprocessable_entity }
+          raise ActiveRecord::Rollback
+        end
       end
     end
   end
 
   # DELETE /users/1 or /users/1.json
   def destroy
-    @user.destroy!
-
-    respond_to do |format|
-      format.html { redirect_to users_path, notice: "User was successfully destroyed.", status: :see_other }
-      format.json { head :no_content }
+    ActiveRecord::Base.transaction do
+      @user.toggle_suspension
+      if @user.save
+        flash[:notice] = "Suspensión resuelta."
+        redirect_to backstore_user_path(@user)
+      else
+        flash[:alert] = "No se pudo manejar la suspensión del usuario: #{@user.errors.full_messages.join(', ')}"
+        redirect_to backstore_user_path(@user)
+        raise ActiveRecord::Rollback
+      end
     end
   end
 
@@ -106,7 +104,7 @@ class Backstore::UsersController < ApplicationController
           return params
         else
           # Si falla validación, eliminar campos de contraseña y generar error
-          @user.errors.add(:base, "Las contraseñas no coinciden.")
+          @user.errors.add(:base, "No se pudo cambiar contraseña: Las contraseñas no coinciden.")
           params.except!(:password, :password_confirmation)
         end
 

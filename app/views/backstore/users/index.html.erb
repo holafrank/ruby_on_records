@@ -1,4 +1,4 @@
-<p style="color: green"><%= notice %></p>
+
 
 <% content_for :title, "Usuarios" %>
 
@@ -24,6 +24,10 @@
           Editar
         </th>
 
+          <th>
+            Suspender
+          </th>
+
         <th scope="col">
           ...
         </th>
@@ -47,11 +51,37 @@
             </td>
           <% end %>
 
+          <% if can? :destroy, user %>
+            <% if !user.suspended? %>
+              <td>
+                <%= link_to "Suspender", backstore_user_path(user), method: :delete,
+                  method: :delete,
+                  data: {
+                    turbo_confirm: "¿Estás seguro de suspender al usuario #{user.full_name}?",
+                    turbo_method: :delete
+                  },
+                  style: "color: #b92621; font-family: monospace; font-size: 17px;",
+                  class: "btn btn-warning" %>
+              </td>
+            <% else %>
+              <td>
+                <%= link_to "Habilitar", backstore_user_path(user),
+                  method: :delete,
+                  data: {
+                    turbo_confirm: "¿Estás seguro de habilitar nuevamente al usuario #{user.full_name}?",
+                    turbo_method: :delete
+                  },
+                  style: "color: #1343a0; font-family: monospace; font-size: 17px;",
+                  class: "btn btn-warning" %>
+              </td>
+            <% end %>
+          <% else %>
+            <td> - </td>
+          <% end %>
           <td style="font-family: monospace;">
-            <%= link_to "Detalles", backstore_user_path(user), style: "color: #1343a0; font-family: monospace; font-size: 18px;" %>
+            <%= link_to "Detalles", backstore_user_path(user), style: "color: #1343a0; font-family: monospace; font-size: 17px;" %>
           </td>
         </tr>
-
       <% end %>
     </tbody>
   </table>

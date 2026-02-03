@@ -56,7 +56,7 @@ class Backstore::SalesController < ApplicationController
         redirect_to backstore_sale_path(@sale)
       else
         @all_clients = Client.all
-        @available_disks = Disk.where("stock > 0").order(:title)
+        @available_disks = Disk.available_ordered
         flash[:error] = "No se pudo cancelar la venta: #{@sale.errors.full_messages.join(', ')}"
         redirect_to backstore_sale_path(@sale)
         raise ActiveRecord::Rollback  # Revertir la transacción

@@ -1,26 +1,22 @@
-<p style="color: green"><%= notice %></p>
+
 
 <% content_for :title, "Registrar nuevo usuario" %>
 
 <h1 class="container">Registrar nuevo usuario</h1>
 <br>
 
-  <% if flash[:error] %>
-    <div style="color: #b92621; padding: 1rem; background: #f9efdb; border: 1px solid #b92621; margin-bottom: 1rem;">
-      <%= flash[:error] %>
-    </div>
-  <% end %>
 
 <div id="new-user-form" class="container">
   <article style="background-color: #f9efdb;">
     <%= form_with model: [:backstore, @user] do |form| %>
       <% if @user.errors.any? %>
         <div role="alert">
-          <h4>Errores:</h4>
-
+          <h6 style="text-decoration: underline; color: #b92621;">Errores:</h6>
           <ul>
             <% @user.errors.each do |error| %>
-              <li><%= error.full_message %></li>
+              <li style="color: #b92621;">
+                <p style="color: #b92621;"><%= error.full_message %></p>
+              </li>
             <% end %>
           </ul>
         </div>

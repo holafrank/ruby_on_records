@@ -1,24 +1,19 @@
-<% content_for :title, "Editing user" %>
-
-
-<p style="color: green"><%= notice %></p>
-
 <% content_for :title, "Editar usuario" %>
-
-<h1 class="container">Editar usuario</h1>
 <br>
+<h1 class="container">Editar usuario</h1>
 
-
+<br>
 <div id="edit-user-form" class="container">
   <article style="background-color: #f9efdb;">
     <%= form_with model: [:backstore, @user]  do |form| %>
       <% if @user.errors.any? %>
         <div role="alert">
-          <h4>Errores:</h4>
-
+          <h6 style="text-decoration: underline; color: #b92621;">Errores:</h6>
           <ul>
             <% @user.errors.each do |error| %>
-              <li><%= error.full_message %></li>
+              <li style="color: #b92621;">
+                <p style="color: #b92621;"><%= error.full_message %></p>
+              </li>
             <% end %>
           </ul>
         </div>
@@ -47,10 +42,9 @@
                   </div>
 
                   <div>
-                    <%= form.label :password, "Cambiar contraseña" %>
-
+                    <br>
+                    <h4 class="container">Cambiar contraseña</h4>
                     <div class="field">
-                       <%= form.label :password, "Nueva contraseña" %>
                        <p>
                          <span style="color: #b92621;">• </span> La contraseña debe tener mínimo 8 caracteres
                        </p>
@@ -64,8 +58,9 @@
                   </div>
 
                   <% if @user.manager? || @user.admin? %>
+                    <br>
                     <div>
-                      <legend>Cambiar rol</legend>
+                      <h4 class="container">Cambiar rol</h4>
                       <%= form.radio_button :role, "employee" %>
                       <%= form.label :role_employee, "Empleado" %>
 
@@ -75,6 +70,7 @@
                       <%= form.radio_button :role, "admin" %>
                       <%= form.label :role_admin, "Administrador" %>
                     </div>
+                    <br>
                   <% end %>
             </div>
           </div>
@@ -124,12 +120,4 @@
   <p class="container">
     <%= link_to "<< Volver", backstore_users_path, style: "color: #1343a0; font-family: monospace; font-size: 18px;" %>
   </p>
-</div>
-
-
-<br>
-
-<div>
-  <%= link_to "Show this user", backstore_user_path(@user) %> |
-  <%= link_to "Back to users", backstore_users_path %>
 </div>
