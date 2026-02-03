@@ -1,10 +1,10 @@
-
 <% content_for :title, "Registros de ventas" %>
 
 <h1 class="container">Clientes</h1>
 
 <div id="clients-table" class="container">
   <table class="table-custom">
+
     <thead style="background-color: #b92621">
       <tr>
         <th scope="col">
@@ -32,16 +32,16 @@
           <td><%= client.contact %></td>
 
           <td style="font-family: monospace;">
-            <%= link_to "Editar", edit_backstore_client_path(client), style: "color: #1343a0; font-family: monospace; font-size: 18px;" %>
+            <%= link_to "Editar", edit_backstore_client_path(client), style: "color: #1343a0; font-family: monospace; font-size: 17px;" %>
           </td>
 
           <td style="font-family: monospace;">
-            <%= link_to "Detalles", backstore_client_path(client), style: "color: #1343a0; font-family: monospace; font-size: 18px;" %>
+            <%= link_to "Detalles", backstore_client_path(client), style: "color: #1343a0; font-family: monospace; font-size: 17px;" %>
           </td>
         </tr>
-
       <% end %>
     </tbody>
+
   </table>
 </div>
 

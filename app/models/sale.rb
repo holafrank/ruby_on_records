@@ -36,6 +36,8 @@ class Sale < ApplicationRecord
   before_save :calculate_total
   after_save :calculate_total_reload
 
+  scope :client_sales, ->(client) { where(client: client).order(:created_at) }
+
   def sale_contents
     items.includes(:disk)
   end

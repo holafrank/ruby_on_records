@@ -3,12 +3,12 @@ class Backstore::ClientsController < ApplicationController
 
   # GET /clients or /clients.json
   def index
-    @clients = Client.all
+    @clients = Client.latest
   end
 
   # GET /clients/1 or /clients/1.json
   def show
-    @client_sales = Sale.where(client: @client)
+    @client_sales = Sale.client_sales(@client)
   end
 
   # GET /clients/new
@@ -25,10 +25,11 @@ class Backstore::ClientsController < ApplicationController
     @client = Client.new(client_params)
 
     if @client.save
-      redirect_to backstore_clients_path, notice: "Cliente registrado exitosamente."
+      flash[:notice] = "Cliente registrado exitosamente"
+      redirect_to backstore_clients_path
     else
+      flash[:alert] = "No se pudo registar al cliente: #{@client.errors.full_messages.join(', ')}"
       render :new, status: :unprocessable_entity
-      flash[:error] = "No se pudo registar al cliente: #{@client.errors.full_messages.join(', ')}"
       redirect_to backstore_new_client_path
     end
   end
@@ -37,9 +38,11 @@ class Backstore::ClientsController < ApplicationController
   def update
     respond_to do |format|
       if @client.update(client_params)
-        format.html { redirect_to backstore_client_path(@client), notice: "Client was successfully updated.", status: :see_other }
+        flash[:notice] = "Cliente modificado exitosamente"
+        format.html { redirect_to backstore_client_path(@client), status: :see_other }
         format.json { render :show, status: :ok, location: backstore_client_path(@client) }
       else
+        flash[:alert] = "No se pudo modificar al cliente: #{@client.errors.full_messages.join(', ')}"
         format.html { render :edit, status: :unprocessable_entity }
         format.json { render json: @client.errors, status: :unprocessable_entity }
       end
@@ -49,7 +52,6 @@ class Backstore::ClientsController < ApplicationController
   # DELETE /clients/1 or /clients/1.json
   def destroy
     @client.destroy!
-
     respond_to do |format|
       format.html { redirect_to backstore_clients_path, notice: "Client was successfully destroyed.", status: :see_other }
       format.json { head :no_content }
