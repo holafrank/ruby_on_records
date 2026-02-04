@@ -50,6 +50,64 @@ class Sale < ApplicationRecord
     self.cancelled
   end
 
+  def stock_available?
+    items.all? do |item|
+      check = item.enough_stock?
+      errors.add(:base, "La venta excede el stock disponible. El stock actual de '#{item.disk.title}' es de #{item.disk.stock} copia/s") unless check
+      return check
+    end
+  end
+
+  def group_items
+    hash = Hash.new(0)
+    items.each do |item|
+      hash[item.disk] += item.amount
+      puts " = = = = = DEBUG group_items = = = = ="
+      puts " = = = = = DEBUG group_items = = = = ="
+      puts " = = = = = #{hash} = = = = ="
+      puts " = = = = = DEBUG group_items = = = = ="
+      puts " = = = = = DEBUG group_items = = = = ="
+    end
+    return hash
+  end
+
+  def unify_items!
+    grouped_items = group_items()
+
+    puts " = = = = = DEBUG unify_items! = = = = ="
+    puts " = = = = = DEBUG unify_items! = = = = ="
+    puts " = = = = = #{grouped_items} = = = = ="
+    puts " = = = = = DEBUG unify_items! = = = = ="
+    puts " = = = = = DEBUG unify_items! = = = = ="
+
+    items.destroy_all if persisted?
+    items.clear
+
+    grouped_items.each do |id, total_amount|
+      puts " = = = = = DEBUG unify_items!grouped_items.each = = = = ="
+      puts " = = = = = DEBUG unify_items!grouped_items.each = = = = ="
+      puts " = = = = = disco: #{id} total: #{total_amount}= = = = ="
+      puts " = = = = = DEBUG unify_items!grouped_items.each = = = = ="
+      puts " = = = = = DEBUG unify_items!grouped_items.each = = = = ="
+      items.build(
+        disk: id,
+        amount: total_amount
+      )
+    end
+  end
+
+  def decrease_items_stock
+    items.each do |item|
+      item.decrease_stock!
+    end
+  end
+
+  def revert_stock
+    items.each do |item|
+      item.revert_stock!
+    end
+  end
+
   private
   def set_defaults
     self.total ||= 0

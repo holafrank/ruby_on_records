@@ -17,29 +17,55 @@ class Backstore::SalesController < ApplicationController
   def new
     @sale = Sale.new
     @sale.items.build
-    @all_clients = Client.all
+    @all_clients = Client.latest
     @available_disks = Disk.available_ordered
   end
 
   # GET /sales/1/edit
   def edit
-    @all_clients = Client.all
-    @available_disks = Disk.where("stock > 0").order(:title)
+    @all_clients = Client.latest
+    @available_disks = Disk.available_ordered
   end
 
   # POST /sales or /sales.json
   def create
-    @sale = Sale.new(sale_params)
-    @sale.user = current_user
+    ActiveRecord::Base.transaction do
 
-    if @sale.save
-      @sale.items.each { |item| item.decrease_stock() }
-      redirect_to backstore_sale_path(@sale), notice: "Venta creada exitosamente."
-    else
-      @all_clients = Client.all
-      @available_disks = Disk.where("stock > 0").order(:title)
-      render :new, status: :unprocessable_entity
-      render json: @sale.errors, status: :unprocessable_entity
+      @sale = Sale.new(sale_params)
+      @sale.user = current_user
+      @sale.unify_items!
+
+      if @sale.stock_available?
+        if @sale.save
+          @sale.decrease_items_stock
+          flash[:notice] = "Venta creada exitosamente"
+          redirect_to backstore_sale_path(@sale)
+        else
+          puts " = = = = = DEBUG sales_controller = = = = ="
+          puts " = = = = = DEBUG sales_controller = = = = ="
+          puts " = = = = = sale not saved = = = = ="
+          puts " = = = = = DEBUG sales_controller = = = = ="
+          puts " = = = = = DEBUG sales_controller = = = = ="
+          @all_clients = Client.latest
+          @available_disks = Disk.available_ordered
+          flash[:error] = "No se pudo concretar la venta la venta:"
+          flash[:alert] = " #{@sale.errors.full_messages.join(', ')}"
+          redirect_to new_backstore_sale_path
+          raise ActiveRecord::Rollback
+        end
+      else
+        puts " = = = = = DEBUG no stock available = = = = ="
+        puts " = = = = = DEBUG no stock available = = = = ="
+        puts " = = = = = sale not saved = = = = ="
+        puts " = = = = = DEBUG no stock available = = = = ="
+        puts " = = = = = DEBUG no stock available = = = = ="
+        @all_clients = Client.latest
+        @available_disks = Disk.available_ordered
+        flash[:error] = "No se pudo concretar la venta la venta:"
+        flash[:alert] = " #{@sale.errors.full_messages.join(', ')}"
+        redirect_to new_backstore_sale_path
+        raise ActiveRecord::Rollback
+      end
     end
   end
 
@@ -55,7 +81,7 @@ class Backstore::SalesController < ApplicationController
         flash[:notice] = "¡Venta editada exitosamente! ^-^"
         redirect_to backstore_sale_path(@sale)
       else
-        @all_clients = Client.all
+        @all_clients = Client.latest
         @available_disks = Disk.available_ordered
         flash[:error] = "No se pudo cancelar la venta: #{@sale.errors.full_messages.join(', ')}"
         redirect_to backstore_sale_path(@sale)

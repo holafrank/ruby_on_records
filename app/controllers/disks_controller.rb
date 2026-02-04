@@ -9,7 +9,7 @@ class DisksController < ApplicationController
     @disks = Disk.available_ordered
     @genres = Genre.ordered
 
-    flash[:alert] ||= []
+    errors ||= []
 
     case params[:filter]
     when "new"
@@ -22,15 +22,24 @@ class DisksController < ApplicationController
       @disks = @disks.format_filter(params[:format])
       @disks = @disks.state_filter(params[:state])
       @disks = @disks.genre_filter(params[:genre])
+
+      # Notificar si los parámetros relativos a fecha de lanzamiento son válidos
       if invalid_date_params?
-        flash[:alert] << "Rango de fechas inválido. El año de incio del rango no puede ser mayor al año final."
+        errors << "El año de incio del rango no puede ser mayor al año final. "
       else
         @disks = @disks.date_filter(params[:year_from], params[:year_to])
       end
+
+      # Notificar si los parámetros relativos a precios son válidos
       if invalid_price_params?
-        flash[:alert] << "Rango de precios inválido. El precio mínimo no puede ser mayor al precio máximo."
+        errors << "El precio mínimo no puede ser mayor al precio máximo."
       else
         @disks = @disks.price_filter(params[:min_price], params[:max_price])
+      end
+
+      if errors.any?
+        flash[:error] = "Parámetros inválidos:"
+        flash[:alert] = errors.join()
       end
     end
   end
@@ -103,10 +112,10 @@ class DisksController < ApplicationController
     end
 
     def invalid_price_params?
-      params[:min_price].present? && params[:max_price].present? && params[:min_price] >= params[:max_price]
+      params[:min_price].present? && params[:max_price].present? && params[:min_price] > params[:max_price]
     end
 
     def invalid_date_params?
-      params[:year_from].present? && params[:year_to].present? && params[:year_to] <= params[:year_from]
+      params[:year_from].present? && params[:year_to].present? && params[:year_to] < params[:year_from]
     end
 end

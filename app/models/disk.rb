@@ -18,17 +18,13 @@ class Disk < ApplicationRecord
   # https://github.com/igorkasyanchuk/active_storage_validations
 
   validates :cover, attached: true,
-  content_type: { in: [ "image/png", "image/jpeg" ], message: "must be a JPEG or PNG" },
-  size: { less_than: 2.megabytes, message: "size cannot be larger than 2 megabytes" }# ,
-  # dimension: { width: { min: 300, max: 1000 }, height: { min: 300, max: 1000 }, message: "height or width is out of bounds" },
-  # aspect_ratio: :square
-  # Quiero lograr esto ^ pero no lo estoy pudiendo hacer...
-  # No se por qué no anda
+  content_type: { in: [ "image/png", "image/jpeg" ], message: "La imagen debe estar en formato JPEG o PNG" },
+  size: { less_than: 2.megabytes, message: "La imagen no puede pesar más de 2 megabytes" }
 
   validates :audio_sample,
-    content_type: [ "audio/mpeg", "audio/ogg", "audio/flac" ],
-    size: { less_than_or_equal_to: 30.megabytes },
-    duration: { less_than_or_equal_to: 30.seconds },
+    content_type: { in: [ "audio/mpeg", "audio/ogg", "audio/flac" ], message: "El audio debe estar en formato MP3, OGG o FLAC" },
+    size: { less_than_or_equal_to: 30.megabytes , message: "El audio no puede pesar más de 30 megabytes" },
+    duration: { less_than_or_equal_to: 30.seconds, message: "El audio no debe durar más de 30 segundos" },
     if: -> { state == "Usado" && audio_sample.attached? }
 
   validate :audio_only_for_used_disks
@@ -45,19 +41,21 @@ class Disk < ApplicationRecord
   validates :year, presence: true, numericality: {
     only_integer: true,
     greater_than_or_equal_to: 1870,
-    less_than_or_equal_to: Date.current.year
+    less_than_or_equal_to: Date.current.year,
+    message: "El año de lanzamiento debe ser un número entre 1870 y el año actual"
   }
 
   # :description ::= Texto descriptivo
-  validates :description, presence: true, length: { minimum: 10 }
+  validates :description, presence: true, length: { minimum: 10, message: "La descripción es demasiado corta" }
 
   # :price ::= Precio unitario
-  validates :price, presence: true, numericality: { greater_than_or_equal_to: 0 }
+  validates :price, presence: true, numericality: { greater_than_or_equal_to: 0, message: "El precio debe ser mayor a cero"}
 
   # :stock ::= Cantidad disponible
   validates :stock, presence: true, numericality: {
     only_integer: true,
-    greater_than_or_equal_to: 0
+    greater_than_or_equal_to: 0,
+    message: "El stock debe ser mayor a cero"
   }
 
   # :format ::= CD o Vinilo
@@ -75,56 +73,9 @@ class Disk < ApplicationRecord
 
   scope :available_ordered, -> { where("stock > ?", 0).where(logic_delete: false).order(:title) }
 
-  scope :state_filter, ->(state) { where(state: state) if state.present? && %w[Nuevo Usado].include?(state) }
+  scope :outlet, ->(limit = 10, stock_limit = 10) { where(stock: 1..stock_limit).order(stock: :desc).order("RANDOM()").limit(limit) }
 
-  scope :format_filter, ->(format) { where(format: format) if format.present? && %w[CD Vinilo].include?(format) }
-
-  scope :artist_filter, ->(artist) { where("LOWER(artist) LIKE ?", "%#{sanitize_sql_like(artist.downcase)}%") if artist.present? && !artist.blank? }
-
-  scope :title_filter, ->(title) { where("LOWER(title) LIKE ?", "%#{sanitize_sql_like(title.downcase)}%") if title.present? && !title.blank? }
-
-  scope :genre_filter, ->(genre_id) { joins(:genres).where(genres: { id: genre_id }) if genre_id.present? }
-
-  scope :price_filter, ->(min_price, max_price) {
-    if min_price.present? && max_price.present?
-      # Si se ingresa un price_min, pero NO se ingresa un price_max, quiere decir que el cliente busca un disco cuyo precio sea
-      # price_min <= x
-      # Quiero los discos que cuesten como *mínimo* $10.000.
-      # Entonces, 10.000 <= x
-      where(price: min_price..max_price) unless min_price > max_price
-    elsif min_price.present? && !max_price.present?
-      # En cambio, si no se ingresa un price_min, quiere decir que el cliente busca un disco cuyo precio sea
-      # price_max >= x
-      # Quiero los discos que cuesten como *máximo* $10.000.
-      # Entonces, 10.000 >= x
-      where(price: min_price..)
-    elsif max_price.present? && !min_price.present?
-      where("price < ?", max_price)
-    end
-  }
-
-  scope :date_filter, ->(year_from, year_to) {
-    y_from = year_from if year_from.present?
-    y_to = year_to if year_to.present?
-
-    if y_from.present? && y_to.present?
-
-      if y_to > y_from
-        where(year: y_from..y_to)
-      end
-      # Si se ingresa tanto year_from como year_to, quiere decir que el cliente busca un disco cuyo año de lanzamiento se encuentre
-      # entre el year_from y el year_to
-      # Quiero los discos que hayan sido estrenados en algún momento entre el año 1998 y 2002.
-      # Entonces, 1998 <= x <= 2002
-    elsif y_from.present? && !y_to.present?
-      # Si no se ingresa un year_to, quiere decir que el cliente busca un disco cuyo año de lanzamiento sea
-      # year_from <= x
-      # Quiero los discos que hayan sido estrenados en el año 1998 en adelante.
-      # Entonces, 1998 <= x
-
-      where(year: y_from..)
-    end
-  }
+  scope :new_arrivals, ->(limit = 10) { where("stock > ?", 0).order(created_at: :desc).limit(limit) }
 
   scope :recommended, ->(disk, limit = 10) {
     return none if disk.genre_ids.empty?
@@ -147,9 +98,69 @@ class Disk < ApplicationRecord
       .limit(limit)
   }
 
-  scope :outlet, ->(limit = 10, stock_limit = 10) { where(stock: 1..stock_limit).order(stock: :desc).limit(limit) }
+  # === Scopes - Filtros === #
 
-  scope :new_arrivals, ->(limit = 10) { where("stock > ?", 0).order(created_at: :desc).limit(limit) }
+  scope :state_filter, ->(state) { where(state: state) if state.present? && %w[Nuevo Usado].include?(state) }
+
+  scope :format_filter, ->(format) { where(format: format) if format.present? && %w[CD Vinilo].include?(format) }
+
+  scope :artist_filter, ->(artist) { where("LOWER(artist) LIKE ?", "%#{sanitize_sql_like(artist.downcase)}%") if artist.present? && !artist.blank? }
+
+  scope :title_filter, ->(title) { where("LOWER(title) LIKE ?", "%#{sanitize_sql_like(title.downcase)}%") if title.present? && !title.blank? }
+
+  scope :genre_filter, ->(genre_id) { joins(:genres).where(genres: { id: genre_id }) if genre_id.present? }
+
+  scope :price_filter, ->(min_price, max_price) {
+    if min_price.present? && max_price.present?
+      # Si se ingresa tanto price_min comoprice_max, quiere decir que el cliente busca un disco cuyo precio sea:
+      # price_min <= x <= price_max
+      # Si price_min == price_max, entonces se retorna aquellos discos cuyo precio sea igual a los precios ingresados.
+      # Ejemplo:
+      # Quiero los discos que cuesten como *mínimo* $10.000 y como *máximo* $20.000
+      # Entonces, 10.000 <= x<= 20.000
+      # Disk.price_filter(min_price: 10.000, max_price: 20.000)
+      where(price: min_price..max_price) unless min_price > max_price
+    elsif min_price.present? && !max_price.present?
+      # Si se ingresa un price_min, pero NO se ingresa un price_max, quiere decir que el cliente busca un disco cuyo precio sea:
+      # price_min <= x
+      # Ejemplo:
+      # Quiero los discos que cuesten como *mínimo* $10.000.
+      # Entonces, 10.000 <= x
+      # Disk.price_filter(min_price: 10.000)
+      where(price: min_price..)
+    elsif max_price.present? && !min_price.present?
+      # En cambio, si no se ingresa un price_min, quiere decir que el cliente busca un disco cuyo precio sea:
+      # price_max >= x
+      # Quiero los discos que cuesten como *máximo* $10.000.
+      # Entonces, 10.000 >= x
+      # Disk.price_filter(max_price: 10.000)
+      where("price < ?", max_price)
+    end
+  }
+
+  scope :date_filter, ->(year_from, year_to) {
+    y_from = year_from if year_from.present?
+    y_to = year_to if year_to.present?
+
+    if y_from.present? && y_to.present?
+
+      if y_to >= y_from
+        where(year: y_from..y_to)
+      end
+      # Si se ingresa tanto year_from como year_to, quiere decir que el cliente busca un disco cuyo año de lanzamiento se encuentre
+      # entre el year_from y el year_to
+      # Quiero los discos que hayan sido estrenados en algún momento entre el año 1998 y 2002.
+      # Entonces, 1998 <= x <= 2002
+    elsif y_from.present? && !y_to.present?
+      # Si no se ingresa un year_to, quiere decir que el cliente busca un disco cuyo año de lanzamiento sea
+      # year_from <= x
+      # Quiero los discos que hayan sido estrenados en el año 1998 en adelante.
+      # Entonces, 1998 <= x
+
+      where(year: y_from..)
+    end
+  }
+
 
   # === Métodos de instancia === #
 

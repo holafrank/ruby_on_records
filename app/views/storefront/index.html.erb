@@ -48,12 +48,18 @@
                 </div>
             <% end %>
             </div>
+
             <div class="disk-content">
-            <p><span style="color: #b92621;">• </span><%= disk.title %></p>
-            <div class="disk-actions">
-                <p>
-                <%= link_to "Ver", disk, style: "background-color: #1343a0; font-family: monospace; font-size: 18px;", role: "button" %>
-                </p>
+                <p><span style="color: #b92621;">• </span><%= disk.title %></p>
+                <div class="disk-actions">
+
+                <p style="color: #b92621;">-ˋˏ <%= disk.total_sold %> vendidos ˎˊ</p>
+
+                <div class="disk-actions">
+                  <p>
+                    <%= link_to "Ver", disk, style: "background-color: #1343a0; font-family: monospace; font-size: 18px;", role: "button" %>
+                  </p>
+                </div>
             </div>
             </div>
         </article>

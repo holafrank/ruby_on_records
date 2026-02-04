@@ -4,6 +4,7 @@
 
 <h1 class="container">Discos</h1>
 <br>
+
 <div class="container" id="filter-dashboard">
 <nav class="pico-background-red-100">
   <details name="Filtros" closed>
@@ -86,16 +87,6 @@
     </p>
   </div>
 <% end %>
-
-
-<div class="container">
-<% flash.each do |type, messages| %>
-    <% messages.each do |message| %>
-      <p style="color: #b92621;">• <%= message %></p>
-    <% end %>
-<% end %>
-</div>
-
 
   <div id="disks-responsive" class="container">
     <div class="disks-grid">

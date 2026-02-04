@@ -14,16 +14,22 @@ class Item < ApplicationRecord
     greater_than_or_equal_to: 0
   }
 
-
   def price
     disk.price * self.amount
   end
 
-  def decrease_stock
+  def decrease_stock!
     disk.update!(stock: disk.stock - self.amount)
   end
 
-  def revert_stock
+  def revert_stock!
     disk.update!(stock: disk.stock + self.amount)
+  end
+
+  def enough_stock?
+    if self.amount > disk.stock
+      return false
+    end
+    return true
   end
 end
