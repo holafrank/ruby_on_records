@@ -8,10 +8,7 @@
 
     <h4 class="container"><%= @disk.title %></h4>
 
-    <!-- Grid de 2 columnas: datos a la izquierda, imagen a la derecha -->
     <div class="grid">
-
-      <!-- Columna 1: Datos del disco -->
       <div>
         <table class="table-invisible">
 
@@ -22,47 +19,42 @@
 
             <tbody>
                 <tr>
-                        <td class="tg-0lax">
-                        <span style="color: #1343a0;">• </span> Artista
-                        </td>
-                        <td class="tg-0lax"><%= @disk.artist %></td>
+                  <td class="tg-0lax">
+                    <span style="color: #1343a0;">• </span> Artista
+                  </td>
+                  <td class="tg-0lax"><%= @disk.artist %></td>
                 </tr>
-
-                <tr>
-                        <td class="tg-0lax">
-                        <span style="color: #1343a0;">• </span> Año
-                        </td>
-                        <td class="tg-0lax"><%= @disk.year %></td>
-                </tr>
-
-                <tr>
-                        <td class="tg-0lax">
-                        <span style="color: #1343a0;">• </span> Géneros
-                        </td>
-                        <td class="tg-0lax">
-                            <% @disk.genres.each do |genre| %>
-                            <span style="color: #1343a0;">• </span><%= genre.genre_name %><br>
-                            <% end %>
-                        </td>
-                </tr>
-
-                <tr>
-                        <td class="tg-0lax">
-                        <span style="color: #1343a0;">• </span> Estado
-                        </td>
-                        <td class="tg-0lax"><%= @disk.state %></td>
-                </tr>
-
-                <tr>
-                        <td class="tg-0lax">
-                        <span style="color: #1343a0;">• </span> Formato
-                        </td>
-                        <td class="tg-0lax"><%= @disk.format %></td>
-                </tr>
-
                 <tr>
                   <td class="tg-0lax">
-                  <span style="color: #1343a0;">• </span> Stock
+                    <span style="color: #1343a0;">• </span> Año
+                  </td>
+                  <td class="tg-0lax"><%= @disk.year %></td>
+                </tr>
+                <tr>
+                  <td class="tg-0lax">
+                    <span style="color: #1343a0;">• </span> Géneros
+                  </td>
+                  <td class="tg-0lax">
+                    <% @disk.genres.each do |genre| %>
+                      <span style="color: #1343a0;">• </span><%= genre.genre_name %><br>
+                    <% end %>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="tg-0lax">
+                    <span style="color: #1343a0;">• </span> Estado
+                  </td>
+                  <td class="tg-0lax"><%= @disk.state %></td>
+                </tr>
+                <tr>
+                  <td class="tg-0lax">
+                    <span style="color: #1343a0;">• </span> Formato
+                  </td>
+                  <td class="tg-0lax"><%= @disk.format %></td>
+                </tr>
+                <tr>
+                  <td class="tg-0lax">
+                    <span style="color: #1343a0;">• </span> Stock
                   </td>
                   <% if @disk.stock == 1 %>
                     <td class="tg-0lax" style="color: #b92621;">  Último disponible</td>
@@ -95,7 +87,6 @@
        </div>
     </div>
 
-  <!-- Descripción del disco -->
   <div style="margin-top: 1rem; padding: 1rem; background-color: #fff; border-radius: 8px;">
     <h5 style="color: #1343a0;">Descripción</h5>
     <p><%= @disk.description %></p>

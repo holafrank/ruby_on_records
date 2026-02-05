@@ -2,102 +2,74 @@
 <h1 class="container">Detalles del disco</h1>
 <br>
 
-  <!-- Para poner a posteriori la imagen de la portada, se me ocurre una tabla de dos columnas y una fila -->
-  <!-- En la primera columna va esta tabla que ya está hecha, y en la segunda la tapa del disco -->
-
-  <!-- ¿Existe sino alguna otra forma de hacer que las dos primeras columnas tengan varias filas, pero la tercera sólo una donde esté la imagen d ela portada? -->
-
-  <!-- -------------------------------------------------------------------------------------------------- -->
-  <!-- | Título del disco                            |                                                  | -->
-  <!-- -------------------------------------------------------------------------------------------------- -->
-  <!-- | ------------------------------------------- | ------------------------------------------------ | -->
-  <!-- | |     Artista        |  • Sandro          | | |//////////////////////////////////////////////| | -->
-  <!-- | |     Año            |  • 1968            | | |//////////////////////////////////////////////| | -->
-  <!-- | |     Precio         |  • $ 10.000        | | |//////////////////////////////////////////////| | -->
-  <!-- | |     ...            |  • ...             | | |//////////////////// Cover ///////////////////| | -->
-  <!-- | |     ...            |  • ...             | | |//////////////////////////////////////////////| | -->
-  <!-- | |     ...            |  • ...             | | |//////////////////////////////////////////////| | -->
-  <!-- | |     ...            |  • ...             | | |//////////////////////////////////////////////| | -->
-  <!-- | ------------------------------------------- | ------------------------------------------------ | -->
-  <!-- -------------------------------------------------------------------------------------------------- -->
-
 <div id="disk-details-" class="container">
   <article style="background-color: #f9efdb; padding: 2rem;">
 
     <h4 class="container"><%= @disk.title %></h4>
 
-    <!-- Grid de 2 columnas: datos a la izquierda, imagen a la derecha -->
     <div class="grid">
-
-      <!-- Columna 1: Datos del disco -->
       <div>
         <table class="table-invisible">
-
         <hr style="border-color: #b92621; border-top: 3px solid #b92621;">
-
         <thead>
         </thead>
-
-        <tbody>
-            <tr>
-                    <td class="tg-0lax">
+            <tbody>
+                <tr>
+                  <td class="tg-0lax">
                     <span style="color: #1343a0;">• </span> Artista
-                    </td>
-                    <td class="tg-0lax"><%= @disk.artist %></td>
-            </tr>
-
-            <tr>
-                    <td class="tg-0lax">
+                  </td>
+                  <td class="tg-0lax"><%= @disk.artist %></td>
+                </tr>
+                <tr>
+                  <td class="tg-0lax">
                     <span style="color: #1343a0;">• </span> Año
-                    </td>
-                    <td class="tg-0lax"><%= @disk.year %></td>
-            </tr>
-
-            <tr>
-                    <td class="tg-0lax">
-                    <span style="color: #1343a0;">• </span> Precio unitario
-                    </td>
-
-                    <td class="tg-0lax"><%= number_to_currency(@disk.price, :locale => :es) %></td>
-            </tr>
-
-            <tr>
-                    <td class="tg-0lax">
-                    <span style="color: #1343a0;">• </span> Stock
-                    </td>
-                    <td class="tg-0lax"><%= @disk.stock %></td>
-            </tr>
-
-            <tr>
-                    <td class="tg-0lax">
-                    <span style="color: #1343a0;">• </span> Estado
-                    </td>
-                    <td class="tg-0lax"><%= @disk.state %></td>
-            </tr>
-
-            <tr>
-                    <td class="tg-0lax">
-                    <span style="color: #1343a0;">• </span> Formato
-                    </td>
-                    <td class="tg-0lax"><%= @disk.format %></td>
-            </tr>
-
-            <tr>
-                    <td class="tg-0lax">
+                  </td>
+                  <td class="tg-0lax"><%= @disk.year %></td>
+                </tr>
+                <tr>
+                  <td class="tg-0lax">
                     <span style="color: #1343a0;">• </span> Géneros
-                    </td>
-                    <td class="tg-0lax">
-                        <% @disk.genres.each do |genre| %>
-                          <span style="color: #1343a0;">• </span><%= genre.genre_name %><br>
-                        <% end %>
-                    </td>
+                  </td>
+                  <td class="tg-0lax">
+                    <% @disk.genres.each do |genre| %>
+                      <span style="color: #1343a0;">• </span><%= genre.genre_name %><br>
+                    <% end %>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="tg-0lax">
+                    <span style="color: #1343a0;">• </span> Estado
+                  </td>
+                  <td class="tg-0lax"><%= @disk.state %></td>
+                </tr>
+                <tr>
+                  <td class="tg-0lax">
+                    <span style="color: #1343a0;">• </span> Formato
+                  </td>
+                  <td class="tg-0lax"><%= @disk.format %></td>
+                </tr>
+                <tr>
+                  <td class="tg-0lax">
+                    <span style="color: #1343a0;">• </span> Stock
+                  </td>
+                  <% if @disk.stock == 1 %>
+                    <td class="tg-0lax" style="color: #b92621;">  Último disponible</td>
+                  <% else %>
+                    <td class="tg-0lax">  <%= @disk.stock %> disponibles</td>
+                  <% end %>
+                </tr>
+            </tbody>
+        <tfoot>
+            <tr>
+                <td class="tg-0lax">
+                  <br>
+                <span style="color: #1343a0;">• </span> <%= number_to_currency(@disk.price, :locale => :es) %>
+                </td>
             </tr>
-
-        </tbody>
+        </tfoot>
         </table>
       </div>
 
-      <!-- Columna 2: Portada del disco -->
        <div style="display: flex; justify-content: center; align-items: center;">
          <% if @disk.cover.attached? %>
            <%= image_tag @disk.cover,
@@ -107,24 +79,17 @@
              <span style="color: #b92621;">Sin portada</span>
            </div>
          <% end %>
-
        </div>
-
 
     </div>
 
-    <!-- Descripción del disco -->
     <div style="margin-top: 1rem; padding: 1rem; background-color: #fff; border-radius: 8px;">
       <h5 style="color: #1343a0;">Descripción</h5>
       <p><%= @disk.description %></p>
     </div>
 
-
-    <!-- Tabla de ventas -->
     <br>
     <br>
-    <div class="container">
-    </div>
     <h4 class="container">Ventas realizadas</h4>
     <div id="sales-table" class="container">
       <table class="table-custom">
@@ -133,24 +98,18 @@
             <th scope="col">
               Vendedor
             </th>
-
-
             <th scope="col">
               Cantidad
             </th>
             <th scope="col">
               Total
             </th>
-
             <th scope="col">
               Cancelada
             </th>
-
             <th scope="col">
               Fecha
             </th>
-
-
             <th scope="col">
               ...
             </th>
@@ -167,7 +126,6 @@
                 <% end %>
               </td>
               <td><%= number_to_currency(sale.total, :locale => :es) %></td>
-
 
               <% if !sale.cancelled? %>
                 <td>
@@ -189,7 +147,6 @@
 
               <td><%= sale.created_at_local_time.strftime("%d-%m-%Y   %H:%M") %></td>
 
-
               <td style="font-family: monospace;">
                 <%= link_to "Detalles", backstore_sale_path(sale), style: "color: #1343a0; font-family: monospace; font-size: 17px;" %>
               </td>
@@ -201,7 +158,7 @@
         <tfoot>
           <tr>
             <th style="background-color: #f9efdb; color: #b92621" scope="row">
-              Total
+              Discos vendidos
             </th>
 
             <td style="background-color: #f9efdb">
@@ -222,6 +179,63 @@
         </tfoot>
       </table>
     </div>
+
+    <br>
+
+    <% if @disk.state == "Usado" %>
+      <details name="Muestra de audio" closed>
+      <summary style="color: #1343a0; font-size: 24px;"><strong>▿ Muestra de audio</strong></summary>
+      <% if @disk.state == "Usado" && @disk.audio_sample.attached? %>
+        <div class="container">
+            <!-- Reproductor de audio -->
+            <audio controls style="width: 100%; height: 50px;">
+              <source src="<%= rails_blob_url(@disk.audio_sample) %>"
+                      type="<%= @disk.audio_sample.content_type %>">
+              Tu navegador no soporta el elemento de audio.
+            </audio>
+        </div>
+        <br>
+      <% else %>
+        <div class="no-audio-message">
+          <p style="color: #b92621;">
+            • Este disco no tiene muestra de audio disponible.
+          </p>
+        </div>
+      <% end %>
+      </details>
+    <% end %>
+
+    <br>
+    <details name="imagenes" closed>
+      <summary style="color: #1343a0; font-size: 24px;"><strong>▿ Imágenes</strong></summary>
+          <div id="disks-responsive-images" class="container">
+            <div class="disks-grid" style="display: flex;flex-wrap: nowrap;justify-content: flex-start; gap: 2rem;">
+                  <div style="display: flex; justify-content: center; align-items: left;">
+                    <% if @disk.cover.attached? %>
+                        <%= link_to image_tag(@disk.cover,
+                                class: "disk-tile",
+                                style: "width: 200px; height: 200px; border-radius: 5px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);"),
+                            disk_path(@disk),
+                            class: "disk-link",
+                            data: { tooltip: "#{@disk.title} - #{@disk.artist}", placement: "bottom" }
+                             %>
+                    <% else %>
+                      <div class="pico-background-red-100" style="width: 200px; height: 200px; display: flex; align-items: center; justify-content: center; border-radius: 8px;">
+                        <span style="color: #b92621;">Sin portada</span>
+                      </div>
+                    <% end %>
+                    <% if @disk.images.attached? %>
+                      <% @disk.images.each do |image| %>
+                        <%= image_tag image,
+                               style: "width: 400px; height: 400px; border-radius: 8px; box-shadow: 0 8px 16px rgba(0,0,0,0.1);" %>
+                      <% end %>
+                    <% end %>
+                  </div>
+            </div>
+          </div>
+        <br>
+    </details>
+
   </article>
 </div>
 

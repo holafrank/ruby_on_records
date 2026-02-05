@@ -6,22 +6,18 @@
 <h1 class="container">Registrar nuevo disco</h1>
 <br>
 
-  <% if flash[:error] %>
-    <div style="color: #b92621; padding: 1rem; background: #f9efdb; border: 1px solid #b92621; margin-bottom: 1rem;">
-      <%= flash[:error] %>
-    </div>
-  <% end %>
-
 <div id="new-disk-form" class="container">
   <article style="background-color: #f9efdb;">
     <%= form_with model: [:backstore, @disk] do |form| %>
+
       <% if @disk.errors.any? %>
         <div role="alert">
-          <h4>Errores:</h4>
-
+          <h6 style="text-decoration: underline; color: #b92621;">Errores:</h6>
           <ul>
             <% @disk.errors.each do |error| %>
-              <li><%= error.full_message %></li>
+              <li style="color: #b92621;">
+                <p style="color: #b92621;"><%= error.full_message %></p>
+              </li>
             <% end %>
           </ul>
         </div>
@@ -31,6 +27,9 @@
         <h4 class="container">Datos del Disco</h4>
         <p>
           <span style="color: #b92621;">• </span> Complete toda la información necesaria para registrar el nuevo producto.
+        </p>
+        <p>
+          <span style="color: #b92621;">• </span> En caso de hacer falta un género musical nuevo, por favor diríjase primero a <%= link_to "Crear género", new_backstore_genre_path, style: "color: #1343a0;" %>.
         </p>
         <br>
         <div class="grid">
@@ -68,7 +67,7 @@
                 <div class="col-6">
                   <div>
                     <%= form.label "Precio unitario" %>
-                    <%= form.number_field :price, required: true, step: "0.01", min: 0, placeholder: "20000.00", autocomplete: "on" %>
+                    <%= form.number_field :price, required: true, step: "1", min: 0, placeholder: "20000.00", autocomplete: "on" %>
                   </div>
                 </div>
                 <div class="col-6">

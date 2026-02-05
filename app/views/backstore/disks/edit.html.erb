@@ -5,22 +5,18 @@
 <h1 class="container">Editar disco</h1>
 <br>
 
-  <% if flash[:error] %>
-    <div style="color: #b92621; padding: 1rem; background: #f9efdb; border: 1px solid #b92621; margin-bottom: 1rem;">
-      <%= flash[:error] %>
-    </div>
-  <% end %>
-
 <div id="edit-disk-form" class="container">
   <article style="background-color: #f9efdb;">
     <%= form_with model: [:backstore, @disk] do |form| %>
+
       <% if @disk.errors.any? %>
         <div role="alert">
-          <h4>Errores:</h4>
-
+          <h6 style="text-decoration: underline; color: #b92621;">Errores:</h6>
           <ul>
             <% @disk.errors.each do |error| %>
-              <li><%= error.full_message %></li>
+              <li style="color: #b92621;">
+                <p style="color: #b92621;"><%= error.full_message %></p>
+              </li>
             <% end %>
           </ul>
         </div>
@@ -70,7 +66,7 @@
                 <div class="col-6">
                   <div>
                     <%= form.label "Precio unitario" %>
-                    <%= form.number_field :price, required: true, step: "0.01", min: 0, autocomplete: "off", value: @disk.price %>
+                    <%= form.number_field :price, required: true, step: "1", min: 0, autocomplete: "off", value: @disk.price %>
                   </div>
                 </div>
                 <div class="col-6">
@@ -112,7 +108,7 @@
                 </div>
               </div>
 
-
+<br>
                <div id="audio-field" style="<%= @disk.state == 'Usado' ? '' : 'display: none;' %>">
                  <div class="field">
                    <%= form.label :audio_sample, "Audio de muestra (opcional)" %>
@@ -161,7 +157,6 @@
 
               <%= form.label "Imágenes" %>
               <%= form.file_field :images %>
-              Esto cómo debería hacerlo...?
 
               <%= form.label "Géneros" %>
               <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; margin-top: 1.0rem;">

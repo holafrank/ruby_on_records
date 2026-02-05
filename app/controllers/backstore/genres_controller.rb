@@ -6,12 +6,12 @@ class Backstore::GenresController < ApplicationController
 
   # GET /genres or /genres.json
   def index
-    @genres = Genre.all
+    @genres = Genre.ordered
   end
 
   # GET /genres/1 or /genres/1.json
   def show
-    @disks_of_this_genre = @genre.disks.order(:title).where("stock > 0")
+    @disks_of_this_genre = @genre.disks.available_ordered
   end
 
   # GET /genres/new
@@ -29,7 +29,7 @@ class Backstore::GenresController < ApplicationController
 
     respond_to do |format|
       if @genre.save
-        format.html { redirect_to @genre, notice: "Genre was successfully created." }
+        format.html { redirect_to backstore_genre_path(@genre), notice: "Nuevo género dado de alta" }
         format.json { render :show, status: :created, location: @genre }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -42,7 +42,7 @@ class Backstore::GenresController < ApplicationController
   def update
     respond_to do |format|
       if @genre.update(genre_params)
-        format.html { redirect_to @genre, notice: "Genre was successfully updated.", status: :see_other }
+        format.html { redirect_to backstore_genre_path(@genre), notice: "Genre was successfully updated.", status: :see_other }
         format.json { render :show, status: :ok, location: @genre }
       else
         format.html { render :edit, status: :unprocessable_entity }

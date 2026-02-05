@@ -36,7 +36,17 @@ class Sale < ApplicationRecord
   before_save :calculate_total
   after_save :calculate_total_reload
 
+
+  # === Scopes === #
+
   scope :client_sales, ->(client) { where(client: client).order(:created_at) }
+
+  scope :valid_sales_with_disk, ->(disk_id) { joins(:items).where(items: { disk_id: disk_id }).where(cancelled: false).distinct }
+
+  scope :all_sales_with_disk, ->(disk_id) { joins(:items).where(items: { disk_id: disk_id }).distinct }
+
+
+  # === Métodos de instancia === #
 
   def sale_contents
     items.includes(:disk)
@@ -62,11 +72,6 @@ class Sale < ApplicationRecord
     hash = Hash.new(0)
     items.each do |item|
       hash[item.disk] += item.amount
-      puts " = = = = = DEBUG group_items = = = = ="
-      puts " = = = = = DEBUG group_items = = = = ="
-      puts " = = = = = #{hash} = = = = ="
-      puts " = = = = = DEBUG group_items = = = = ="
-      puts " = = = = = DEBUG group_items = = = = ="
     end
     return hash
   end
@@ -74,21 +79,10 @@ class Sale < ApplicationRecord
   def unify_items!
     grouped_items = group_items()
 
-    puts " = = = = = DEBUG unify_items! = = = = ="
-    puts " = = = = = DEBUG unify_items! = = = = ="
-    puts " = = = = = #{grouped_items} = = = = ="
-    puts " = = = = = DEBUG unify_items! = = = = ="
-    puts " = = = = = DEBUG unify_items! = = = = ="
-
     items.destroy_all if persisted?
     items.clear
 
     grouped_items.each do |id, total_amount|
-      puts " = = = = = DEBUG unify_items!grouped_items.each = = = = ="
-      puts " = = = = = DEBUG unify_items!grouped_items.each = = = = ="
-      puts " = = = = = disco: #{id} total: #{total_amount}= = = = ="
-      puts " = = = = = DEBUG unify_items!grouped_items.each = = = = ="
-      puts " = = = = = DEBUG unify_items!grouped_items.each = = = = ="
       items.build(
         disk: id,
         amount: total_amount

@@ -5,12 +5,6 @@
 <h1 class="container">Registrar nuevo género</h1>
 <br>
 
-  <% if flash[:error] %>
-    <div style="color: #b92621; padding: 1rem; background: #f9efdb; border: 1px solid #b92621; margin-bottom: 1rem;">
-      <%= flash[:error] %>
-    </div>
-  <% end %>
-
 <div id="new-genre-form" class="container">
   <article style="background-color: #f9efdb;">
     <%= form_with model: [:backstore, @genre] do |form| %>
@@ -36,7 +30,7 @@
             <div>
                   <div>
                     <%= form.label "Nombre del género" %>
-                    <%= form.text_field :genre_name, required: true, placeholder:"Metal Operístico", autocomplete:"on" %>
+                    <%= form.text_field :genre_name, required: true, placeholder:"Música popular portuguesa", autocomplete:"on" %>
                   </div>
             </div>
           </div>

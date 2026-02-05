@@ -45,7 +45,7 @@ class Backstore::UsersController < ApplicationController
       password_has_changed(update_params)
 
       ActiveRecord::Base.transaction do
-        if @user.errors.empty? && @user.update(update_params) # if @user.errors.empty && @user.update(update_params) ... else mostrar errores, puede incluir fallo en el cambio de la contraseña o no
+        if @user.errors.empty? && @user.update(update_params)
           flash[:notice] = "Usuario actualizado"
           format.html { redirect_to backstore_user_path(@user), status: :see_other }
           format.json { render :show, status: :ok, location: @user }

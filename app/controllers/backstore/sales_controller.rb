@@ -41,24 +41,14 @@ class Backstore::SalesController < ApplicationController
           flash[:notice] = "Venta creada exitosamente"
           redirect_to backstore_sale_path(@sale)
         else
-          puts " = = = = = DEBUG sales_controller = = = = ="
-          puts " = = = = = DEBUG sales_controller = = = = ="
-          puts " = = = = = sale not saved = = = = ="
-          puts " = = = = = DEBUG sales_controller = = = = ="
-          puts " = = = = = DEBUG sales_controller = = = = ="
           @all_clients = Client.latest
           @available_disks = Disk.available_ordered
           flash[:error] = "No se pudo concretar la venta la venta:"
-          flash[:alert] = " #{@sale.errors.full_messages.join(', ')}"
+          flash[:alert] = "#{@sale.errors.full_messages.join(', ')}"
           redirect_to new_backstore_sale_path
           raise ActiveRecord::Rollback
         end
       else
-        puts " = = = = = DEBUG no stock available = = = = ="
-        puts " = = = = = DEBUG no stock available = = = = ="
-        puts " = = = = = sale not saved = = = = ="
-        puts " = = = = = DEBUG no stock available = = = = ="
-        puts " = = = = = DEBUG no stock available = = = = ="
         @all_clients = Client.latest
         @available_disks = Disk.available_ordered
         flash[:error] = "No se pudo concretar la venta la venta:"
@@ -74,11 +64,11 @@ class Backstore::SalesController < ApplicationController
     authorize! :update, @sale
 
     ActiveRecord::Base.transaction do
-      @sale.items.each(&:revert_stock)
+      @sale.items.each(&:revert_stock!)
 
       if @sale.update(sale_params)
-        @sale.items.each(&:decrease_stock)
-        flash[:notice] = "¡Venta editada exitosamente! ^-^"
+        @sale.items.each(&:decrease_stock!)
+        flash[:notice] = "Venta editada exitosamente"
         redirect_to backstore_sale_path(@sale)
       else
         @all_clients = Client.latest
@@ -101,26 +91,25 @@ class Backstore::SalesController < ApplicationController
       return
     end
 
-    # Usar transacción para asegurar consistencia
     ActiveRecord::Base.transaction do
       @sale.cancelled = true
 
-      @sale.items.each(&:revert_stock)
+      @sale.items.each(&:revert_stock!)
       @sale.total = 0.0
 
       if @sale.save
-        flash[:notice] = "¡Venta cancelada exitosamente! ^-^"
+        flash[:notice] = "Venta cancelada exitosamente"
         redirect_to backstore_sale_path(@sale)
       else
         flash[:error] = "No se pudo cancelar la venta: #{@sale.errors.full_messages.join(', ')}"
         redirect_to backstore_sale_path(@sale)
-        raise ActiveRecord::Rollback  # Revertir la transacción
+        raise ActiveRecord::Rollback
       end
     end
   end
 
   def set_available_disks
-    @available_disks = Disk.where("stock > 0").order(:title)
+    @available_disks = Disk.available_ordered
   end
 
   private

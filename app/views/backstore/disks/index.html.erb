@@ -2,85 +2,166 @@
   <h1 class="container">Gestión de discos</h1>
   <br>
 
-  <div id="disk-table" class="container">
-    <table class="table-custom">
-      <thead style="background-color: #b92621">
-        <tr>
-          <th scope="col">
-            Título
-          </th>
-
-          <th scope="col">
-            Artista
-          </th>
-
-          <th scope="col">
-            Stock
-          </th>
-
-          <th scope="col">
-            Precio
-          </th>
-
-          <th scope="col">
-            Fecha
-          </th>
-
-          <th scope="col">
-            Ver detalle
-          </th>
-
-          <th scope="col">
-            Editar
-          </th>
-
-          <th scope="col">
-            Borrar
-          </th>
-
-        </tr>
-      </thead>
-
-      <tbody>
-        <% @disks.each do |disk| %>
-          <% if !disk.deleted? %>
-          <tr>
-            <td><%= disk.title %></td>
-            <td><%= disk.artist %></td>
-            <td><%= disk.stock %></td>
-
-            <td><%= number_to_currency(disk.price, :locale => :es) %></td>
-
-            <td>
-              <%= disk.created_at_local_time.strftime("%d/%m/%Y - %H:%M") %>
-            </td>
-
-            <td style="font-family: monospace;">
-                <%= link_to "Detalles", backstore_disk_path(disk) , style: "color: #1343a0; font-family: monospace; font-size: 17px;" %>
-
-            </td>
-
-            <td>
-                <%= link_to " Editar", edit_backstore_disk_path(disk) , style: "color: #1343a0; font-family: monospace; font-size: 18px;" %>
-            </td>
-
-            <td>
-              <%= link_to "¿Borrar?",
-                    backstore_disk_path(disk),
-                    method: :delete,
-                    data: {
-                      turbo_confirm: "¿Está seguro de desea dar de baja a este disco?",
-                      turbo_method: :delete
-                    },
-                    style: "color: #b92621; font-family: monospace; font-size: 17px;",
-                    class: "btn btn-warning" %>
-            </td>
-          </tr>
-          <% end %>
-        <% end %>
-      </tbody>
-    </table>
+  <div class="container" id="filter-dashboard">
+  <nav class="pico-background-red-100">
+    <details name="Filtros" closed>
+      <summary style="color: #1343a0; font-size: 22px;"><strong>▿ Filtrar discos</strong></summary>
+          <ul style="display: flex; align-items: left; gap: 0.2rem;">
+              <%= form_with url: backstore_disks_path, method: :get do |form| %>
+              <li>
+                  <%= form.search_field :artist,
+                      value: params[:artist],
+                      placeholder: "Artista",
+                      style: "height: 45px; width: 200px;" %>
+              </li>
+              <li>
+                  <%= form.search_field :title,
+                      value: params[:title],
+                      placeholder: "Título",
+                      style: "height: 45px; width: 200px;" %>
+              </li>
+              <li>
+                  <%= form.select :format,
+                      options_for_select([["CD", "CD"], ["Vinilo", "Vinilo"]], params[:format]),
+                      include_blank: "Formato",
+                      class: "form-select" %>
+              </li>
+              <li>
+                  <%= form.select :state,
+                      options_for_select([["Nuevo", "Nuevo"], ["Usado", "Usado"]], params[:state]),
+                      include_blank: "Estado",
+                      class: "form-select" %>
+              </li>
+              <li>
+                  <%= form.collection_select :genre, @genres, :id, :genre_name,
+                      include_blank: "Género",
+                      class: "form-select" %>
+              </li>
+              <li>
+                  <%= form.label "Año de lanzamiento" %>
+                  <%= decades =  Time.new.year.step(1870, -10).map { |y|
+                                 decade = y - (y % 10)
+                                 [decade, decade] }
+                      form.select :year_from,
+                        options_for_select(
+                        decades, params[:year_from]),
+                        class: "form-select",
+                        include_blank: "Desde..."
+                  %>
+                  <%= decades =  Time.new.year.step(1870, -10).map { |y|
+                                 decade = y - (y % 10)
+                                 [decade, decade] }
+                      form.select :year_to,
+                        options_for_select(
+                        decades, params[:year_to]),
+                        class: "form-select",
+                        include_blank: "Hasta..."
+                  %>
+              </li>
+              <li>
+                  <%= form.label "Rango de precios" %>
+                  <%= form.number_field :min_price, step: "1", placeholder:"Desde..." %>
+                  <%= form.number_field :max_price, step: "1", placeholder:"Hasta..." %>
+              </li>
+              <li>
+                  <div class="col-md-2">
+                    <%= form.submit "Filtrar", style: "background-color: #1343a0; font-family: monospace; height: 45px; width: 150px;" %>
+                  </div>
+              </li>
+            <% end %>
+          </ul>
+      </details>
+    </nav>
   </div>
+
+  <% if @disks.count == 0 %>
+  <br>
+    <div class="container">
+      <p style="color: #b92621;">
+        • No hay discos que cumplan con los filtros...
+      </p>
+    </div>
+  <% else %>
+    <div id="disk-table" class="container">
+      <table class="table-custom">
+        <thead style="background-color: #b92621">
+          <tr>
+            <th scope="col">
+              Título
+            </th>
+
+            <th scope="col">
+              Artista
+            </th>
+
+            <th scope="col">
+              Stock
+            </th>
+
+            <th scope="col">
+              Precio
+            </th>
+
+            <th scope="col">
+              Fecha
+            </th>
+
+            <th scope="col">
+              Ver detalle
+            </th>
+
+            <th scope="col">
+              Editar
+            </th>
+
+            <th scope="col">
+              Borrar
+            </th>
+
+          </tr>
+        </thead>
+
+        <tbody>
+          <% @disks.each do |disk| %>
+            <% if !disk.deleted? %>
+            <tr>
+              <td><%= disk.title %></td>
+              <td><%= disk.artist %></td>
+              <td><%= disk.stock %></td>
+
+              <td><%= number_to_currency(disk.price, :locale => :es) %></td>
+
+              <td>
+                <%= disk.created_at_local_time.strftime("%d/%m/%Y - %H:%M") %>
+              </td>
+
+              <td style="font-family: monospace;">
+                  <%= link_to "Detalles", backstore_disk_path(disk) , style: "color: #1343a0; font-family: monospace; font-size: 17px;" %>
+
+              </td>
+
+              <td>
+                  <%= link_to " Editar", edit_backstore_disk_path(disk) , style: "color: #1343a0; font-family: monospace; font-size: 17px;" %>
+              </td>
+
+              <td>
+                <%= link_to "¿Borrar?",
+                      backstore_disk_path(disk),
+                      method: :delete,
+                      data: {
+                        turbo_confirm: "¿Está seguro de desea dar de baja a este disco?",
+                        turbo_method: :delete
+                      },
+                      style: "color: #b92621; font-family: monospace; font-size: 17px;",
+                      class: "btn btn-warning" %>
+              </td>
+            </tr>
+            <% end %>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% end %>
 
   <div>
     <p class="container">
@@ -155,4 +236,4 @@
     </table>
   </div>
 
-         <% end %>
+<% end %>

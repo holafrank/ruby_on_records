@@ -4,12 +4,6 @@
 <h1 class="container">Editar género</h1>
 <br>
 
-  <% if flash[:error] %>
-    <div style="color: #b92621; padding: 1rem; background: #f9efdb; border: 1px solid #b92621; margin-bottom: 1rem;">
-      <%= flash[:error] %>
-    </div>
-  <% end %>
-
 <div id="edit-client-form" class="container">
   <article style="background-color: #f9efdb;">
     <%= form_with model: [:backstore, @genre]  do |form| %>

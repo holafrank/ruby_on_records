@@ -18,13 +18,13 @@ class Disk < ApplicationRecord
   # https://github.com/igorkasyanchuk/active_storage_validations
 
   validates :cover, attached: true,
-  content_type: { in: [ "image/png", "image/jpeg" ], message: "La imagen debe estar en formato JPEG o PNG" },
-  size: { less_than: 2.megabytes, message: "La imagen no puede pesar más de 2 megabytes" }
+  content_type: { in: [ "image/png", "image/jpeg" ], message: ": La imagen debe estar en formato JPEG o PNG" },
+  size: { less_than: 2.megabytes, message: ": La imagen no puede pesar más de 2 megabytes" }
 
   validates :audio_sample,
-    content_type: { in: [ "audio/mpeg", "audio/ogg", "audio/flac" ], message: "El audio debe estar en formato MP3, OGG o FLAC" },
-    size: { less_than_or_equal_to: 30.megabytes , message: "El audio no puede pesar más de 30 megabytes" },
-    duration: { less_than_or_equal_to: 30.seconds, message: "El audio no debe durar más de 30 segundos" },
+    content_type: { in: [ "audio/mpeg", "audio/ogg", "audio/flac" ], message: ": El audio debe estar en formato MP3, OGG o FLAC" },
+    size: { less_than_or_equal_to: 30.megabytes , message: ": El audio no puede pesar más de 30 megabytes" },
+    duration: { less_than_or_equal_to: 30.seconds, message: ": El audio no debe durar más de 30 segundos" },
     if: -> { state == "Usado" && audio_sample.attached? }
 
   validate :audio_only_for_used_disks
@@ -42,29 +42,31 @@ class Disk < ApplicationRecord
     only_integer: true,
     greater_than_or_equal_to: 1870,
     less_than_or_equal_to: Date.current.year,
-    message: "El año de lanzamiento debe ser un número entre 1870 y el año actual"
+    message: ": El año de lanzamiento debe ser un número entre 1870 y el año actual"
   }
 
   # :description ::= Texto descriptivo
-  validates :description, presence: true, length: { minimum: 10, message: "La descripción es demasiado corta" }
+  validates :description, presence: true, length: { minimum: 10, message: ": La descripción es demasiado corta" }
 
   # :price ::= Precio unitario
-  validates :price, presence: true, numericality: { greater_than_or_equal_to: 0, message: "El precio debe ser mayor a cero"}
+  validates :price, presence: true, numericality: { greater_than: 0, message: ": El precio debe ser mayor a cero"}
 
   # :stock ::= Cantidad disponible
   validates :stock, presence: true, numericality: {
     only_integer: true,
     greater_than_or_equal_to: 0,
-    message: "El stock debe ser mayor a cero"
+    message: ": El stock debe ser cero o más"
   }
 
   # :format ::= CD o Vinilo
   validates :format, presence: true, inclusion: { in: %w[CD Vinilo],
-    message: "No trabajamos con formato '%{value}'" }
+    message: ": No trabajamos con formato '%{value}'" }
 
   # :state ::= Nuevo o usado
   validates :state, presence: true, inclusion: { in: %w[Nuevo Usado],
-    message: "No trabajamos discos en estado '%{value}'" }
+    message: ": No trabajamos discos en estado '%{value}'" }
+
+  validate :valid_stock_for_used_disk
 
 
   # === Scopes === #
@@ -112,28 +114,10 @@ class Disk < ApplicationRecord
 
   scope :price_filter, ->(min_price, max_price) {
     if min_price.present? && max_price.present?
-      # Si se ingresa tanto price_min comoprice_max, quiere decir que el cliente busca un disco cuyo precio sea:
-      # price_min <= x <= price_max
-      # Si price_min == price_max, entonces se retorna aquellos discos cuyo precio sea igual a los precios ingresados.
-      # Ejemplo:
-      # Quiero los discos que cuesten como *mínimo* $10.000 y como *máximo* $20.000
-      # Entonces, 10.000 <= x<= 20.000
-      # Disk.price_filter(min_price: 10.000, max_price: 20.000)
       where(price: min_price..max_price) unless min_price > max_price
     elsif min_price.present? && !max_price.present?
-      # Si se ingresa un price_min, pero NO se ingresa un price_max, quiere decir que el cliente busca un disco cuyo precio sea:
-      # price_min <= x
-      # Ejemplo:
-      # Quiero los discos que cuesten como *mínimo* $10.000.
-      # Entonces, 10.000 <= x
-      # Disk.price_filter(min_price: 10.000)
       where(price: min_price..)
     elsif max_price.present? && !min_price.present?
-      # En cambio, si no se ingresa un price_min, quiere decir que el cliente busca un disco cuyo precio sea:
-      # price_max >= x
-      # Quiero los discos que cuesten como *máximo* $10.000.
-      # Entonces, 10.000 >= x
-      # Disk.price_filter(max_price: 10.000)
       where("price < ?", max_price)
     end
   }
@@ -143,20 +127,10 @@ class Disk < ApplicationRecord
     y_to = year_to if year_to.present?
 
     if y_from.present? && y_to.present?
-
       if y_to >= y_from
         where(year: y_from..y_to)
       end
-      # Si se ingresa tanto year_from como year_to, quiere decir que el cliente busca un disco cuyo año de lanzamiento se encuentre
-      # entre el year_from y el year_to
-      # Quiero los discos que hayan sido estrenados en algún momento entre el año 1998 y 2002.
-      # Entonces, 1998 <= x <= 2002
     elsif y_from.present? && !y_to.present?
-      # Si no se ingresa un year_to, quiere decir que el cliente busca un disco cuyo año de lanzamiento sea
-      # year_from <= x
-      # Quiero los discos que hayan sido estrenados en el año 1998 en adelante.
-      # Entonces, 1998 <= x
-
       where(year: y_from..)
     end
   }
@@ -177,9 +151,7 @@ class Disk < ApplicationRecord
   end
 
   def sales_containing_disk
-    Sale.joins(:items)
-            .where(items: { disk_id: id })
-            .distinct
+    Sale.all_sales_with_disk(id)
   end
 
   def total_amount_sold
@@ -187,10 +159,7 @@ class Disk < ApplicationRecord
   end
 
   def valid_sales_containing_disk
-    Sale.joins(:items)
-            .where(items: { disk_id: id })
-            .where(cancelled: false)
-            .distinct
+    Sale.valid_sales_with_disk(id)
   end
 
   def title_with_details
@@ -214,6 +183,12 @@ class Disk < ApplicationRecord
   end
 
   private
+
+  def valid_stock_for_used_disk
+    if state == "Usado" && stock != 1
+      errors.add(:stock, "Si el disco está usado, entonces ese ejemplar es único.")
+    end
+  end
 
   def audio_only_for_used_disks
     if audio_sample.attached? && state != "Usado"
