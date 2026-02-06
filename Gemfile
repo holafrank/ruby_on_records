@@ -26,7 +26,7 @@ gem "cancancan", "~> 3.6", ">= 3.6.1"
 # bcrypt() is a sophisticated and secure hash algorithm designed by The OpenBSD project for hashing passwords.
 # The bcrypt Ruby gem provides a simple wrapper for safely handling passwords.
 # Using Active Model has_secure_password
-gem "bcrypt", "~> 3.1", ">= 3.1.20"
+gem "bcrypt", "~> 3.1"
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem "tzinfo-data", platforms: %i[ windows jruby ]
