@@ -73,7 +73,7 @@ class Sale < ApplicationRecord
     items.each do |item|
       hash[item.disk] += item.amount
     end
-    return hash
+    hash
   end
 
   def unify_items!

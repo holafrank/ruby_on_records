@@ -30,6 +30,6 @@ class Item < ApplicationRecord
     if self.amount > disk.stock
       return false
     end
-    return true
+    true
   end
 end

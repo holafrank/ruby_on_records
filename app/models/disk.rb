@@ -23,7 +23,7 @@ class Disk < ApplicationRecord
 
   validates :audio_sample,
     content_type: { in: [ "audio/mpeg", "audio/ogg", "audio/flac" ], message: ": El audio debe estar en formato MP3, OGG o FLAC" },
-    size: { less_than_or_equal_to: 30.megabytes , message: ": El audio no puede pesar más de 30 megabytes" },
+    size: { less_than_or_equal_to: 30.megabytes, message: ": El audio no puede pesar más de 30 megabytes" },
     duration: { less_than_or_equal_to: 30.seconds, message: ": El audio no debe durar más de 30 segundos" },
     if: -> { state == "Usado" && audio_sample.attached? }
 

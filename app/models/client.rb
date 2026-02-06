@@ -12,7 +12,7 @@ class Client < ApplicationRecord
   # :contact ::= Contacto del cliente, puede ser un teléfono, e-mail, dirección o red social cualquiera.
   validates :contact, presence: true
 
-  scope :latest, ->{ order(created_at: :desc) }
+  scope :latest, -> { order(created_at: :desc) }
 
   def client_with_details
     "#{name} | Contacto: #{contact}"

@@ -142,5 +142,4 @@ class Backstore::DisksController < ApplicationController
     def invalid_date_params?
       params[:year_from].present? && params[:year_to].present? && params[:year_to] < params[:year_from]
     end
-
 end

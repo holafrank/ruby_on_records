@@ -30,7 +30,6 @@ class Backstore::SalesController < ApplicationController
   # POST /sales or /sales.json
   def create
     ActiveRecord::Base.transaction do
-
       @sale = Sale.new(sale_params)
       @sale.user = current_user
       @sale.unify_items!
