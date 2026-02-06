@@ -11,7 +11,7 @@ class Item < ApplicationRecord
   # :amount ::= Cantidad de un mismo producto comprado en una Venta
   validates :amount, presence: true, numericality: {
     only_integer: true,
-    greater_than_or_equal_to: 0
+    greater_than: 0, message: ": La cantidad vendida de un item debe ser mayor a cero"
   }
 
   def price

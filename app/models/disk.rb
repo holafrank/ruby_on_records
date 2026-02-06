@@ -49,7 +49,7 @@ class Disk < ApplicationRecord
   validates :description, presence: true, length: { minimum: 10, message: ": La descripción es demasiado corta" }
 
   # :price ::= Precio unitario
-  validates :price, presence: true, numericality: { greater_than: 0, message: ": El precio debe ser mayor a cero"}
+  validates :price, presence: true, numericality: { greater_than: 0, message: ": El precio debe ser mayor a cero" }
 
   # :stock ::= Cantidad disponible
   validates :stock, presence: true, numericality: {

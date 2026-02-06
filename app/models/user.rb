@@ -15,13 +15,13 @@ class User < ApplicationRecord
 
   # :full_name ::= Nombre completo de un usuario
   validates :full_name, presence: true, format: { with:  /\A[\p{L}\s]+\z/u,
-      message: "Sólo se permiten ingresar letras para el nombre" }
+      message: ": Sólo se permiten ingresar letras para el nombre" }
 
   # :email ::= Correo electrónico de un usuario
   validates :email, presence: true, uniqueness: true, format: { with: /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i,
-      message: "Formato de correo electrónico incorrecto" }
+      message: ": Formato de correo electrónico incorrecto" }
 
-  validates :password, length: { minimum: 8, message: "La contraseña debe tener como mínimo 8 coaracteres" }, if: -> { password.present? || password_confirmation.present? }
+  validates :password, length: { minimum: 8, message: ": La contraseña debe tener como mínimo 8 coaracteres" }, if: -> { password.present? || password_confirmation.present? }
 
   # === Métodos de instancia === #
 

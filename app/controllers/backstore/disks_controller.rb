@@ -61,7 +61,7 @@ class Backstore::DisksController < ApplicationController
     @genres = Genre.ordered
 
     respond_to do |format|
-      if valid_stock? && @disk.save
+      if @disk.save
         flash[:notice] = "Disco creado exitosamente"
         format.html { redirect_to @disk }
         format.json { render :show, status: :created, location: @disk }
