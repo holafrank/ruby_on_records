@@ -1,0 +1,114 @@
+
+
+<% content_for :title, "Registrar nuevo usuario" %>
+
+<h1 class="container">Registrar nuevo usuario</h1>
+<br>
+
+
+<div id="new-user-form" class="container">
+  <article style="background-color: #f9efdb;">
+    <%= form_with model: [:backstore, @user] do |form| %>
+      <% if @user.errors.any? %>
+        <div role="alert">
+          <h6 style="text-decoration: underline; color: #b92621;">Errores:</h6>
+          <ul>
+            <% @user.errors.each do |error| %>
+              <li style="color: #b92621;">
+                <p style="color: #b92621;"><%= error.full_message %></p>
+              </li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <fieldset>
+        <h4 class="container">Datos del usuario</h4>
+        <div class="grid">
+          <div class="col-8">
+            <div>
+                  <div>
+                    <%= form.label "Nombre completo" %>
+                    <%= form.text_field :full_name, required: true, placeholder:"Guillermo Cidade", autocomplete:"on" %>
+                  </div>
+                  <div>
+                    <%= form.label "Correo electrónico" %>
+                    <%= form.text_field :email, required: true, placeholder:"guillermocidade@wallas.com", autocomplete:"on" %>
+                  </div>
+
+
+                  <div class="field">
+                     <%= form.label :password, "Contraseña" %>
+                     <p>
+                       <span style="color: #b92621;">• </span> La contraseña debe tener mínimo 8 caracteres
+                     </p>
+                     <%= form.password_field :password, required: true %>
+
+                  </div>
+
+                  <div class="field">
+                     <%= form.label :password_confirmation, "Confirmar contraseña" %>
+                     <%= form.password_field :password_confirmation, required: true %>
+                   </div>
+
+
+                  <div>
+                    <legend>Establecer rol</legend>
+                    <%= form.radio_button :role, "employee" %>
+                    <%= form.label :role_employee, "Empleado" %>
+
+                    <%= form.radio_button :role, "manager" %>
+                    <%= form.label :role_manager, "Gerente" %>
+
+                    <%= form.radio_button :role, "admin" %>
+                    <%= form.label :role_admin, "Administrador" %>
+                  </div>
+            </div>
+          </div>
+        </div>
+      </fieldset>
+
+      <div style="display: inline-block;">
+        <%= form.submit "Guardar",
+                style: "
+                  background-color: #1343a0;
+                  color: white;
+                  font-family: monospace;
+                  font-size: 18px;
+                  min-width: auto;
+                  width: auto;
+                  display: inline-block;
+                " %>
+      </div>
+
+      <div style="display: inline-block;"></div>
+      <div style="display: inline-block;"></div>
+      <div style="display: inline-block;"></div>
+      <div style="display: inline-block;"></div>
+      <div style="display: inline-block;"></div>
+
+      <div style="display: inline-block;">
+        <%= link_to "Cancelar", backstore_users_path,
+                class: "secondary",
+                style: "
+                  color: #b92621;
+                  font-family: monospace;
+                  font-size: 18px;
+                  text-align: center;
+                  padding: 0.5rem;
+                  text-decoration: underline;
+                " %>
+      </div>
+
+      <br>
+    <% end %>
+  </article>
+</div>
+
+<br>
+
+<div>
+  <p class="container">
+    <%= link_to "<< Volver", backstore_users_path, style: "color: #1343a0; font-family: monospace; font-size: 18px;" %>
+  </p>
+</div>

@@ -1,0 +1,63 @@
+
+
+<h1 class="container"> <%= @genre.genre_name %> </h1>
+<br>
+
+<div id="genre-details" class="container">
+  <article style="background-color: #f9efdb;">
+<br>
+        <h4 class="container">Discos del género <%=
+            if @genre.genre_name == @genre.genre_name.upcase
+              @genre.genre_name
+            else
+            @genre.genre_name.downcase
+            end
+        %></h4>
+        <div id="disk-of-this-genre-table" class="container">
+          <table class="table-custom">
+            <thead style="background-color: #b92621">
+              <tr>
+                <th scope="col">
+                  Título
+                </th>
+
+                <th scope="col">
+                  Artista
+                </th>
+
+                <th scope="col">
+                  Disponibles
+                </th>
+
+                <th scope="col">
+                  ...
+                </th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <% @disks_of_this_genre.each do |disk| %>
+                <tr>
+                  <td><%= disk.title %></td>
+                  <td><%= disk.artist %></td>
+                  <td><%= disk.stock %></td>
+
+                  <td style="font-family: monospace;">
+                    <%= link_to "Detalles", backstore_disk_path(disk), style: "color: #1343a0; font-family: monospace; font-size: 17px;" %>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+
+  </article>
+</div>
+
+<br>
+<div>
+  <p class="container">
+    <%= link_to "<< Volver", backstore_genres_path, style: "color: #1343a0; font-family: monospace; font-size: 18px;" %> |
+    <%= link_to "Editar género", edit_backstore_genre_path(@genre), style: "color: #1343a0; font-family: monospace; font-size: 18px;" %> |
+  </p>
+</div>

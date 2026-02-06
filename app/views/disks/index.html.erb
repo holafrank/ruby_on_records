@@ -1,0 +1,109 @@
+<% content_for :title, "Discos" %>
+<h1 class="container">Discos</h1>
+<br>
+
+<div class="container" id="filter-dashboard">
+<nav class="pico-background-red-100">
+  <details name="Filtros" closed>
+    <summary style="color: #1343a0; font-size: 22px;"><strong>▿ Filtrar discos</strong></summary>
+        <ul style="display: flex; align-items: left; gap: 0.2rem;">
+            <%= form_with url: disks_path, method: :get do |form| %>
+            <li>
+                <%= form.search_field :artist,
+                    value: params[:artist],
+                    placeholder: "Artista",
+                    style: "height: 45px; width: 200px;" %>
+            </li>
+            <li>
+                <%= form.search_field :title,
+                    value: params[:title],
+                    placeholder: "Título",
+                    style: "height: 45px; width: 200px;" %>
+            </li>
+            <li>
+                <%= form.select :format,
+                    options_for_select([["CD", "CD"], ["Vinilo", "Vinilo"]], params[:format]),
+                    include_blank: "Formato",
+                    class: "form-select" %>
+            </li>
+            <li>
+                <%= form.select :state,
+                    options_for_select([["Nuevo", "Nuevo"], ["Usado", "Usado"]], params[:state]),
+                    include_blank: "Estado",
+                    class: "form-select" %>
+            </li>
+            <li>
+                <%= form.collection_select :genre, @genres, :id, :genre_name,
+                    include_blank: "Género",
+                    class: "form-select" %>
+            </li>
+            <li>
+                <%= form.label "Año de lanzamiento" %>
+                <%= decades =  Time.new.year.step(1870, -10).map { |y|
+                               decade = y - (y % 10)
+                               [decade, decade] }
+                    form.select :year_from,
+                      options_for_select(
+                      decades, params[:year_from]),
+                      class: "form-select",
+                      include_blank: "Desde..."
+                %>
+                <%= decades =  Time.new.year.step(1870, -10).map { |y|
+                               decade = y - (y % 10)
+                               [decade, decade] }
+                    form.select :year_to,
+                      options_for_select(
+                      decades, params[:year_to]),
+                      class: "form-select",
+                      include_blank: "Hasta..."
+                %>
+            </li>
+            <li>
+                <%= form.label "Rango de precios" %>
+                <%= form.number_field :min_price, step: "1", placeholder:"Desde..." %>
+                <%= form.number_field :max_price, step: "1", placeholder:"Hasta..." %>
+            </li>
+            <li>
+                <div class="col-md-2">
+                  <%= form.submit "Filtrar", style: "background-color: #1343a0; font-family: monospace; height: 45px; width: 150px;" %>
+                </div>
+            </li>
+          <% end %>
+        </ul>
+    </details>
+  </nav>
+</div>
+
+<% if @disks.count == 0 %>
+<br>
+  <div class="container">
+    <p style="color: #b92621;">
+      • No hay discos que cumplan con los filtros...
+    </p>
+  </div>
+<% end %>
+
+<div id="disks-responsive" class="container">
+  <div class="disks-grid">
+    <% @disks.each do |disk| %>
+      <article class="disk-tile" style="background-color: #f9efdb;">
+        <div style="display: flex; justify-content: center; align-items: center;">
+          <% if disk.cover.attached? %>
+            <%= image_tag disk.cover,
+                  style: "width: 300px; height: 300px; border-radius: 8px; box-shadow: 0 8px 16px rgba(0,0,0,0.1);" %>
+          <% else %>
+            <div class="pico-background-red-100" style="width: 400px; height: 400px; display: flex; align-items: center; justify-content: center; border-radius: 8px;">
+              <span style="color: #b92621;">Sin portada</span>
+            </div>
+          <% end %>
+        </div>
+        <div class="disk-content">
+          <p><span style="color: #b92621;">• </span><%= disk.title %></p>
+          <div class="disk-actions">
+            <p><%= link_to "Ver", disk, role: "button", style:"background-color: #1343a0; font-family: monospace;" %></p>
+          </div>
+        </div>
+      </article>
+    <% end %>
+  </div>
+</div>

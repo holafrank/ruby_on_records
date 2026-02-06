@@ -1,0 +1,219 @@
+
+
+<% content_for :title, "New disk" %>
+
+
+<h1 class="container">Registrar nuevo disco</h1>
+<br>
+
+<div id="new-disk-form" class="container">
+  <article style="background-color: #f9efdb;">
+    <%= form_with model: [:backstore, @disk] do |form| %>
+
+      <% if @disk.errors.any? %>
+        <div role="alert">
+          <h6 style="text-decoration: underline; color: #b92621;">Errores:</h6>
+          <ul>
+            <% @disk.errors.each do |error| %>
+              <li style="color: #b92621;">
+                <p style="color: #b92621;"><%= error.full_message %></p>
+              </li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <fieldset>
+        <h4 class="container">Datos del Disco</h4>
+        <p>
+          <span style="color: #b92621;">• </span> Complete toda la información necesaria para registrar el nuevo producto.
+        </p>
+        <p>
+          <span style="color: #b92621;">• </span> En caso de hacer falta un género musical nuevo, por favor diríjase primero a <%= link_to "Crear género", new_backstore_genre_path, style: "color: #1343a0;" %>.
+        </p>
+        <br>
+        <div class="grid">
+          <div class="col-8">
+            <div>
+              <div class="grid" label="disk-basic-data">
+                 <div class="col-6">
+                    <div>
+                        <%= form.label "Título" %>
+                        <%= form.text_field :title, required: true, placeholder:"Por Este Rio Acima", autocomplete:"on" %>
+                    </div>
+                 </div>
+                 <div class="col-6">
+                    <div>
+                        <%= form.label "Artista o banda" %>
+                        <%= form.text_field :artist, required: true, placeholder:"Fausto", autocomplete:"on" %>
+                    </div>
+                </div>
+                <div class="col-6">
+                  <div>
+                    <%= form.label "Año de lanzamiento" %>
+                    <%= form.number_field :year, required: true, placeholder:"1982", in: 1870..Date.current.year, autocomplete:"on" %>
+                  </div>
+                </div>
+              </div>
+
+              <div class="grid" label="disk-description">
+                  <div>
+                    <%= form.label "Descripción" %>
+                    <%= form.text_area :description, required: true, placeholder:"Es el primer álbum de una trilogía que también incluye los álbumes 'Crônicas da Terra Ardente' (1994) y 'Em Busca das Montanhas Azuis' (2011).  'Por Este Rio Acima' está basado en los viajes de Fernão Mendes Pinto, relatados en su libro Peregrinação (1614).", autocomplete:"on" %>
+                  </div>
+              </div>
+
+              <div class="grid" label="disk-market-data">
+                <div class="col-6">
+                  <div>
+                    <%= form.label "Precio unitario" %>
+                    <%= form.number_field :price, required: true, step: "1", min: 0, placeholder: "20000.00", autocomplete: "on" %>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div>
+                    <%= form.label "Cantidad disponible" %>
+                    <%= form.number_field :stock, required: true, min: 0, placeholder:"50", autocomplete:"on" %>
+                  </div>
+                </div>
+              </div>
+
+
+              <div class="grid" label="disk-state-data">
+                <div class="col-6">
+                  <div class="field">
+                    <%= form.label :state, "Estado del disco" %>
+                    <div>
+                      <%= form.radio_button :state, "Nuevo", checked: true,
+                            onclick: "toggleAudioField(false)" %>
+                      <%= form.label :state_nuevo, "Nuevo" %>
+
+                      <%= form.radio_button :state, "Usado",
+                            onclick: "toggleAudioField(true)" %>
+                      <%= form.label :state_usado, "Usado" %>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="field">
+                    <%= form.label :format, "Formato" %>
+                    <div>
+                      <%= form.radio_button :format, "CD", checked: true %>
+                      <%= form.label :format_cd, "CD" %>
+
+                      <%= form.radio_button :format, "Vinilo" %>
+                      <%= form.label :format_vinilo, "Vinilo" %>
+                    </div>
+                  </div>
+                </div>
+              </div>
+<br>
+
+              <div id="audio-field" style="display: none;">
+                <div class="field">
+                  <%= form.label :audio_sample, "Audio de muestra (opcional)" %>
+                    <p>
+                      <span style="color: #b92621;">• </span> Audios de 30 segundos máximo.<br>
+                      <span style="color: #b92621;">• </span> Formatos permitidos: MP3, OGG, FLAC
+                    </p>
+                  <%= form.file_field :audio_sample,
+                        accept: "audio/mpeg,audio/ogg,audio/flac,audio/wav" %>
+                  <% if @disk.audio_sample.attached? %>
+                    <p>
+                      Actual: <%= @disk.audio_sample.filename %>
+                      (<%= number_to_human_size(@disk.audio_sample.byte_size) %>)
+                    </p>
+                  <% end %>
+                </div>
+              </div>
+              <br>
+
+
+              <%= form.label "Portada" %>
+              <%= form.file_field :cover %>
+
+              <%= form.label "Imágenes" %>
+              <%= form.file_field :images %>
+
+              <%= form.label "Géneros" %>
+              <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; margin-top: 1.0rem;">
+                <%= form.collection_check_boxes :genre_ids, @genres.order(:genre_name), :id, :genre_name do |b| %>
+                  <div style="display: flex; align-items: center;">
+                    <%= b.check_box %>
+                    <%= b.label style: "margin-left: 0.25rem; margin-bottom: 0; font-size: 17px" %>
+                  </div>
+                <% end %>
+              </div>
+
+
+            </div>
+          </div>
+        </div>
+      </fieldset>
+
+      <br>
+      <div style="display: inline-block;">
+        <%= form.submit "Guardar",
+                style: "
+                  background-color: #1343a0;
+                  color: white;
+                  font-family: monospace;
+                  font-size: 18px;
+                  min-width: auto;
+                  width: auto;
+                  display: inline-block;
+                " %>
+      </div>
+
+      <div style="display: inline-block;"></div>
+      <div style="display: inline-block;"></div>
+      <div style="display: inline-block;"></div>
+      <div style="display: inline-block;"></div>
+      <div style="display: inline-block;"></div>
+
+      <div style="display: inline-block;">
+        <%= link_to "Cancelar", backstore_disks_path,
+                class: "secondary",
+                style: "
+                  color: #b92621;
+                  font-family: monospace;
+                  font-size: 18px;
+                  text-align: center;
+                  padding: 0.5rem;
+                  text-decoration: underline;
+                " %>
+      </div>
+
+      <br>
+
+      <script>
+        function toggleAudioField(show) {
+          const audioField = document.getElementById('audio-field');
+          const audioInput = document.querySelector('input[type="file"]');
+
+          if (show) {
+            audioField.style.display = 'block';
+          } else {
+            audioField.style.display = 'none';
+            // Limpiar el campo de archivo si se cambia a "Nuevo"
+            if (audioInput) audioInput.value = '';
+          }
+        }
+
+        // Inicializar según el estado actual
+        document.addEventListener('DOMContentLoaded', function() {
+          const isUsed = document.querySelector('input[name="disk[state]"][value="Usado"]').checked;
+          toggleAudioField(isUsed);
+        });
+      </script>
+    <% end %>
+  </article>
+</div>
+
+<br>
+
+<div>
+  <p class="container">
+    <%= link_to "<< Volver", backstore_disks_path, style: "color: #1343a0; font-family: monospace; font-size: 18px;" %>
+  </p>
+</div>

@@ -1,0 +1,196 @@
+
+
+<% content_for :title, "Editing sale" %>
+
+<%= content_tag :div, "",
+      data: {
+        controller: "sales",
+        sales_target: "itemsContainer"
+      } %>
+
+<h1 class="container">Editar venta</h1>
+<br>
+
+<div id="edit-sale-form" class="container">
+  <article data-controller="sales" style="background-color: #f9efdb;">
+    <%= form_with model: [:backstore, @sale]  do |form| %>
+      <% if @sale.errors.any? %>
+        <div role="alert">
+          <h4>Errores:</h4>
+
+          <ul>
+            <% @sale.errors.each do |error| %>
+              <li><%= error.full_message %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <fieldset>
+        <h4 class="container">Datos del Cliente</h4>
+
+        <p>
+          <span style="color: #b92621;">• </span> En caso que desee modificar
+          la información del cliente ya registrado, diríjase a
+          <%= link_to "Editar cliente", edit_backstore_client_path, style: "color: #1343a0;" %>.
+        </p>
+
+        <div class="grid">
+          <!-- Columna más grande para el select -->
+          <div class="col-8">
+            <%= form.collection_select :client_id, @all_clients, :id, :client_with_details,
+              { include_blank: "Seleccione un cliente...",
+                selected: @sale.client.id },
+              required: true,
+              class: "form-select",
+              placeholder: @sale.client.id %>
+          </div>
+
+          <!-- Columna más pequeña para el link, alineada verticalmente -->
+          <div
+            class="col"
+            style="display: flex; align-items: center; padding-bottom: 18px;"
+          >
+            <%= link_to "Registrar nuevo cliente", new_backstore_client_path,
+            class: "secondary",
+            style: "color: #1343a0; font-family: monospace; font-size: 18px; text-align: center;",
+            target: "_blank" %>
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <h4 class="container">Items</h4>
+
+        <p>
+          <span style="color: #b92621;">• </span> Puede modificar aquí los
+          productos y cantidades vendidas:
+        </p>
+
+        <div data-sales-target="itemsContainer">
+          <%= form.fields_for :items do |item_form| %>
+            <div
+              class="item-fields grid"
+              style="color: #1343a0; font-size: 18px;  padding: 0.2rem; "
+              data-item-id="<%= item_form.object.id if item_form.object.persisted? %>"
+              data-item-persisted="<%= item_form.object.persisted? %>"
+            >
+              <%# Campo oculto para marcar eliminación (solo para items existentes) %>
+              <% if item_form.object.persisted? %>
+                <%= item_form.hidden_field :id %>
+                <%= item_form.hidden_field :_destroy, value: "0",
+                       class: "destroy-field" %>
+              <% end %>
+
+              <div>
+                <%= item_form.label :disk_id, "Disco" %>
+
+                <%= item_form.collection_select :disk_id, @available_disks, :id, :title_with_details,
+                       {
+                         include_blank: "Seleccione un disco...",
+                         selected: item_form.object.disk_id
+                       },
+                       class: "form-select",
+                      placeholder: item_form.object.disk_id %>
+              </div>
+
+              <div>
+                <%= item_form.label :amount, "Cantidad" %>
+
+                <%= item_form.number_field :amount,
+                       min: 1,
+                       value: item_form.object.amount,
+                       placeholder: item_form.object.amount,
+                       class: "form-input" %>
+              </div>
+
+              <div>
+                <label>&nbsp;</label>
+
+                <button
+                  type="button"
+                  class="secondary"
+                  data-action="click->sales#removeItem"
+                  data-item-id="<%= item_form.object.id if item_form.object.persisted? %>"
+                  data-item-persisted="<%= item_form.object.persisted? %>"
+                  style="
+                    color: #b92621;
+                    font-family: monospace;
+                    font-size: 18px;
+                    background: transparent;
+                    border: transparent;
+                    cursor: pointer;
+                    text-decoration: underline;
+                  "
+                >
+                  Eliminar
+                </button>
+              </div>
+            </div>
+          <% end %>
+        </div>
+
+        <button
+          type="button"
+          class="secondary"
+          data-action="click->sales#addItem"
+          style="
+            color: #1343a0;
+            font-family: monospace;
+            font-size: 18px;
+            background: transparent;
+            border: transparent;
+            cursor: pointer;
+            text-decoration: underline;
+          "
+        >
+          Agregar otro disco
+        </button>
+      </fieldset>
+
+      <br>
+
+      <div style="display: inline-block;">
+        <%= form.submit "Guardar",
+                style: "
+                  background-color: #1343a0;
+                  color: white;
+                  font-family: monospace;
+                  font-size: 18px;
+                  min-width: auto;
+                  width: auto;
+                  display: inline-block;
+                " %>
+      </div>
+
+      <div style="display: inline-block;"></div>
+      <div style="display: inline-block;"></div>
+      <div style="display: inline-block;"></div>
+      <div style="display: inline-block;"></div>
+      <div style="display: inline-block;"></div>
+
+      <div style="display: inline-block;">
+        <%= link_to "Cancelar", backstore_sales_path,
+                class: "secondary",
+                style: "
+                  color: #b92621;
+                  font-family: monospace;
+                  font-size: 18px;
+                  text-align: center;
+                  padding: 0.5rem;
+                  text-decoration: underline;
+                " %>
+      </div>
+
+      <br>
+    <% end %>
+  </article>
+</div>
+
+<br>
+
+<div>
+  <p class="container">
+    <%= link_to "<< Volver", backstore_sales_path, style: "color: #1343a0; font-family: monospace; font-size: 18px;" %>
+  </p>
+</div>

@@ -1,0 +1,13 @@
+# Source - https://stackoverflow.com/a
+# Posted by Saad Masood, modified by community. See post 'Timeline' for change history
+# Retrieved 2026-01-21, License - CC BY-SA 4.0
+
+es:
+  number:
+    currency:
+      format:
+        unit: "$"
+        delimiter: "."
+        separator: ","
+        precision: 0
+        format: "%u %n"

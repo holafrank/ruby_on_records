@@ -1,0 +1,144 @@
+
+
+
+<% content_for :title, "Registros de ventas" %>
+
+<h1 class="container">Detalle de venta</h1>
+<br>
+
+<% if @sale.errors.any? %>
+  <div role="alert">
+    <h4>Errores:</h4>
+
+    <ul>
+      <% @sale.errors.each do |error| %>
+        <li><%= error.full_message %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>
+
+<div id="sales-table-ticket" class="container">
+  <table class="table-custom">
+    <thead style="background-color: #b92621">
+      <tr>
+        <th scope="col">
+          Item
+        </th>
+
+        <th scope="col">
+          Precio unitario
+        </th>
+
+        <th scope="col">
+          Cantidad
+        </th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% @sale_content.each do |sale_content| %>
+        <tr>
+          <td><%= sale_content.disk.title %></td>
+          <td><%= number_to_currency(sale_content.disk.price, :locale => :es) %></td>
+          <td><%= sale_content.amount %></td>
+        </tr>
+      <% end %>
+    </tbody>
+
+    <tfoot>
+      <tr>
+        <th style="background-color: #f9efdb; color: #b92621" scope="row">
+          Total
+        </th>
+
+        <td></td>
+
+        <td style="background-color: #f9efdb">
+          <%= number_to_currency(@sale.total, :locale => :es) %>
+        </td>
+      </tr>
+    </tfoot>
+  </table>
+</div>
+
+<div id="sales-table" class="container">
+  <table class="table-custom">
+    <thead style="background-color: #b92621">
+      <tr>
+        <th scope="col">
+          Vendedor
+        </th>
+
+        <th scope="col">
+          Cliente
+        </th>
+
+        <th scope="col">
+          Contacto
+        </th>
+
+        <th scope="col">
+          Total
+        </th>
+
+        <th scope="col">
+          Cancelada
+        </th>
+
+        <th scope="col">
+          Fecha
+        </th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr>
+        <td><%= @sale.user.full_name %></td>
+        <td><%= @sale.client.name %></td>
+        <td><%= @sale.client.contact %></td>
+        <td><%= number_to_currency(@sale.total, :locale => :es) %></td>
+
+        <% if !@sale.cancelled? %>
+          <td>
+            <%= link_to "¿Cancelar?",
+                  backstore_sale_path(@sale),
+                  method: :delete,
+                  data: {
+                    turbo_confirm: "¿Estás seguro de cancelar esta venta? No hay vuelta atrás...",
+                    turbo_method: :delete
+                  },
+                  style: "color: #1343a0; font-family: monospace; font-size: 17px;",
+                  class: "btn btn-warning" %>
+          </td>
+        <% else %>
+          <td style="color: #b92621;font-family: monospace; font-size: 17px;">
+            Cancelada
+          </td>
+        <% end %>
+
+        <td><%= @sale.created_at_local_time.strftime("%d-%m-%Y   %H:%M") %></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<br>
+
+<div>
+  <p class="container">
+    <%= link_to "<< Volver", backstore_sales_path, style: "color: #1343a0; font-family: monospace; font-size: 18px;" %>
+    |
+    <%= link_to " Editar venta", edit_backstore_sale_path(@sale) , style: "color: #1343a0; font-family: monospace; font-size: 18px;" %>
+    <% if !@sale.cancelled? %>
+    | <%= link_to "Descargar factura",
+           backstore_invoice_path(@sale, format: :pdf),
+           style: "color: #1343a0; font-family: monospace; font-size: 18px;",
+           target: "_blank" %>
+    | <%= link_to "Ver factura",
+           backstore_invoice_preview_path(@sale, format: :pdf),
+           style: "color: #1343a0; font-family: monospace; font-size: 18px;",
+           target: "_blank" %>
+    <% end %>
+  </p>
+</div>

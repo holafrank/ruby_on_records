@@ -1,0 +1,96 @@
+
+
+<% content_for :title, "Usuarios" %>
+
+<h1 class="container">Plantel</h1>
+
+<div id="users-table" class="container">
+  <table class="table-custom">
+    <thead style="background-color: #b92621">
+      <tr>
+        <th scope="col">
+          Nombre
+        </th>
+
+        <th scope="col">
+          Correo electrónico
+        </th>
+
+        <th scope="col">
+          Rol
+        </th>
+
+        <th scope="col">
+          Editar
+        </th>
+
+          <th>
+            Suspender
+          </th>
+
+        <th scope="col">
+          ...
+        </th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% @users.each do |user| %>
+        <tr>
+          <td><%= user.full_name %></td>
+          <td><%= user.email %></td>
+          <td><%= user.get_role %></td>
+
+          <% if can? :edit, user %>
+            <td style="font-family: monospace;">
+              <%= link_to "Editar", edit_backstore_user_path(user), style: "color: #1343a0; font-family: monospace; font-size: 18px;" %>
+            </td>
+          <% else %>
+            <td style="color: #b92621;font-family: monospace; font-size: 17px;">
+              Editar
+            </td>
+          <% end %>
+
+          <% if can? :destroy, user %>
+            <% if !user.suspended? %>
+              <td>
+                <%= link_to "Suspender", backstore_user_path(user), method: :delete,
+                  method: :delete,
+                  data: {
+                    turbo_confirm: "¿Estás seguro de suspender al usuario #{user.full_name}?",
+                    turbo_method: :delete
+                  },
+                  style: "color: #b92621; font-family: monospace; font-size: 17px;",
+                  class: "btn btn-warning" %>
+              </td>
+            <% else %>
+              <td>
+                <%= link_to "Habilitar", backstore_user_path(user),
+                  method: :delete,
+                  data: {
+                    turbo_confirm: "¿Estás seguro de habilitar nuevamente al usuario #{user.full_name}?",
+                    turbo_method: :delete
+                  },
+                  style: "color: #1343a0; font-family: monospace; font-size: 17px;",
+                  class: "btn btn-warning" %>
+              </td>
+            <% end %>
+          <% else %>
+            <td> - </td>
+          <% end %>
+          <td style="font-family: monospace;">
+            <%= link_to "Detalles", backstore_user_path(user), style: "color: #1343a0; font-family: monospace; font-size: 17px;" %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+
+
+<div>
+  <p class="container">
+    <%= link_to "<< Volver", backstore_users_path, style: "color: #1343a0; font-family: monospace; font-size: 18px;" %> |
+    <%= link_to "Nuevo usuario", new_backstore_user_path, style: "color: #1343a0; font-family: monospace; font-size: 18px;" %>
+  </p>
+</div>

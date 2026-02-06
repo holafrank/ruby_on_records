@@ -1,0 +1,41 @@
+<% content_for :title, "Ruby on Records" %>
+
+<br>
+<div id="new-genre-form" class="container">
+  <article style="background-color: #f9efdb;">
+    <%= form_with url: login_path, method: :post do |form| %>
+
+      <fieldset>
+        <h4 class="container">Iniciar sesión</h4>
+        <div class="grid">
+          <div class="col-8">
+            <div>
+              <div>
+                <%= form.label :email, "Email" %>
+                <%= form.email_field :email, required: true, placeholder: "empleado@rubyonrecords.com", autofocus: true %>
+              </div>
+              <div>
+                <%= form.label :password, "Contraseña" %>
+                <%= form.password_field :password, required: true %>
+              </div>
+            </div>
+          </div>
+        </div>
+      </fieldset>
+
+      <div style="display: inline-block;">
+        <%= form.submit "Ingresar",
+                style: "
+                  background-color: #1343a0;
+                  color: white;
+                  font-family: monospace;
+                  font-size: 18px;
+                  min-width: auto;
+                  width: auto;
+                  display: inline-block;
+                " %>
+      </div>
+      <br>
+    <% end %>
+  </article>
+</div>
