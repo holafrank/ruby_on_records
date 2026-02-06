@@ -94,7 +94,25 @@
       | <%= link_to "Editar usuario", edit_backstore_user_path(@user), style: "color: #1343a0; font-family: monospace; font-size: 18px;" %>
     <% end %>
     <% if can? :delete, @user %>
-      | <%= link_to "Eliminar usuario", backstore_user_path(@user), method: :delete, style: "color: #1343a0; font-family: monospace; font-size: 18px;" %>
+      <% if @user.suspended? %>
+        | <%= link_to "Habilitar usuario", backstore_user_path(@user),
+          method: :delete,
+          data: {
+            turbo_confirm: "¿Estás seguro de habilitar nuevamente al usuario #{@user.full_name}?",
+            turbo_method: :delete
+          },
+          style: "color: #1343a0; font-family: monospace; font-size: 18px;",
+          class: "btn btn-warning" %>
+      <% else %>
+      | <%= link_to "Suspender usuario", backstore_user_path(@user), method: :delete,
+        method: :delete,
+        data: {
+          turbo_confirm: "¿Estás seguro de suspender al usuario #{@user.full_name}?",
+          turbo_method: :delete
+        },
+        style: "color: #1343a0; font-family: monospace; font-size: 18px;",
+        class: "btn btn-warning" %>
+      <% end %>
     <% end %>
   </p>
 </div>
