@@ -42,7 +42,7 @@ class Backstore::GenresController < ApplicationController
   def update
     respond_to do |format|
       if @genre.update(genre_params)
-        format.html { redirect_to backstore_genre_path(@genre), notice: "Genre was successfully updated.", status: :see_other }
+        format.html { redirect_to backstore_genre_path(@genre), notice: "Género modificado exitosamente" , status: :see_other }
         format.json { render :show, status: :ok, location: @genre }
       else
         format.html { render :edit, status: :unprocessable_entity }

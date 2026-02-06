@@ -66,9 +66,6 @@ class Backstore::DisksController < ApplicationController
         format.html { redirect_to @disk }
         format.json { render :show, status: :created, location: @disk }
       else
-        puts "-------------- DEBUG --------------"
-        puts "-------------- NO SE CREÓ EL DISCO --------------"
-        puts "-------------- DEBUG --------------"
         flash[:error] = "No se pudo crear el disco:"
         flash[:alert] = "#{@disk.errors.full_messages.join(', ')}"
         @genres = Genre.ordered
