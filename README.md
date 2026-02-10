@@ -58,7 +58,7 @@ La aplicación permitirá al personal del negocio administrar el stock de produc
 
 ### Diagrama
 
-Este es un diagrama de las etapas tempranas de diseño de la base de datos. Éste contiene los modelos que representan a los Discos, Géneros, Items, Ventas, Usuarios y Compradores.
+Este es un diagrama graficado durante las etapas tempranas de diseño de la base de datos, antes de su implementación definitiva. Éste contiene los modelos que representan a los Discos, Géneros, Items, Ventas, Usuarios y Compradores y cómo se relacionan entre sí. Éstas decisiones de diseño y modelado se mantuvieron hasta el final, con la excepción de algunos atributos adicionales que fueron agregados a posteriori.
 
 ![Diagrama](diagrama.png)
 
@@ -89,9 +89,9 @@ El modelo de Ventas a su vez utiliza _validaciones_ y _callbacks_ para garantiza
 
 #### Módulo de usuarios y clientes (Users & Clients)
 
-Los permisos son manejados a través de la biblioteca/gema [CanCanCan](https://rubygems.org/gems/cancancan/versions/3.6.1). En el modelo [Ability](app/models/ability.rb) se describe e implementan los permisos de cada usuario y de los clientes que sólo acceden al portal publico.
+Los permisos son manejados a través de la gema [CanCanCan](https://rubygems.org/gems/cancancan/versions/3.6.1). En el modelo [Ability](app/models/ability.rb) se describe e implementan los permisos de cada usuario y de los clientes que sólo acceden al portal publico.
 
-Para el sistema de log-in y registro de nuevos usuarios fue implementado con la biblioteca/gema [bcrypt](https://rubygems.org/gems/bcrypt), que provee facilidades para la autenticación y hasheo de contraseñas. El log-in se maneja en [sessions_controller](app/controllers/sessions_controller.rb). Por otro lado, el registro de nuevos usuarios y la suspensión de usuarios ya existentes se maneja en el modelo de [Usuarios](app/models/user.rb) y en su controlador.
+Para el sistema de log-in y registro de nuevos usuarios fue implementado con la gema [bcrypt](https://rubygems.org/gems/bcrypt), que provee facilidades para la autenticación y hasheo de contraseñas. El log-in se maneja en [sessions_controller](app/controllers/sessions_controller.rb). Por otro lado, el registro de nuevos usuarios y la suspensión de usuarios ya existentes se maneja en el modelo de [Usuarios](app/models/user.rb) y en su controlador.
 
 Dada la escala y contexto del sitio que se nos encargó, consideramos que usar [Devise](https://rubygems.org/gems/devise) podía llegar a ser demasiado. Sin embargo, si a futuro se desea implementar un sistema de registro y log-in para Clientes, aumentando notoriamente la escala y complejidad, entonces usar _Devise_ puede ser lo más indicado.
 
@@ -102,7 +102,9 @@ Dada la escala y contexto del sitio que se nos encargó, consideramos que usar [
 
 #### Módulo de facturas (Invoices)
 
-La generación de facturas en formato `.pdf` es manejada por el modelo [invoice_pdf_generator](app/services/invoice_pdf_generator.rb) y manejada por el controlador [invoices_controller](app/controllers/backstore/invoices_controller.rb).
+La generación de facturas en formato `.pdf` es manejada por el modelo [invoice_pdf_generator](app/services/invoice_pdf_generator.rb) y por el controlador [invoices_controller](app/controllers/backstore/invoices_controller.rb).
+
+La gema utilizada para implementar la escritura de `.pdf` es [prawn](https://rubygems.org/gems/prawn).
 
 ###### Aclaraciones y otras decisiones de diseño:
 
