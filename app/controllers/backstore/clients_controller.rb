@@ -28,9 +28,9 @@ class Backstore::ClientsController < ApplicationController
       flash[:notice] = "Cliente registrado exitosamente"
       redirect_to backstore_clients_path
     else
-      flash[:alert] = "No se pudo registar al cliente: #{@client.errors.full_messages.join(', ')}"
-      render :new, status: :unprocessable_entity
-      redirect_to backstore_new_client_path
+      flash[:error] = "No se pudo registar al cliente"
+      format.html { render :new, status: :unprocessable_entity }
+      format.json { render json: @client.errors, status: :unprocessable_entity }
     end
   end
 

@@ -11,3 +11,56 @@ es:
         separator: ","
         precision: 0
         format: "%u %n"
+
+  activerecord:
+    errors:
+      models:
+        disk:
+          attributes:
+            cover:
+              blank: "Los discos deben tener una portada"
+              file_size_not_less_than: "La imagen no puede pesar más de %{max} megabytes"
+              content_type_invalid: "La imagen sólo puede estar en formato PNG o JPG"
+            audio_sample:
+              duration_not_less_than_or_equal_to: "El audio no debe durar más de %{max} segundos"
+              content_type_invalid: "El audio debe estar en formato MP3, OGG o FLAC"
+            description:
+              too_short: "La descripción es demasiado corta"
+              blank: "La descripción no puede estar en blanco"
+            title:
+              blank: "Un disco debe tener título"
+            artist:
+              blank: "Un disco debe tener autoría"
+            year:
+              blank: "Un disco debe tener un año de lanzamiento"
+              greater_than: "El año de lanzamiento no puede ser posterior al año actual"
+              less_than: "El año de lanzamiento no puede ser anterior a 1870"
+              not_an_integer: "El año de lanzamiento debe ser un número entero"
+            price:
+              blank: "El precio no puede dejarse en blanco"
+              greater_than: "El precio debe ser mayor a cero"
+            stock:
+              blank: "El stock no puede dejarse en blanco"
+              not_an_integer: "El stock debe ser un número entero"
+              greater_than_or_equal_to: "El stock debe ser cero o más"
+            format:
+              blank: "Seleccione un formato para el disco"
+              inclusion: "No trabajamos con formato '%{value}'"
+            state:
+              blank: "Seleccione un estado para el disco"
+              inclusion: "No trabajamos discos en estado '%{value}'"
+    models:
+      disk: Disco
+    attributes:
+      disk:
+        title: "Título:"
+        artist: "Artista:"
+        year: "Año:"
+        description: "Descripción:"
+        price: "Precio:"
+        stock: "Stock:"
+        format: "Formato:"
+        state: "Estado:"
+        cover: "Portada:"
+        genres: "Géneros:"
+        audio_sample: "Muestra de audio:"

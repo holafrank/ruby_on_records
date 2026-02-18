@@ -18,13 +18,13 @@ class Disk < ApplicationRecord
   # https://github.com/igorkasyanchuk/active_storage_validations
 
   validates :cover, attached: true,
-  content_type: { in: [ "image/png", "image/jpeg" ], message: ": La imagen debe estar en formato JPEG o PNG" },
-  size: { less_than: 2.megabytes, message: ": La imagen no puede pesar más de 2 megabytes" }
+  content_type: { in: [ "image/png", "image/jpeg" ] },
+  size: { less_than: 2.megabytes }
 
   validates :audio_sample,
-    content_type: { in: [ "audio/mpeg", "audio/ogg", "audio/flac" ], message: ": El audio debe estar en formato MP3, OGG o FLAC" },
-    size: { less_than_or_equal_to: 30.megabytes, message: ": El audio no puede pesar más de 30 megabytes" },
-    duration: { less_than_or_equal_to: 30.seconds, message: ": El audio no debe durar más de 30 segundos" },
+    content_type: { in: [ "audio/mpeg", "audio/ogg", "audio/flac" ] },
+    size: { less_than_or_equal_to: 30.megabytes },
+    duration: { less_than_or_equal_to: 30.seconds },
     if: -> { state == "Usado" && audio_sample.attached? }
 
   validate :audio_only_for_used_disks
@@ -41,43 +41,43 @@ class Disk < ApplicationRecord
   validates :year, presence: true, numericality: {
     only_integer: true,
     greater_than_or_equal_to: 1870,
-    less_than_or_equal_to: Date.current.year,
-    message: ": El año de lanzamiento debe ser un número entre 1870 y el año actual"
+    less_than_or_equal_to: Date.current.year
   }
 
   # :description ::= Texto descriptivo
-  validates :description, presence: true, length: { minimum: 10, message: ": La descripción es demasiado corta" }
+  validates :description, presence: true, length: { minimum: 10 }
 
   # :price ::= Precio unitario
-  validates :price, presence: true, numericality: { greater_than: 0, message: ": El precio debe ser mayor a cero" }
+  validates :price, presence: true, numericality: { greater_than: 0 }
 
   # :stock ::= Cantidad disponible
   validates :stock, presence: true, numericality: {
     only_integer: true,
-    greater_than_or_equal_to: 0,
-    message: ": El stock debe ser cero o más"
+    greater_than_or_equal_to: 0
   }
 
   # :format ::= CD o Vinilo
-  validates :format, presence: true, inclusion: { in: %w[CD Vinilo],
-    message: ": No trabajamos con formato '%{value}'" }
+  validates :format, presence: true, inclusion: { in: %w[CD Vinilo] }
 
   # :state ::= Nuevo o usado
-  validates :state, presence: true, inclusion: { in: %w[Nuevo Usado],
-    message: ": No trabajamos discos en estado '%{value}'" }
+  validates :state, presence: true, inclusion: { in: %w[Nuevo Usado] }
 
   validate :valid_stock_for_used_disk
 
 
   # === Scopes === #
 
-  scope :available, -> { where("stock > ?", 0).where(logic_delete: false) }
+  scope :has_stock, -> { where("stock > ?", 0) }
 
-  scope :available_ordered, -> { where("stock > ?", 0).where(logic_delete: false).order(:title) }
+  scope :not_deleted, -> { where(logic_delete: false) }
 
-  scope :outlet, ->(limit = 10, stock_limit = 10) { where(stock: 1..stock_limit).order(stock: :desc).order("RANDOM()").limit(limit) }
+  scope :available, -> { has_stock.not_deleted }
 
-  scope :new_arrivals, ->(limit = 10) { where("stock > ?", 0).order(created_at: :desc).limit(limit) }
+  scope :available_ordered, -> { available.order(:title) }
+
+  scope :outlet, ->(limit = 10, stock_limit = 10) { where(stock: 1..stock_limit).not_deleted.order(stock: :desc).order("RANDOM()").limit(limit) }
+
+  scope :new_arrivals, ->(limit = 10) { available.order(created_at: :desc).limit(limit) }
 
   scope :recommended, ->(disk, limit = 10) {
     return none if disk.genre_ids.empty?
@@ -182,23 +182,33 @@ class Disk < ApplicationRecord
     self.logic_delete
   end
 
+  def remove_audio_sample!
+    if audio_sample.attached?
+      self.audio_sample.purge
+      true
+    else
+      return false
+    end
+  end
+
   private
 
   def valid_stock_for_used_disk
     if state == "Usado" && stock != 1
-      errors.add(:stock, "Si el disco está usado, entonces ese ejemplar es único.")
+      errors.add(:stock, "Si el disco está usado, entonces ese ejemplar es único")
     end
   end
 
   def audio_only_for_used_disks
     if audio_sample.attached? && state != "Usado"
-      errors.add(:audio_sample, "Sólo los discos usados tienen permitido tener un audio adjuntado.")
+      errors.add(:audio_sample, "Sólo los discos usados tienen permitido tener un audio adjuntado")
     end
   end
 
   def at_least_one_genre
     if genres.empty?
-      errors.add(:genres, "Un disco debe tener al menos un género.")
+      errors.add(:genres, "Un disco debe tener al menos un género")
     end
   end
+
 end
