@@ -11,7 +11,7 @@ class Item < ApplicationRecord
   # :amount ::= Cantidad de un mismo producto comprado en una Venta
   validates :amount, presence: true, numericality: {
     only_integer: true,
-    greater_than: 0, message: ": La cantidad vendida de un item debe ser mayor a cero"
+    greater_than: 0, message: "La cantidad vendida de un item debe ser mayor a cero"
   }
 
   def price
@@ -28,6 +28,7 @@ class Item < ApplicationRecord
 
   def enough_stock?
     if self.amount > disk.stock
+      errors.add(:stock, "La venta debe tener al menos un disco")
       return false
     end
     true

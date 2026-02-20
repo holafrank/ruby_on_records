@@ -33,27 +33,20 @@ class Backstore::SalesController < ApplicationController
       @sale = Sale.new(sale_params)
       @sale.user = current_user
       @sale.unify_items!
-
-      if @sale.stock_available?
-        if @sale.save
-          @sale.decrease_items_stock
-          flash[:notice] = "Venta creada exitosamente"
-          redirect_to backstore_sale_path(@sale)
-        else
-          @all_clients = Client.latest
-          @available_disks = Disk.available_ordered
-          flash[:error] = "No se pudo concretar la venta la venta:"
-          flash[:alert] = "#{@sale.errors.full_messages.join(', ')}"
-          redirect_to new_backstore_sale_path
-          raise ActiveRecord::Rollback
-        end
-      else
-        @all_clients = Client.latest
-        @available_disks = Disk.available_ordered
-        flash[:error] = "No se pudo concretar la venta la venta:"
-        flash[:alert] = " #{@sale.errors.full_messages.join(', ')}"
-        redirect_to new_backstore_sale_path
-        raise ActiveRecord::Rollback
+      respond_to do |format|
+          if @sale.save
+            @sale.decrease_items_stock
+            flash[:notice] = "Venta creada exitosamente"
+            redirect_to backstore_sale_path(@sale)
+            format.json { render :show, status: :created, location: @sale }
+          else
+            @all_clients = Client.latest
+            @available_disks = Disk.available_ordered
+            flash[:error] = "No se pudo concretar la venta"
+            render :new, status: :unprocessable_entity
+            format.json { render json: @sale.errors, status: :unprocessable_entity }
+            raise ActiveRecord::Rollback
+          end
       end
     end
   end

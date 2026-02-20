@@ -48,10 +48,35 @@ es:
               inclusion: "No trabajamos con formato '%{value}'"
             state:
               blank: "Seleccione un estado para el disco"
-              inclusion: "No trabajamos discos en estado '%{value}'"
+        sale:
+          attributes:
+            cancelled:
+              blank: "Una venta debe tener un atributo de cancelación obligatoriamente"
+              inclusion: "El valor ingresado para el atributo de cancelación es inválido"
+            total:
+              blank: "El total no puede dejarse en blanco"
+              greater_than_or_equal_to: "El total de una venta debe ser cero o más"
+            user:
+              blank: "La venta debe tener un vendedor asociado"
+            client:
+              blank: "La venta debe tener un cliente asociado"
+        item:
+          attributes:
+            disk:
+              required: "La venta debe tener al menos un disco"
     models:
       disk: Disco
+      sale: Venta
     attributes:
+      items:
+        disk: "Items:"
+      sale:
+        cancelled: "Cancelación:"
+        total: "Total:"
+        user: "Vendedor:"
+        client: "Cliente:"
+        items: "Items:"
+        stock: "Stock:"
       disk:
         title: "Título:"
         artist: "Artista:"

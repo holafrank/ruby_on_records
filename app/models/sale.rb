@@ -31,6 +31,12 @@ class Sale < ApplicationRecord
   # :total ::= Total a pagar de una Venta
   validates :total, presence: true, numericality: { greater_than_or_equal_to: 0 }
 
+  validates :user, presence: true
+
+  validates :client, presence: true
+
+  validate :stock_available, if: :all_valid_items
+
   # === Callbacks === #
   before_validation :set_defaults
   before_save :calculate_total
@@ -58,14 +64,6 @@ class Sale < ApplicationRecord
 
   def cancelled?
     self.cancelled
-  end
-
-  def stock_available?
-    items.all? do |item|
-      check = item.enough_stock?
-      errors.add(:base, "La venta excede el stock disponible. El stock actual de '#{item.disk.title}' es de #{item.disk.stock} copia/s") unless check
-      return check
-    end
   end
 
   def group_items
@@ -103,6 +101,24 @@ class Sale < ApplicationRecord
   end
 
   private
+
+  def all_valid_items
+    return false if items.nil? || items.empty?
+    check = true
+    items.all? do |item|
+      check = check && item.disk_id.present?
+    end
+    check
+  end
+
+  def stock_available
+    items.all? do |item|
+      check = item.disk_id.present? && item.enough_stock?
+      errors.add(:stock, "La venta excede el stock disponible. El stock actual de '#{item.disk.title}' es de #{item.disk.stock} copia/s") unless check
+      return check
+    end
+  end
+
   def set_defaults
     self.total ||= 0
     self.cancelled ||= false
@@ -115,4 +131,5 @@ class Sale < ApplicationRecord
   def calculate_total_reload
     update_column(:total, items.reload.sum(&:price))
   end
+
 end

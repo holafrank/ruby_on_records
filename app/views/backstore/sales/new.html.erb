@@ -18,11 +18,12 @@
     <%= form_with model: [:backstore, @sale] do |form| %>
       <% if @sale.errors.any? %>
         <div role="alert">
-          <h4>Errores:</h4>
-
+          <h6 style="text-decoration: underline; color: #b92621;">Errores:</h6>
           <ul>
             <% @sale.errors.each do |error| %>
-              <li><%= error.full_message %></li>
+              <li style="color: #b92621;">
+                <p style="color: #b92621;"><%= error.full_message %></p>
+              </li>
             <% end %>
           </ul>
         </div>

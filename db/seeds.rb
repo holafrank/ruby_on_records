@@ -15,10 +15,8 @@ Genre.destroy_all
 # === Géneros Musicales === #
 
 genres = [
-  "R&B", "Pop", "Soul", "Funk", "Indie rock", "Rock", "Rock progresivo", "Folklore", "Cumbia", "Cumbia villera",
-  "Psicodelico", "Rock argentino", "Rock alternativo", "K-pop", "Pop rock", "Jazz", "Tango", "Movida tropical", "Chacarera",
-  "Bolero", "Balada romántica", "Cuarteto", "Electrónica", "Música clásica", "Ballet", "Chamamé", "Milonga",
-  "Carnavalito", "Pericón", "Zamba", "Samba", "Trap", "Hip-Hop", "Rap Argentino", "Rap", "RKT", "Ópera"
+  "R&B", "Pop", "Soul", "Funk", "Indie rock", "Rock", "Rock progresivo", "Folklore","Psicodelico", "Rock argentino", "Rock alternativo",
+  "K-pop", "Pop rock", "Jazz", "Tango", "Electrónica", "Música clásica", "Samba", "Trap", "Hip-Hop", "Ópera"
 ]
 
 genres.each do |genre_name|
