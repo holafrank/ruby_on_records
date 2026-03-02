@@ -58,7 +58,7 @@
 
                   </div>
 
-                  <% if @user.manager? || @user.admin? %>
+                  <% if current_user.manager? || current_user.admin? %>
                     <br>
                     <div>
                       <h4 class="container">Cambiar rol</h4>
@@ -68,8 +68,10 @@
                       <%= form.radio_button :role, "manager" %>
                       <%= form.label :role_manager, "Gerente" %>
 
-                      <%= form.radio_button :role, "admin" %>
-                      <%= form.label :role_admin, "Administrador" %>
+                      <% if current_user.admin? %>
+                        <%= form.radio_button :role, "admin" %>
+                        <%= form.label :role_admin, "Administrador" %>
+                      <% end %>
                     </div>
                     <br>
                   <% end %>

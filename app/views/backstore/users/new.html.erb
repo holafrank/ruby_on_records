@@ -61,8 +61,10 @@
                     <%= form.radio_button :role, "manager" %>
                     <%= form.label :role_manager, "Gerente" %>
 
-                    <%= form.radio_button :role, "admin" %>
-                    <%= form.label :role_admin, "Administrador" %>
+                    <% if current_user.admin? %>
+                      <%= form.radio_button :role, "admin" %>
+                      <%= form.label :role_admin, "Administrador" %>
+                    <% end %>
                   </div>
             </div>
           </div>

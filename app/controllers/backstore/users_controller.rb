@@ -24,18 +24,18 @@ class Backstore::UsersController < ApplicationController
 
   # POST /users or /users.json
   def create
-      @user = User.new(user_params)
-      respond_to do |format|
-        if @user.save
-          flash[:notice] = "Usuario creado exitosamente"
-          format.html { redirect_to backstore_user_path(@user) }
-          format.json { render :show, status: :created, location: @user }
-        else
-          flash[:alert] = "No se pudo crear usuario: #{@user.errors.full_messages.join(', ')}"
-          format.html { render :new, status: :unprocessable_entity }
-          format.json { render json: @user.errors, status: :unprocessable_entity }
-        end
+    @user = User.new(user_params)
+    respond_to do |format|
+      if @user.save
+        flash[:notice] = "Usuario creado exitosamente"
+        format.html { redirect_to backstore_user_path(@user) }
+        format.json { render :show, status: :created, location: @user }
+      else
+        flash[:error] = "No se pudo crear usuario:"
+        format.html { render :new, status: :unprocessable_entity }
+        format.json { render json: @user.errors, status: :unprocessable_entity }
       end
+    end
     end
 
   # PATCH/PUT /users/1 or /users/1.json
@@ -44,23 +44,21 @@ class Backstore::UsersController < ApplicationController
       update_params = prepare_update_params()
       password_has_changed(update_params)
 
-      ActiveRecord::Base.transaction do
-        if @user.errors.empty? && @user.update(update_params)
-          flash[:notice] = "Usuario actualizado"
-          format.html { redirect_to backstore_user_path(@user), status: :see_other }
-          format.json { render :show, status: :ok, location: @user }
-        else
-          format.html { render :edit, status: :unprocessable_entity }
-          format.json { render json: @user.errors, status: :unprocessable_entity }
-          raise ActiveRecord::Rollback
-        end
+      if valid_role_update? && @user.errors.empty? && @user.update(update_params)
+        flash[:notice] = "Usuario actualizado"
+        format.html { redirect_to backstore_user_path(@user), status: :see_other }
+        format.json { render :show, status: :ok, location: @user }
+      else
+        flash[:error] = "El Usuario no pudo ser actualizado"
+        format.html { render :edit, status: :unprocessable_entity }
+        format.json { render json: @user.errors, status: :unprocessable_entity }
       end
     end
   end
 
   # DELETE /users/1 or /users/1.json
   def destroy
-    ActiveRecord::Base.transaction do
+    if current_user == @user
       @user.toggle_suspension
       if @user.save
         flash[:notice] = "Suspensión resuelta."
@@ -68,7 +66,6 @@ class Backstore::UsersController < ApplicationController
       else
         flash[:alert] = "No se pudo manejar la suspensión del usuario: #{@user.errors.full_messages.join(', ')}"
         redirect_to backstore_user_path(@user)
-        raise ActiveRecord::Rollback
       end
     end
   end
@@ -113,5 +110,32 @@ class Backstore::UsersController < ApplicationController
         params.except!(:password, :password_confirmation)
       end
       params
+    end
+
+    def valid_admin_role_set?
+      if user_params[:role] == "admin"
+        if current_user.admin?
+          return true
+        else
+          @user.errors.add(:base, "No tiene permisos para volver a alguien Administrador")
+          return false
+        end
+      end
+      return true
+    end
+
+    def valid_role_update?
+      if user_params[:role] != current_user.role && @user.id == current_user.id
+        if current_user.admin?
+          return true
+        else
+          @user.errors.add(:base, "No tiene permitido cambiar su propio rol")
+          return false
+        end
+      end
+
+      return false unless valid_admin_role_set?
+
+      return true
     end
 end
