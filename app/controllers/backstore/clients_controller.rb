@@ -42,7 +42,7 @@ class Backstore::ClientsController < ApplicationController
         format.html { redirect_to backstore_client_path(@client), status: :see_other }
         format.json { render :show, status: :ok, location: backstore_client_path(@client) }
       else
-        flash[:alert] = "No se pudo modificar al cliente: #{@client.errors.full_messages.join(', ')}"
+        flash[:error] = "No se pudo modificar al cliente"
         format.html { render :edit, status: :unprocessable_entity }
         format.json { render json: @client.errors, status: :unprocessable_entity }
       end

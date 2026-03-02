@@ -7,7 +7,7 @@ class Client < ApplicationRecord
   # === Validadores === #
 
   # :name ::= Nombre del cliente
-  validates :name, presence: true
+  validates :name, presence: true, format: { with: /\A[a-zA-Z\s\.\'-]+\z/ }, length: { minimum: 2 }
 
   # :contact ::= Contacto del cliente, puede ser un teléfono, e-mail, dirección o red social cualquiera.
   validates :contact, presence: true
