@@ -37,7 +37,7 @@ class Ability
     # El resto de los recursos deben ser accedidos por usuarios logueados únicamente.
     return unless user.present?
 
-    # Todos los roles deben poder modificar los datos de su propia cuenta, menos su rol.
+    # Todos los roles deben poder modificar los datos de su propia cuenta, MENOS su rol.
 
     # Un empleado puede administrar productos y ventas, pero no puede gestionar usuarios.
     # Puede editar sólo sus propios datos.
@@ -62,6 +62,7 @@ class Ability
       can :read, User
 
       can [ :create, :new, :update, :edit, :destroy ], User, role: [ :employee, :manager ]
+
       cannot [ :update ], User, [ :role ], id: user.id
 
     end
