@@ -15,7 +15,7 @@ Genre.destroy_all
 # === Géneros Musicales === #
 
 genres = [
-  "R&B", "Pop", "Soul", "Funk", "Indie rock", "Rock", "Rock progresivo", "Folklore","Psicodelico", "Rock argentino", "Rock alternativo",
+  "R&B", "Pop", "Soul", "Funk", "Indie rock", "Rock", "Rock progresivo", "Folklore", "Psicodelico", "Rock argentino", "Rock alternativo",
   "K-pop", "Pop rock", "Jazz", "Tango", "Electrónica", "Música clásica", "Samba", "Trap", "Hip-Hop", "Ópera"
 ]
 
