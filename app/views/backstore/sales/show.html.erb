@@ -134,11 +134,11 @@
     <%= link_to " Editar venta", edit_backstore_sale_path(@sale) , style: "color: #1343a0; font-family: monospace; font-size: 18px;" %>
     <% if !@sale.cancelled? %>
     | <%= link_to "Descargar factura",
-           backstore_invoice_path(@sale, format: :pdf),
+           download_backstore_invoice_path(@sale, format: :pdf),
            style: "color: #1343a0; font-family: monospace; font-size: 18px;",
            target: "_blank" %>
     | <%= link_to "Ver factura",
-           backstore_invoice_preview_path(@sale, format: :pdf),
+           preview_backstore_invoice_path(@sale, format: :pdf),
            style: "color: #1343a0; font-family: monospace; font-size: 18px;",
            target: "_blank" %>
     <% end %>

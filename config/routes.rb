@@ -19,12 +19,16 @@ Rails.application.routes.draw do
   namespace :backstore do
     resources :sales
     resources :disks
-    resources :items
     resources :users
     resources :clients
     resources :genres
-    get "invoice/:id", to: "invoices#download", as: :invoice
-    get "invoice/:id/preview", to: "invoices#preview", as: :invoice_preview
+
+    resources :invoices, only: [] do
+      member do
+        get :download
+        get :preview
+      end
+    end
   end
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
