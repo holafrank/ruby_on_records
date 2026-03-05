@@ -5,12 +5,12 @@
 
 <div id="genre-details" class="container">
   <article style="background-color: #f9efdb;">
-<br>
+
         <h4 class="container">Discos del género <%=
             if @genre.genre_name == @genre.genre_name.upcase
               @genre.genre_name
             else
-            @genre.genre_name.downcase
+              @genre.genre_name.downcase
             end
         %></h4>
         <div id="disk-of-this-genre-table" class="container">

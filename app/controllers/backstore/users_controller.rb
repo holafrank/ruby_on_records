@@ -121,7 +121,7 @@ class Backstore::UsersController < ApplicationController
           return false
         end
       end
-      return true
+      true
     end
 
     def valid_role_update?
@@ -136,6 +136,6 @@ class Backstore::UsersController < ApplicationController
 
       return false unless valid_admin_role_set?
 
-      return true
+      true
     end
 end
