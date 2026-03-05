@@ -101,10 +101,10 @@ class Backstore::DisksController < ApplicationController
   def destroy
     ActiveRecord::Base.transaction do
       if @disk.deleted?
-        @disk.restore_deleted_disk!
+        @disk.restore_logic_delete!
         message = "alta"
       else
-        @disk.delete_disk!
+        @disk.soft_delete!
         message = "baja"
       end
       if @disk.save

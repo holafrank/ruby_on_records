@@ -170,11 +170,11 @@ class Disk < ApplicationRecord
     self.stock > 0
   end
 
-  def delete_disk!
+  def soft_delete!
     update!(logic_delete: true, deleted_at: Time.now(), stock: 0)
   end
 
-  def restore_deleted_disk!
+  def restore_logic_delete!
     update!(logic_delete: false, deleted_at: nil, stock: 1)
   end
 
@@ -187,14 +187,14 @@ class Disk < ApplicationRecord
       self.audio_sample.purge
       true
     else
-      return false
+      false
     end
   end
 
   private
 
   def valid_stock_for_used_disk
-    if state == "Usado" && stock != 1
+    if state == "Usado" && stock > 1
       errors.add(:stock, "Si el disco está usado, entonces ese ejemplar es único")
     end
   end
@@ -210,5 +210,4 @@ class Disk < ApplicationRecord
       errors.add(:genres, "Un disco debe tener al menos un género")
     end
   end
-
 end
