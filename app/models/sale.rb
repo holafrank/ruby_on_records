@@ -13,7 +13,7 @@ class Sale < ApplicationRecord
   # https://guides.rubyonrails.org/association_basics.html#belongs-to
 
   # Una Venta contiene varios Items
-  has_many :items
+  has_many :items, dependent: :destroy
 
   # === Nested Attributes === #
   accepts_nested_attributes_for :items, reject_if: :all_blank, allow_destroy: true
@@ -38,7 +38,7 @@ class Sale < ApplicationRecord
   validate :stock_available, if: :all_valid_items
 
   # === Callbacks === #
-  before_validation :set_defaults
+  before_validation :set_defaults, :unify_items
   before_save :calculate_total
   after_save :calculate_total_reload
 
@@ -47,10 +47,9 @@ class Sale < ApplicationRecord
 
   scope :client_sales, ->(client) { where(client: client).order(:created_at) }
 
-  scope :valid_sales_with_disk, ->(disk_id) { joins(:items).where(items: { disk_id: disk_id }).where(cancelled: false).distinct }
+  scope :valid_sales_with_disk, ->(disk_id) { joins(:items).where(items: { disk_id: disk_id }).where(cancelled: false) }
 
-  scope :all_sales_with_disk, ->(disk_id) { joins(:items).where(items: { disk_id: disk_id }).distinct }
-
+  scope :all_sales_with_disk, ->(disk_id) { joins(:items).where(items: { disk_id: disk_id }) }
 
   # === Métodos de instancia === #
 
@@ -74,7 +73,7 @@ class Sale < ApplicationRecord
     hash
   end
 
-  def unify_items!
+  def unify_items
     grouped_items = group_items()
 
     items.destroy_all if persisted?
@@ -89,15 +88,28 @@ class Sale < ApplicationRecord
   end
 
   def decrease_items_stock
-    items.each do |item|
-      item.decrease_stock!
+    ActiveRecord::Base.transaction do
+      items.each do |item|
+        item.decrease_stock!
+      end
     end
   end
 
-  def revert_stock
-    items.each do |item|
-      item.revert_stock!
+  def revert_items_stock
+    ActiveRecord::Base.transaction do
+      items.each do |item|
+        item.revert_stock!
+      end
     end
+  end
+
+  def destroy_all_items
+    items.destroy_all
+    items.clear
+  end
+
+  def valid_for_update?
+    self.valid? && all_valid_items && stock_available
   end
 
   private
@@ -129,7 +141,6 @@ class Sale < ApplicationRecord
   end
 
   def calculate_total_reload
-    update_column(:total, items.reload.sum(&:price))
+    self.total = items.reload.sum(&:price)
   end
-
 end

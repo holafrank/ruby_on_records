@@ -29,52 +29,70 @@ class Backstore::SalesController < ApplicationController
 
   # POST /sales or /sales.json
   def create
-    ActiveRecord::Base.transaction do
       @sale = Sale.new(sale_params)
       @sale.user = current_user
-      @sale.unify_items!
-      respond_to do |format|
-          if @sale.save
-            @sale.decrease_items_stock
-            flash[:notice] = "Venta creada exitosamente"
-            redirect_to backstore_sale_path(@sale)
-            format.json { render :show, status: :created, location: @sale }
-          else
-            @all_clients = Client.latest
-            @available_disks = Disk.available_ordered
-            flash[:error] = "No se pudo concretar la venta"
-            render :new, status: :unprocessable_entity
-            format.json { render json: @sale.errors, status: :unprocessable_entity }
-            raise ActiveRecord::Rollback
-          end
-      end
-    end
-  end
-
-  # PATCH/PUT /sales/1 or /sales/1.json
-  def update
-    authorize! :update, @sale
-
-    ActiveRecord::Base.transaction do
-      @sale.items.each(&:revert_stock!)
-
-      if @sale.update(sale_params)
-        @sale.items.each(&:decrease_stock!)
-        flash[:notice] = "Venta editada exitosamente"
+      if @sale.save
+        @sale.decrease_items_stock
+        flash[:notice] = "Venta creada exitosamente"
         redirect_to backstore_sale_path(@sale)
       else
         @all_clients = Client.latest
         @available_disks = Disk.available_ordered
-        flash[:error] = "No se pudo cancelar la venta: #{@sale.errors.full_messages.join(', ')}"
+        flash[:error] = "No se pudo concretar la venta"
+        render :new, status: :unprocessable_entity
+      end
+  end
+
+  # PATCH/PUT /sales/1 or /sales/1.json
+  def update
+    # WIP !!!
+    # NO ESTOY PUDIENDO MANEJAR EL EDIT DE LAS VENTAS
+    # PARA ELIMINAR UN DISCO DE UNA VENTA YA EXISTENTE
+    # PUEDO BAJAR Y SUBIRLE EL STOCK
+    # PUEDO AGREGAR NUEVOS DISCOS
+    # PERO ELIMINAR UNO QUE YA ESTÁ PERSISTIDO ES UN DOLOR DE CABEZA
+    # CONSULTAR?
+
+    ActiveRecord::Base.transaction do
+      # @sale.destroy_all_items
+      # if valid && @sale.update(sale_params)
+
+      @sale.revert_items_stock
+      if @sale.update(sale_params)
+        puts " = = = = = = = "
+        puts " = = = valid update !! = = = = "
+        puts " = = = = = = = "
+
+
+        puts " = = = = = = = "
+        puts "Items después de update: #{@sale.items.map(&:disk_id).join(', ')}"
+        puts " = = = = = = = "
+
+        @sale.decrease_items_stock
+
+        puts " = = = = = = = "
+        puts "Items después de unify: #{@sale.items.map(&:disk_id).join(', ')}"
+        puts " = = = = = = = "
+        flash[:notice] = "Venta editada exitosamente"
         redirect_to backstore_sale_path(@sale)
-        raise ActiveRecord::Rollback  # Revertir la transacción
+      else
+        puts " = = = = = = = "
+        puts " = = = ERROR !! = = = = "
+        puts " = = = #{@sale.errors.full_messages.join(', ')} !! = = = = "
+        puts " = = = = = = = "
+        @all_clients = Client.latest
+        @available_disks = Disk.available_ordered
+        flash[:error] = "No se pudo editar la venta:"
+        flash[:alert] = "#{@sale.errors.full_messages.join(', ')}"
+        redirect_to backstore_sale_path(@sale)
+        raise ActiveRecord::Rollback
       end
     end
   end
 
   # DELETE /sales/1 or /sales/1.json
   def destroy
-    authorize! :destroy, @sale
+    # authorize! :destroy, @sale
 
     # Verificar que no esté ya cancelada
     if @sale.cancelled?
@@ -86,7 +104,7 @@ class Backstore::SalesController < ApplicationController
     ActiveRecord::Base.transaction do
       @sale.cancelled = true
 
-      @sale.items.each(&:revert_stock!)
+      @sale.revert_items_stock
       @sale.total = 0.0
 
       if @sale.save
