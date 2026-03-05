@@ -13,7 +13,7 @@
 
 <div id="edit-sale-form" class="container">
   <article data-controller="sales" style="background-color: #f9efdb;">
-    <%= form_with model: [:backstore, @sale]  do |form| %>
+    <%= form_with model: [ :backstore, @sale ]  do |form| %>
       <% if @sale.errors.any? %>
         <div role="alert">
           <h4>Errores:</h4>

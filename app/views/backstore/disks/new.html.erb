@@ -8,7 +8,7 @@
 
 <div id="new-disk-form" class="container">
   <article style="background-color: #f9efdb;">
-    <%= form_with model: [:backstore, @disk] do |form| %>
+    <%= form_with model: [ :backstore, @disk ] do |form| %>
 
       <% if @disk.errors.any? %>
         <div role="alert">
@@ -40,19 +40,19 @@
                  <div class="col-6">
                     <div>
                         <%= form.label "Título" %>
-                        <%= form.text_field :title, required: true, placeholder:"Por Este Rio Acima", autocomplete:"on" %>
+                        <%= form.text_field :title, required: true, placeholder: "Por Este Rio Acima", autocomplete: "on" %>
                     </div>
                  </div>
                  <div class="col-6">
                     <div>
                         <%= form.label "Artista o banda" %>
-                        <%= form.text_field :artist, required: true, placeholder:"Fausto", autocomplete:"on" %>
+                        <%= form.text_field :artist, required: true, placeholder: "Fausto", autocomplete: "on" %>
                     </div>
                 </div>
                 <div class="col-6">
                   <div>
                     <%= form.label "Año de lanzamiento" %>
-                    <%= form.number_field :year, required: true, placeholder:"1982", in: 1870..Date.current.year, autocomplete:"on" %>
+                    <%= form.number_field :year, required: true, placeholder: "1982", in: 1870..Date.current.year, autocomplete: "on" %>
                   </div>
                 </div>
               </div>
@@ -60,7 +60,7 @@
               <div class="grid" label="disk-description">
                   <div>
                     <%= form.label "Descripción" %>
-                    <%= form.text_area :description, required: true, placeholder:"Es el primer álbum de una trilogía que también incluye los álbumes 'Crônicas da Terra Ardente' (1994) y 'Em Busca das Montanhas Azuis' (2011).  'Por Este Rio Acima' está basado en los viajes de Fernão Mendes Pinto, relatados en su libro Peregrinação (1614).", autocomplete:"on" %>
+                    <%= form.text_area :description, required: true, placeholder: "Es el primer álbum de una trilogía que también incluye los álbumes 'Crônicas da Terra Ardente' (1994) y 'Em Busca das Montanhas Azuis' (2011).  'Por Este Rio Acima' está basado en los viajes de Fernão Mendes Pinto, relatados en su libro Peregrinação (1614).", autocomplete: "on" %>
                   </div>
               </div>
 
@@ -74,7 +74,7 @@
                 <div class="col-6">
                   <div>
                     <%= form.label "Cantidad disponible" %>
-                    <%= form.number_field :stock, required: true, min: 0, placeholder:"50", autocomplete:"on" %>
+                    <%= form.number_field :stock, required: true, min: 0, placeholder: "50", autocomplete: "on" %>
                   </div>
                 </div>
               </div>

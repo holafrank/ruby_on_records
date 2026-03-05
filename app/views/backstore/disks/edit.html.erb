@@ -7,7 +7,7 @@
 
 <div id="edit-disk-form" class="container">
   <article style="background-color: #f9efdb;">
-    <%= form_with model: [:backstore, @disk] do |form| %>
+    <%= form_with model: [ :backstore, @disk ] do |form| %>
 
       <% if @disk.errors.any? %>
         <div role="alert">
@@ -110,7 +110,7 @@
               </div>
 
 <br>
-               <div id="audio-field" style="<%= @disk.state == 'Usado' ? '' : 'display: none;' %>">
+               <div id="audio-field" style="<%= @disk.state == "Usado" ? "" : "display: none;" %>">
                  <div class="field">
                    <%= form.label :audio_sample, "Audio de muestra (opcional)" %>
                    <p>

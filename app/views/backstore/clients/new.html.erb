@@ -6,7 +6,7 @@
 <div id="new-client-form" class="container">
   <article style="background-color: #f9efdb;">
 
-    <%= form_with model: [:backstore, @client]  do |form| %>
+    <%= form_with model: [ :backstore, @client ]  do |form| %>
       <% if @client.errors.any? %>
         <div role="alert">
           <h6 style="text-decoration: underline; color: #b92621;">Errores:</h6>
@@ -31,11 +31,11 @@
             <div>
                   <div>
                     <%= form.label "Nombre" %>
-                    <%= form.text_field :name, required: true, placeholder:"Guillermo Cidade", autocomplete:"on" %>
+                    <%= form.text_field :name, required: true, placeholder: "Guillermo Cidade", autocomplete: "on" %>
                   </div>
                   <div>
                     <%= form.label "Contacto" %>
-                    <%= form.text_field :contact, required: true, placeholder:"guillermocidade@wallas.com", autocomplete:"on" %>
+                    <%= form.text_field :contact, required: true, placeholder: "guillermocidade@wallas.com", autocomplete: "on" %>
                   </div>
             </div>
           </div>

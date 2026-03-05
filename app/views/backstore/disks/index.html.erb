@@ -22,13 +22,13 @@
               </li>
               <li>
                   <%= form.select :format,
-                      options_for_select([["CD", "CD"], ["Vinilo", "Vinilo"]], params[:format]),
+                      options_for_select([ [ "CD", "CD" ], [ "Vinilo", "Vinilo" ] ], params[:format]),
                       include_blank: "Formato",
                       class: "form-select" %>
               </li>
               <li>
                   <%= form.select :state,
-                      options_for_select([["Nuevo", "Nuevo"], ["Usado", "Usado"]], params[:state]),
+                      options_for_select([ [ "Nuevo", "Nuevo" ], [ "Usado", "Usado" ] ], params[:state]),
                       include_blank: "Estado",
                       class: "form-select" %>
               </li>
@@ -41,7 +41,7 @@
                   <%= form.label "Año de lanzamiento" %>
                   <%= decades =  Time.new.year.step(1870, -10).map { |y|
                                  decade = y - (y % 10)
-                                 [decade, decade] }
+                                 [ decade, decade ] }
                       form.select :year_from,
                         options_for_select(
                         decades, params[:year_from]),
@@ -50,7 +50,7 @@
                   %>
                   <%= decades =  Time.new.year.step(1870, -10).map { |y|
                                  decade = y - (y % 10)
-                                 [decade, decade] }
+                                 [ decade, decade ] }
                       form.select :year_to,
                         options_for_select(
                         decades, params[:year_to]),
@@ -60,8 +60,8 @@
               </li>
               <li>
                   <%= form.label "Rango de precios" %>
-                  <%= form.number_field :min_price, step: "1", placeholder:"Desde..." %>
-                  <%= form.number_field :max_price, step: "1", placeholder:"Hasta..." %>
+                  <%= form.number_field :min_price, step: "1", placeholder: "Desde..." %>
+                  <%= form.number_field :max_price, step: "1", placeholder: "Hasta..." %>
               </li>
               <li>
                   <div class="col-md-2">
@@ -129,19 +129,19 @@
               <td><%= disk.artist %></td>
               <td><%= disk.stock %></td>
 
-              <td><%= number_to_currency(disk.price, :locale => :es) %></td>
+              <td><%= number_to_currency(disk.price, locale: :es) %></td>
 
               <td>
                 <%= disk.created_at_local_time.strftime("%d/%m/%Y - %H:%M") %>
               </td>
 
               <td style="font-family: monospace;">
-                  <%= link_to "Detalles", backstore_disk_path(disk) , style: "color: #1343a0; font-family: monospace; font-size: 17px;" %>
+                  <%= link_to "Detalles", backstore_disk_path(disk), style: "color: #1343a0; font-family: monospace; font-size: 17px;" %>
 
               </td>
 
               <td>
-                  <%= link_to " Editar", edit_backstore_disk_path(disk) , style: "color: #1343a0; font-family: monospace; font-size: 17px;" %>
+                  <%= link_to " Editar", edit_backstore_disk_path(disk), style: "color: #1343a0; font-family: monospace; font-size: 17px;" %>
               </td>
 
               <td>

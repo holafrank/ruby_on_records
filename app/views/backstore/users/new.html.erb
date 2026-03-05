@@ -8,7 +8,7 @@
 
 <div id="new-user-form" class="container">
   <article style="background-color: #f9efdb;">
-    <%= form_with model: [:backstore, @user] do |form| %>
+    <%= form_with model: [ :backstore, @user ] do |form| %>
       <% if @user.errors.any? %>
         <div role="alert">
           <h6 style="text-decoration: underline; color: #b92621;">Errores:</h6>
@@ -30,11 +30,11 @@
             <div>
                   <div>
                     <%= form.label "Nombre completo" %>
-                    <%= form.text_field :full_name, required: true, placeholder:"Guillermo Cidade", autocomplete:"on" %>
+                    <%= form.text_field :full_name, required: true, placeholder: "Guillermo Cidade", autocomplete: "on" %>
                   </div>
                   <div>
                     <%= form.label "Correo electrónico" %>
-                    <%= form.text_field :email, required: true, placeholder:"guillermocidade@wallas.com", autocomplete:"on" %>
+                    <%= form.text_field :email, required: true, placeholder: "guillermocidade@wallas.com", autocomplete: "on" %>
                   </div>
 
 

@@ -7,7 +7,7 @@
 
 <div id="new-genre-form" class="container">
   <article style="background-color: #f9efdb;">
-    <%= form_with model: [:backstore, @genre] do |form| %>
+    <%= form_with model: [ :backstore, @genre ] do |form| %>
       <% if @genre.errors.any? %>
         <div role="alert">
           <h4>Errores:</h4>
@@ -32,7 +32,7 @@
             <div>
                   <div>
                     <%= form.label "Nombre del género" %>
-                    <%= form.text_field :genre_name, required: true, placeholder:"Música popular portuguesa", autocomplete:"on" %>
+                    <%= form.text_field :genre_name, required: true, placeholder: "Música popular portuguesa", autocomplete: "on" %>
                   </div>
             </div>
           </div>

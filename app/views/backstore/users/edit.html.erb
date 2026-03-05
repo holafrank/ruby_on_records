@@ -5,7 +5,7 @@
 <br>
 <div id="edit-user-form" class="container">
   <article style="background-color: #f9efdb;">
-    <%= form_with model: [:backstore, @user]  do |form| %>
+    <%= form_with model: [ :backstore, @user ]  do |form| %>
       <% if @user.errors.any? %>
         <div role="alert">
           <h6 style="text-decoration: underline; color: #b92621;">Errores:</h6>
@@ -38,8 +38,8 @@
                     <%= form.text_field :email,
                       required: true,
                       value: @user.email,
-                      placeholder:@user.email,
-                      autocomplete:"off" %>
+                      placeholder: @user.email,
+                      autocomplete: "off" %>
                   </div>
 
                   <div>

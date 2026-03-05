@@ -6,7 +6,7 @@
 
 <div id="edit-client-form" class="container">
   <article style="background-color: #f9efdb;">
-    <%= form_with model: [:backstore, @genre]  do |form| %>
+    <%= form_with model: [ :backstore, @genre ]  do |form| %>
       <% if @genre.errors.any? %>
         <div role="alert">
           <h4>Errores:</h4>

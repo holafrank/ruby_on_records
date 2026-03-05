@@ -15,7 +15,7 @@
 
 <div id="new-sale-form" class="container">
   <article data-controller="sales" style="background-color: #f9efdb;">
-    <%= form_with model: [:backstore, @sale] do |form| %>
+    <%= form_with model: [ :backstore, @sale ] do |form| %>
       <% if @sale.errors.any? %>
         <div role="alert">
           <h6 style="text-decoration: underline; color: #b92621;">Errores:</h6>
