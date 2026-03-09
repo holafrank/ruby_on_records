@@ -7,6 +7,7 @@ class Backstore::DisksController < ApplicationController
   # GET /disks or /disks.json
   def index
     @disks = Disk.all
+
     @genres = Genre.ordered
 
     errors ||= []
@@ -30,6 +31,8 @@ class Backstore::DisksController < ApplicationController
     else
       @disks = @disks.price_filter(params[:min_price], params[:max_price])
     end
+
+    @disks = @disks.page(params[:page])
 
     if errors.any?
       flash[:error] = "Parámetros inválidos:"

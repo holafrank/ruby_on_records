@@ -5,7 +5,7 @@
   <div class="container" id="filter-dashboard">
   <nav class="pico-background-red-100">
     <details name="Filtros" closed>
-      <summary style="color: #1343a0; font-size: 22px;"><strong>▿ Filtrar discos</strong></summary>
+      <summary style="color: #1343a0; font-size: 22px;"><strong>Filtrar discos</strong></summary>
           <ul style="display: flex; align-items: left; gap: 0.2rem;">
               <%= form_with url: backstore_disks_path, method: :get do |form| %>
               <li>
@@ -75,6 +75,7 @@
   </div>
 
   <% if @disks.count == 0 %>
+
   <br>
     <div class="container">
       <p style="color: #b92621;">
@@ -82,86 +83,94 @@
       </p>
     </div>
   <% else %>
-    <div id="disk-table" class="container">
-      <table class="table-custom">
-        <thead style="background-color: #b92621">
-          <tr>
-            <th scope="col">
-              Título
-            </th>
 
-            <th scope="col">
-              Artista
-            </th>
 
-            <th scope="col">
-              Stock
-            </th>
-
-            <th scope="col">
-              Precio
-            </th>
-
-            <th scope="col">
-              Fecha
-            </th>
-
-            <th scope="col">
-              Ver detalle
-            </th>
-
-            <th scope="col">
-              Editar
-            </th>
-
-            <th scope="col">
-              Borrar
-            </th>
-
-          </tr>
-        </thead>
-
-        <tbody>
-          <% @disks.each do |disk| %>
-            <% if !disk.deleted? %>
+        <div id="disk-table" class="container">
+          <div class="container">
+              <div style="font-family: monospace; color: #1343a0; align:left;" role="group">
+                  <%= paginate @disks %>
+              </div>
+          </div>
+        <table class="table-custom">
+            <thead style="background-color: #b92621">
             <tr>
-              <td><%= disk.title %></td>
-              <td><%= disk.artist %></td>
-              <td><%= disk.stock %></td>
+                <th scope="col">
+                Título
+                </th>
 
-              <td><%= number_to_currency(disk.price, locale: :es) %></td>
+                <th scope="col">
+                Artista
+                </th>
 
-              <td>
-                <%= disk.created_at_local_time.strftime("%d/%m/%Y - %H:%M") %>
-              </td>
+                <th scope="col">
+                Stock
+                </th>
 
-              <td style="font-family: monospace;">
-                  <%= link_to "Detalles", backstore_disk_path(disk), style: "color: #1343a0; font-family: monospace; font-size: 17px;" %>
+                <th scope="col">
+                Precio
+                </th>
 
-              </td>
+                <th scope="col">
+                Fecha
+                </th>
 
-              <td>
-                  <%= link_to " Editar", edit_backstore_disk_path(disk), style: "color: #1343a0; font-family: monospace; font-size: 17px;" %>
-              </td>
+                <th scope="col">
+                Ver detalle
+                </th>
 
-              <td>
-                <%= link_to "¿Borrar?",
-                      backstore_disk_path(disk),
-                      method: :delete,
-                      data: {
-                        turbo_confirm: "¿Está seguro de desea dar de baja a este disco?",
-                        turbo_method: :delete
-                      },
-                      style: "color: #b92621; font-family: monospace; font-size: 17px;",
-                      class: "btn btn-warning" %>
-              </td>
+                <th scope="col">
+                Editar
+                </th>
+
+                <th scope="col">
+                Borrar
+                </th>
+
             </tr>
+            </thead>
+
+            <tbody>
+            <% @disks.each do |disk| %>
+                <% if !disk.deleted? %>
+                <tr>
+                <td><%= disk.title %></td>
+                <td><%= disk.artist %></td>
+                <td><%= disk.stock %></td>
+
+                <td><%= number_to_currency(disk.price, locale: :es) %></td>
+
+                <td>
+                    <%= disk.created_at_local_time.strftime("%d/%m/%Y - %H:%M") %>
+                </td>
+
+                <td style="font-family: monospace;">
+                    <%= link_to "Detalles", backstore_disk_path(disk), style: "color: #1343a0; font-family: monospace; font-size: 17px;" %>
+
+                </td>
+
+                <td>
+                    <%= link_to " Editar", edit_backstore_disk_path(disk), style: "color: #1343a0; font-family: monospace; font-size: 17px;" %>
+                </td>
+
+                <td>
+                    <%= link_to "¿Borrar?",
+                        backstore_disk_path(disk),
+                        method: :delete,
+                        data: {
+                            turbo_confirm: "¿Está seguro de desea dar de baja a este disco?",
+                            turbo_method: :delete
+                        },
+                        style: "color: #b92621; font-family: monospace; font-size: 17px;",
+                        class: "btn btn-warning" %>
+                </td>
+                </tr>
+                <% end %>
             <% end %>
-          <% end %>
-        </tbody>
-      </table>
-    </div>
-  <% end %>
+            </tbody>
+        </table>
+        </div>
+    <% end %>
+
 
   <div>
     <p class="container">

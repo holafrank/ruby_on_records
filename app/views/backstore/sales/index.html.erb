@@ -5,26 +5,7 @@
 <h1 class="container">Ventas</h1>
 <br>
 
-
-      BOTON PARA VER CANCELADAS Y NO VER CANCELADAS
-
-      <%= form_with url: backstore_sales_path, method: :get do |form| %>
-        <fieldset>
-          <label style="font-family: monospace;">
-            <input type="checkbox" role="switch" >
-            Ver ventas canceladas
-          </label>
-        </fieldset>
-      <li>
-          <div class="col-md-2">
-            <%= form.submit "Botón?", style: "background-color: #1343a0; font-family: monospace; height: 45px; width: 150px;" %>
-          </div>
-      </li>
-
-    <% end %>
-
-
-      <div id="sales-table" class="container">
+  <div id="sales-table" class="container">
   <table class="table-custom">
     <thead style="background-color: #b92621">
       <tr>

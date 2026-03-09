@@ -54,6 +54,8 @@
                   </td>
                   <% if @disk.stock == 1 %>
                     <td class="tg-0lax" style="color: #b92621;">  Último disponible</td>
+                  <% elsif @disk.stock == 0 %>
+                      <td class="tg-0lax" style="color: #b92621;">  Agotado</td>
                   <% else %>
                     <td class="tg-0lax">  <%= @disk.stock %> disponibles</td>
                   <% end %>
