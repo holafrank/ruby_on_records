@@ -140,7 +140,7 @@
                 <td><%= number_to_currency(disk.price, locale: :es) %></td>
 
                 <td>
-                    <%= disk.created_at_local_time.strftime("%d/%m/%Y - %H:%M") %>
+                    <%= disk.created_at_local_time.strftime("%d/%m/%y - %H:%M") %>
                 </td>
 
                 <td style="font-family: monospace;">
@@ -224,7 +224,7 @@
             <td> - </td>
 
             <td>
-              <%= disk.deleted_at_local_time.strftime("%d/%m/%Y - %H:%M") %>
+              <%= disk.deleted_at_local_time.strftime("%d/%m/%y - %H:%M") %>
             </td>
 
               <td style="font-family: monospace;">
