@@ -192,4 +192,6 @@ td {
 
 .pagination .current {
     font-weight: bold !important;
+    padding-left: 10px;
+    padding-right: 10px;
 }

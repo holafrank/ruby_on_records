@@ -3,6 +3,11 @@
 <h1 class="container">Clientes</h1>
 
 <div id="clients-table" class="container">
+  <div class="container">
+      <div style="font-family: monospace; color: #1343a0; align:left;" role="group">
+          <%= paginate @clients %>
+      </div>
+  </div>
   <table class="table-custom">
 
     <thead style="background-color: #b92621">

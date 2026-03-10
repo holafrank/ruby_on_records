@@ -3,7 +3,7 @@ class Backstore::ClientsController < ApplicationController
 
   # GET /clients or /clients.json
   def index
-    @clients = Client.latest
+    @clients = Client.latest.page(params[:page])
   end
 
   # GET /clients/1 or /clients/1.json

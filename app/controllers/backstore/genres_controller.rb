@@ -6,7 +6,7 @@ class Backstore::GenresController < ApplicationController
 
   # GET /genres or /genres.json
   def index
-    @genres = Genre.ordered
+    @genres = Genre.ordered.page(params[:page])
   end
 
   # GET /genres/1 or /genres/1.json

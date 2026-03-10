@@ -5,6 +5,11 @@
 <h1 class="container">Plantel</h1>
 
 <div id="users-table" class="container">
+  <div class="container">
+      <div style="font-family: monospace; color: #1343a0; align:left;" role="group">
+          <%= paginate @users %>
+      </div>
+  </div>
   <table class="table-custom">
     <thead style="background-color: #b92621">
       <tr>
