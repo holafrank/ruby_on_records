@@ -11,6 +11,7 @@ class ApplicationController < ActionController::Base
     respond_to do |format|
       format.json { head :forbidden }
       format.html { redirect_to root_path, alert: "No tiene permitido acceder a esta sección." }
+      format.pdf { redirect_to root_path, alert: "No tiene permitido acceder a esta sección." }
     end
   end
 
