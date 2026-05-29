@@ -45,6 +45,8 @@ class Sale < ApplicationRecord
 
   # === Scopes === #
 
+  scope :valid_sales, -> { where(cancelled: false) }
+
   scope :client_sales, ->(client) { where(client: client).order(:created_at) }
 
   scope :valid_sales_with_disk, ->(disk_id) { joins(:items).where(items: { disk_id: disk_id }).where(cancelled: false) }

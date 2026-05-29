@@ -3,19 +3,7 @@ Rails.application.routes.draw do
   post "login", to: "sessions#create"
   get "logout", to: "sessions#destroy"
 
-  # Helpers no tiene el prefijo "backstore",
-  # pero sí da controllers organizados por módulo, como por ejemplo, Backstore::SalesController
-  # Agrego las rutas con prefijo manualmente para obtener lo que haría un namespace
-  # pero sin compromenter los nombres de los helpers que ya utilizo, volviendo más difícil la refactorización.
-  # scope module: :backstore do
-  #   resources :sales, path: 'backstore/sales'
-  #   resources :disks, path: 'backstore/disks'
-  #   resources :items, path: 'backstore/items'
-  #   resources :users, path: 'backstore/users'
-  #   resources :clients, path: 'backstore/clients'
-  #   resources :genres, path: 'backstore/genres'
-  # end
-
+  # Aquí van todas las rutas que requieren de autenticación para ser accedidas.
   namespace :backstore do
     resources :sales
     resources :disks
@@ -23,12 +11,19 @@ Rails.application.routes.draw do
     resources :clients
     resources :genres
 
+    # Desde de Backstore se puede acceder a las facturas
     resources :invoices, only: [] do
       member do
         get :download
         get :preview
       end
     end
+
+    # Desde Backstore se puede acceder a la sección de métricas
+    # Debe existir una sección de reportes separada de la gestión de ventas.
+    get "reports", to: "reports#index"   # Dashboard principal con todo
+    get "reports/metrics"                # Solo métricas generales (Métricas obligatorias)
+    get "reports/analysis"               # Análisis de ventas específicas por producto (Análisis de ventas)
   end
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
