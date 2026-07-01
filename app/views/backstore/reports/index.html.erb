@@ -1,2 +1,11 @@
-<h1>Backstore::Reports#index</h1>
-<p>Find me in app/views/backstore/reports/index.html.erb</p>
+<h1>Reportes</h1>
+<p>Reportes históricos de ventas con visualización gráfica</p>
+<p>Las métricas y gráficos se calculan utilizando los datos registrados en el sistema</p>
+
+<li>
+    <%= link_to "• Métricas generales", backstore_reports_metrics_path, method: :get, style: "color: #0e1312; font-family: monospace; font-size: 20px;" %>
+</li>
+
+<li>
+    <%= link_to "• Análisis de ventas", backstore_reports_analysis_path, method: :get, style: "color: #0e1312; font-family: monospace; font-size: 20px;" %>
+</li>

@@ -1,2 +1,59 @@
-<h1>Backstore::Reports#metrics</h1>
-<p>Find me in app/views/backstore/reports/metrics.html.erb</p>
+
+<h1 class="container">Métricas</h1>
+<br>
+
+<div id="sale-filters" class="container">
+<p>• Filtros</p>
+  <button>Tipo de producto</button>
+  <button>Género</button>
+  <button>Empleado que realizó la venta</button>
+
+</div>
+  <br>
+<div id="general-sales-metrics" class="container">
+
+  <div id="recaudacion-por-periodo">
+    <h3>Total recaudado en un período</h3>
+    <p>Evolución de ventas en el tiempo</p>
+
+    <button>Seleccionar período</button>
+
+    <%= line_chart @data %>
+    <br>
+        <p>• Total recaudado en el período (...) a (...) $[...]</p>
+    <br>
+  </div>
+
+  <div id="cantidad-de-ventas-por-periodo">
+    <h3>Cantidad de ventas realizadas</h3>
+    <p>Evolución de ventas en el tiempo</p>
+
+    <button>Seleccionar período</button>
+
+    <%= line_chart @data %>
+    <br>
+        <p>• Total de ventas realizadas en el período (...) a (...) $[...]</p>
+    <br>
+
+    <h3>Cantidad de productos vendidos</h3>
+    <p>Evolución de ventas en el tiempo</p>
+
+    <button>Seleccionar período</button>
+
+    <%= line_chart @data %>
+    <br>
+        <p>• Total de productos vendidos en el período (...) a (...) $[...]</p>
+    <br>
+  </div>
+
+
+    <div id="promedio-de-importe-por-venta">
+        <h3>Promedio de importe por venta</h3>
+        <p>Evolución mensual del promedio de los importes totales de las ventas</p>
+
+        <button>Seleccionar período</button>
+
+        <%= bar_chart @data %>
+    </div>
+
+</div>

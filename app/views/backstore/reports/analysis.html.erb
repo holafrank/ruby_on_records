@@ -1,2 +1,56 @@
-<h1>Backstore::Reports#analysis</h1>
-<p>Find me in app/views/backstore/reports/analysis.html.erb</p>
+
+<h1 class="container">Análisis de ventas</h1>
+
+  <br>
+  <div id="sales-analysis" class="container">
+
+    <div id="por-tipo">
+      <h3>Por tipo de producto</h3>
+
+      <p>Cantidad de ventas</p>
+      <button>Seleccionar período</button>
+      <%= pie_chart @data %>
+
+      <br>
+
+      <p>Evolución de ventas según el tipo de producto (CD / Vinilo) a lo largo del tiempo</p>
+      <button>Seleccionar período</button>
+      <%= line_chart @data %>
+      <br>
+        <p>• [...] CDs vendidos en el período (...) a (...)</p>
+        <p>• [...] vinilos vendidos en el período (...) a (...)</p>
+      <br>
+    </div>
+
+    <div id="por-genero">
+      <h3>Por género musical</h3>
+
+      <p>Cantidad de ventas</p>
+      <button>Seleccionar período</button>
+      <%= pie_chart @data %>
+
+      <br>
+
+      <p>Evolución de ventas según el género musical a lo largo del tiempo</p>
+      <button>Seleccionar período</button>
+      <%= line_chart @data %>
+      <br>
+    </div>
+
+    <div id="por-empleado">
+      <h3>Por empleado</h3>
+      <p>Cantidad de ventas</p>
+      <button>Seleccionar período</button>
+      <%= bar_chart @data %>
+      <br>
+    </div>
+
+    <div id="top-five">
+      <h3>Top 5 productos más vendidos</h3>
+      <p>Los cinco productos más vendidos de cierto período</p>
+      <button>Seleccionar período</button>
+      <%= bar_chart @data %>
+      <br>
+    </div>
+
+</div>

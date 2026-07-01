@@ -43,7 +43,7 @@
     <nav style="background-color: #f9efdb;">
       <li>
         <%= link_to root_path, style: "display: flex; align-items: center; gap: 0.5rem; text-decoration: none;" do %>
-          <%= image_tag "logo.png", alt: "Ruby On Records Logo", style: "height: 110px; width: auto;" %>
+          <%= image_tag "logo.png", alt: "Ruby On Records Logo", style: "height: 120px; width: auto;" %>
         <% end %>
       </li>
     </nav>
@@ -70,6 +70,9 @@
                 <%= link_to "Plantel", backstore_users_path, method: :get, style: "color: #f9efdb; font-family: monospace; font-size: 20px;" %>
             </li>
            <% end %>
+           <li>
+               <%= link_to "Reportes", backstore_reports_path, method: :get, style: "color: #f9efdb; font-family: monospace; font-size: 20px;" %>
+           </li>
 
 
         <% end %>

@@ -6,11 +6,12 @@ class Backstore::ReportsController < ApplicationController
   end
 
   def metrics
+     @data = {'2026-01-01' => 5, '2026-02-01' => 8, '2026-03-01' => 12, '2026-04-01' => 15, '2026-05-01' => 10, '2026-06-01' => 9}
   end
 
   def analysis
+    @data = {'2026-01-01' => 5, '2026-02-01' => 8, '2026-03-01' => 12, '2026-04-01' => 15, '2026-05-01' => 10, '2026-06-01' => 9}
   end
-
 
   private
 
